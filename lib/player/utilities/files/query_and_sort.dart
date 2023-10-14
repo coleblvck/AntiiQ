@@ -1,0 +1,227 @@
+import 'package:antiiq/player/utilities/files/lists.dart';
+import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/utilities/files/art_queries.dart';
+
+String tracksStorage = "Tracks";
+
+queryAndSort() async {
+  await getAndSortSongs();
+  await sortAlbums();
+  await sortArtists();
+  await sortGenres();
+  await getPlaylistsfromStore();
+
+  dataIsInitialized = true;
+  await antiiqStore.put("dataInit", true);
+}
+
+getAndSortSongs() async {
+  final List<SongModel> allSongs = await getAllSongs();
+  await getAllAlbumArts(allSongs);
+  //Progress Count init
+  loadingMessage = "Loading Songs";
+  libraryLoadTotal = allSongs.length;
+  List<Track> sortedSongs = [];
+  for (SongModel song in allSongs) {
+    //Progress Count iterate
+    libraryLoadProgress = allSongs.indexOf(song);
+    if (Duration(milliseconds: song.duration!) !=
+            const Duration(milliseconds: 0) &&
+        !(Duration(milliseconds: song.duration!) <
+            Duration(seconds: minimumTrackLength))) {
+      final Track track = await getTrackFromSong(song);
+
+      sortedSongs.add(track);
+    }
+  }
+
+  allTracks[TrackSortTypes().alphabetical] = sortedSongs;
+  currentTrackListSort = sortedSongs;
+}
+
+sortAlbums() async {
+  allAlbums[AlbumSortTypes().alphabetical] = [];
+  List<AlbumModel> albumSortQuery = await audioQuery.queryAlbums();
+  //Progress Count init
+  loadingMessage = "Loading Albums";
+  libraryLoadTotal = albumSortQuery.length;
+  Map<int, List<Track>> albumSortAlbums = {};
+  for (AlbumModel album in albumSortQuery) {
+    albumSortAlbums[album.id] = [];
+  }
+  for (Track track in currentTrackListSort) {
+    albumSortAlbums[track.trackData!.albumId]?.add(track);
+  }
+  for (List<Track> albumTracks in albumSortAlbums.values) {
+    if (albumTracks.isNotEmpty) {
+      albumTracks.sort(
+        (a, b) =>
+            a.trackData!.trackNumber!.compareTo(b.trackData!.trackNumber!),
+      );
+      final Album thisAlbum = Album(
+        albumId: albumTracks[0].trackData!.albumId,
+        albumName: albumTracks[0].trackData!.albumName,
+        albumArtistName: albumTracks[0].trackData!.albumArtistName,
+        albumArt: albumTracks[0].mediaItem!.artUri,
+        numOfSongs: albumTracks.length,
+        albumTracks: albumTracks,
+        year: albumTracks[0].trackData!.year,
+      );
+      allAlbums[AlbumSortTypes().alphabetical]!.add(thisAlbum);
+    }
+  }
+
+  currentAlbumListSort = allAlbums[AlbumSortTypes().alphabetical]!;
+  //Progress reset
+  loadingMessage = "Loading Library";
+  libraryLoadTotal = 1;
+  libraryLoadProgress = 0;
+}
+
+sortArtists() async {
+  allArtists[ArtistSortTypes().alphabetical] = [];
+  List<ArtistModel> artistSortQuery = await audioQuery.queryArtists();
+  //Progress Count init
+  loadingMessage = "Loading Artists";
+  libraryLoadTotal = artistSortQuery.length;
+  Map<int, List<Track>> artistSortTracks = {};
+  for (ArtistModel artist in artistSortQuery) {
+    artistSortTracks[artist.id] = [];
+  }
+  for (Track track in currentTrackListSort) {
+    artistSortTracks[track.trackData!.artistId]?.add(track);
+  }
+  for (List<Track> artistTracks in artistSortTracks.values) {
+    if (artistTracks.isNotEmpty) {
+      artistTracks.sort(
+        (a, b) => a.trackData!.trackName!.compareTo(b.trackData!.trackName!),
+      );
+      final Artist thisArtist = Artist(
+        artistId: artistTracks[0].trackData!.artistId,
+        artistName: artistTracks[0].trackData!.trackArtistNames,
+        artistTracks: artistTracks,
+        artistArt: artistTracks[0].mediaItem!.artUri,
+      );
+      allArtists[ArtistSortTypes().alphabetical]!.add(thisArtist);
+    }
+  }
+
+  currentArtistListSort = allArtists[ArtistSortTypes().alphabetical]!;
+  //Progress reset
+  loadingMessage = "Loading Library";
+  libraryLoadTotal = 1;
+  libraryLoadProgress = 0;
+}
+
+sortGenres() async {
+  allGenres[GenreSortTypes().alphabetical] = [];
+  List<GenreModel> genreSortQuery = await audioQuery.queryGenres();
+  //Progress Count init
+  loadingMessage = "Loading Genres";
+  libraryLoadTotal = genreSortQuery.length;
+  Map<String, List<Track>> genreSortTracks = {};
+  for (GenreModel genre in genreSortQuery) {
+    genreSortTracks[genre.genre] = [];
+  }
+  genreSortTracks["Unknown Genre"] = [];
+  for (Track track in currentTrackListSort) {
+    genreSortTracks[track.trackData!.genre]?.add(track);
+  }
+  for (List<Track> genreTracks in genreSortTracks.values) {
+    if (genreTracks.isNotEmpty) {
+      genreTracks.sort(
+        (a, b) => a.trackData!.trackName!.compareTo(b.trackData!.trackName!),
+      );
+      final Genre thisGenre = Genre(
+        genreName: genreTracks[0].trackData!.genre,
+        genreTracks: genreTracks,
+      );
+      allGenres[GenreSortTypes().alphabetical]!.add(thisGenre);
+    }
+  }
+
+  currentGenreListSort = allGenres[GenreSortTypes().alphabetical]!;
+  //Progress reset
+  loadingMessage = "Loading Library";
+  libraryLoadTotal = 1;
+  libraryLoadProgress = 0;
+}
+
+Future<List<SongModel>> getAllSongs({
+  SongSortType sortType = SongSortType.TITLE,
+}) async {
+  List<SongModel> totalLibrary = [];
+  if (specificPathsToQuery.isNotEmpty) {
+    for (String path in specificPathsToQuery) {
+      final List<SongModel> songsInPath = await audioQuery.querySongs(
+        path: path,
+        sortType: sortType,
+        orderType: OrderType.ASC_OR_SMALLER,
+        uriType: UriType.EXTERNAL,
+        ignoreCase: true,
+      );
+      totalLibrary += songsInPath;
+    }
+  } else {
+    final List<SongModel> songs = await audioQuery.querySongs(
+      sortType: sortType,
+      orderType: OrderType.ASC_OR_SMALLER,
+      uriType: UriType.EXTERNAL,
+      ignoreCase: true,
+    );
+    totalLibrary = songs;
+  }
+  return totalLibrary;
+}
+
+Future<Track> getTrackFromSong(SongModel song) async {
+  String songPath = song.data;
+  TrackData songTrackData = TrackData(
+    trackId: song.id,
+    trackName: song.title,
+    trackArtistNames: song.artist,
+    albumId: song.albumId,
+    albumName: song.album ?? "Unknown Album",
+    artistId: song.artistId,
+    albumArtistName: song.artist!.split("/")[0],
+    trackNumber: song.track ?? 0,
+    genre: song.genre ?? "Unknown Genre",
+    writerName: song.composer,
+    mimeType: song.fileExtension,
+    trackDuration: song.duration ?? 0,
+  );
+  final Track thisTrack = Track(
+    path: songPath,
+    trackData: songTrackData,
+    mediaItem: await getMediaItemFromSong(song),
+  );
+  return thisTrack;
+}
+
+Future<MediaItem> getMediaItemFromSong(SongModel song) async {
+  final MediaItem songMediaItem = MediaItem(
+    id: song.data,
+    title: song.title,
+    artist: song.artist,
+    album: song.album,
+    artUri: albumArtsList[song.albumId],
+    duration: Duration(milliseconds: song.duration!),
+  );
+
+  return songMediaItem;
+}
+
+getAllAlbumArts(List<SongModel> songs) async {
+  loadingMessage = "Getting Artworks";
+  libraryLoadTotal = songs.length;
+  for (SongModel song in songs) {
+    libraryLoadProgress = songs.indexOf(song);
+    if (!albumArtsList.keys.contains(song.albumId)) {
+      albumArtsList[song.albumId!] = await getAlbumArt(song.albumId);
+    }
+  }
+}

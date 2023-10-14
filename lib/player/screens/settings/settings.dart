@@ -1,0 +1,160 @@
+import 'package:antiiq/player/screens/settings/behaviour.dart';
+import 'package:antiiq/player/screens/settings/library.dart';
+import 'package:antiiq/player/screens/settings/user_interface.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:flutter/material.dart';
+import 'package:remix_icon_icons/remix_icon_icons.dart';
+
+class Settings extends StatelessWidget {
+  const Settings({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 75,
+          backgroundColor: Theme.of(context).colorScheme.background,
+          elevation: 2,
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Theme.of(context).colorScheme.onBackground,
+          leading: IconButton(
+            iconSize: 50,
+            color: Theme.of(context).colorScheme.primary,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(RemixIcon.arrow_left),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: Text(
+                "Settings",
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary, fontSize: 50),
+              ),
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const UserInterface(),
+                    ),
+                  );
+                },
+                child: CustomCard(
+                  theme: CardThemes().settingsItemTheme,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      height: 100,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Icon(
+                            RemixIcon.magic,
+                            color: Theme.of(context).colorScheme.secondary,
+                            size: 30,
+                          ),
+                          Text(
+                            "Interface",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontSize: 30),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Library(),
+                    ),
+                  );
+                },
+                child: CustomCard(
+                  theme: CardThemes().settingsItemTheme,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      height: 100,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Icon(
+                            RemixIcon.folder,
+                            color: Theme.of(context).colorScheme.onBackground,
+                            size: 30,
+                          ),
+                          Text(
+                            "Library",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onBackground,
+                                fontSize: 30),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Behaviour(),
+                    ),
+                  );
+                },
+                child: CustomCard(
+                  theme: CardThemes().settingsItemTheme,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      height: 100,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Icon(
+                            RemixIcon.play,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 30,
+                          ),
+                          Text(
+                            "Behaviour",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 30),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
