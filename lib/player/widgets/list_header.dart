@@ -37,7 +37,7 @@ class ListHeader extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: listToShuffle.isNotEmpty
+            child: listToShuffle.length > 1
                 ? IconButton(
                     padding: EdgeInsets.zero,
                     color: Theme.of(context).colorScheme.secondary,
