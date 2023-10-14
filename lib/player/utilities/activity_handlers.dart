@@ -5,22 +5,24 @@ import 'package:audio_service/audio_service.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/utilities/files/lists.dart';
 import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/audio_preferences.dart';
 
-playTrack(int index, String list, {albumToPlay}) {
+playTrack(int index, String list, {albumToPlay}) async {
   if (list == "songs") {
-    playFromSongs(index);
+    await playFromSongs(index);
   }
   if (list == "queue") {
-    playFromQueue(index);
+    await playFromQueue(index);
   }
 
   if (list == "album") {
-    playFromAlbum(index, albumToPlay);
+    await playFromAlbum(index, albumToPlay);
   }
 }
 
 playFromSongs(int index) async {
-  await goToAudioService(index, currentTrackListSort.map((e) => e.mediaItem!).toList());
+  await goToAudioService(
+      index, currentTrackListSort.map((e) => e.mediaItem!).toList());
   await audioHandler.play();
 }
 
@@ -50,50 +52,59 @@ Future<void> loadQueue(queue) async {
 }
 
 resume() async {
-  audioHandler.play();
+  await audioHandler.play();
 }
 
-pause() {
-  audioHandler.pause();
+pause() async {
+  await audioHandler.pause();
 }
 
-next() {
-  audioHandler.skipToNext();
+next() async {
+  await audioHandler.skipToNext();
 }
 
-previous() {
-  audioHandler.skipToPrevious();
+previous() async {
+  await audioHandler.skipToPrevious();
 }
 
-forward() {
-  audioHandler.fastForward();
+forward() async {
+  await audioHandler.fastForward();
 }
 
-rewind() {
-  audioHandler.rewind();
+rewind() async {
+  await audioHandler.rewind();
 }
 
-playOnlyThis(MediaItem item) {
+playOnlyThis(MediaItem item) async {
   queueToLoad = [item];
-  loadQueue(queueToLoad);
-  audioHandler.play();
+  await loadQueue(queueToLoad);
+  await audioHandler.play();
 }
 
-playTrackNext(MediaItem item) {
-  audioHandler.insertQueueItem(1, item);
+playTrackNext(MediaItem item) async {
+  if (audioHandler.antiiqQueue.isNotEmpty) {
+    await audioHandler.insertQueueItem(1, item);
+  } else {
+    await playOnlyThis(item);
+  }
 }
 
-addToQueue(item) {
-  audioHandler.addQueueItem(item);
+addToQueue(item) async {
+  if (audioHandler.antiiqQueue.isNotEmpty) {
+    await audioHandler.addQueueItem(item);
+  } else {
+    await playOnlyThis(item);
+  }
 }
 
 shuffleList(List<MediaItem> list) async {
-  await audioHandler.audioPlayer.setShuffleModeEnabled(true);
-  loadQueue(list);
-  resume();
+  await updateShuffleMode(true);
+  await loadQueue(list);
+  await next();
+  await resume();
 }
 
-shuffleTracks(List<Track> list) {
+shuffleTracks(List<Track> list) async {
   List<MediaItem> itemList = list.map((e) => e.mediaItem!).toList();
-  shuffleList(itemList);
+  await shuffleList(itemList);
 }

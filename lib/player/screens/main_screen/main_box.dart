@@ -151,6 +151,7 @@ class _MainBoxState extends State<MainBox> {
       },
       child: SafeArea(
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             toolbarHeight: appBarHeight,
             backgroundColor: Theme.of(context).colorScheme.background,

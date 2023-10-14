@@ -37,123 +37,120 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
     shape: bottomSheetShape,
     context: context,
     builder: (context) {
-      return SizedBox(
-        height: MediaQuery.of(context).size.height - 200,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: 100,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(
-                        "New Playlist",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+      return Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: 100,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Text(
+                      "New Playlist",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                    CustomCard(
-                      theme: CardThemes().bgColor,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: TextField(
-                                controller: playlistTitleController,
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                                    hintText: "Playlist Title"),
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () async {
-                              await getArt();
-                            },
-                            icon: const Icon(
-                              RemixIcon.image,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              playlistCreate();
-                            },
-                            icon: const Icon(
-                              RemixIcon.check,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                  "Other Playlists",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Theme.of(context).colorScheme.primary,
                   ),
+                  CustomCard(
+                    theme: CardThemes().bgColor,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: TextField(
+                              controller: playlistTitleController,
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                                  hintText: "Playlist Title"),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            await getArt();
+                          },
+                          icon: const Icon(
+                            RemixIcon.image,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            playlistCreate();
+                          },
+                          icon: const Icon(
+                            RemixIcon.check,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Text(
+                "Other Playlists",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: allPlaylists.length,
-                  itemExtent: 100,
-                  itemBuilder: (context, index) {
-                    final thisPlaylist = allPlaylists[index];
-                    return GestureDetector(
-                      onTap: () async {
-                        await addToPlaylist(thisPlaylist.playlistId!, tracks);
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      child: CustomCard(
-                        theme: CardThemes().songsItemTheme,
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                height: 80,
-                                child: getUriImage(thisPlaylist.playlistArt),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      TextScroll(thisPlaylist.playlistName!),
-                                      TextScroll(
-                                          "${thisPlaylist.playlistTracks!.length} ${(thisPlaylist.playlistTracks!.length > 1) ? "Songs" : "song"}"),
-                                    ],
-                                  ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: allPlaylists.length,
+                itemExtent: 100,
+                itemBuilder: (context, index) {
+                  final thisPlaylist = allPlaylists[index];
+                  return GestureDetector(
+                    onTap: () async {
+                      await addToPlaylist(thisPlaylist.playlistId!, tracks);
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: CustomCard(
+                      theme: CardThemes().songsItemTheme,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              height: 80,
+                              child: getUriImage(thisPlaylist.playlistArt),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    TextScroll(thisPlaylist.playlistName!),
+                                    TextScroll(
+                                        "${thisPlaylist.playlistTracks!.length} ${(thisPlaylist.playlistTracks!.length > 1) ? "Songs" : "song"}"),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     },

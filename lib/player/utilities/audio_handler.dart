@@ -133,12 +133,6 @@ class AntiiqAudioHandler extends BaseAudioHandler
     }
   }
 
-  switchEqualizer(bool value) {
-    equalizer.setEnabled(value);
-  }
-
-  setEqualizerBand() {}
-
   //Class Methods (and some non- Class Methods, arranged according to their functions)
   @override
   Future<void> play() async {
@@ -179,33 +173,33 @@ class AntiiqAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> seek(Duration position) async {
-    audioPlayer.seek(position);
+    await audioPlayer.seek(position);
   }
 
   @override
   Future<void> skipToPrevious() async {
     if (previousRestart) {
       if (audioPlayer.position > const Duration(seconds: 5)) {
-        audioPlayer.seek(const Duration(seconds: 0));
+        await audioPlayer.seek(const Duration(seconds: 0));
       } else {
-        audioPlayer.seekToPrevious();
+        await audioPlayer.seekToPrevious();
       }
     } else {
-      audioPlayer.seekToPrevious();
+      await audioPlayer.seekToPrevious();
     }
   }
 
   @override
   Future<void> skipToNext() async {
-    audioPlayer.seekToNext();
+    await audioPlayer.seekToNext();
   }
 
   @override
   Future<void> rewind() async {
     if (audioPlayer.position > const Duration(seconds: 5)) {
-      audioPlayer.seek(audioPlayer.position - const Duration(seconds: 5));
+      await audioPlayer.seek(audioPlayer.position - const Duration(seconds: 5));
     } else {
-      audioPlayer.seek(const Duration(seconds: 0));
+      await audioPlayer.seek(const Duration(seconds: 0));
     }
   }
 
@@ -213,9 +207,9 @@ class AntiiqAudioHandler extends BaseAudioHandler
   Future<void> fastForward() async {
     if (audioPlayer.position <
         audioPlayer.duration! - const Duration(seconds: 5)) {
-      audioPlayer.seek(audioPlayer.position + const Duration(seconds: 5));
+      await audioPlayer.seek(audioPlayer.position + const Duration(seconds: 5));
     } else {
-      audioHandler.skipToNext();
+      await audioHandler.skipToNext();
     }
   }
 
@@ -261,26 +255,6 @@ class AntiiqAudioHandler extends BaseAudioHandler
     await audioPlayer.setAudioSource(source, preload: false, initialIndex: 0);
     mediaItem.add(antiiqQueue[0]);
     addToQueueIndex = -1;
-  }
-
-  @override
-  Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async {
-    if (shuffleMode == AudioServiceShuffleMode.all) {
-      audioPlayer.setShuffleModeEnabled(true);
-    } else {
-      audioPlayer.setShuffleModeEnabled(false);
-    }
-  }
-
-  @override
-  Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) async {
-    if (repeatMode == AudioServiceRepeatMode.one) {
-      audioPlayer.setLoopMode(LoopMode.one);
-    } else if (repeatMode == AudioServiceRepeatMode.all) {
-      audioPlayer.setLoopMode(LoopMode.all);
-    } else if (repeatMode == AudioServiceRepeatMode.none) {
-      audioPlayer.setLoopMode(LoopMode.off);
-    }
   }
 
   @override

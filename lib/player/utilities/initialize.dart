@@ -24,13 +24,19 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/utilities/files/art_queries.dart';
 
+class Boxes {
+  String mainBox = "antiiqBox";
+  String playlistBox = "playlists";
+  String playlistNameBox = "playlistNames";
+}
+
 initialLoad() async {
   await checkAndRequestPermissions();
   await furtherPermissionRequest();
   await Hive.initFlutter();
-  antiiqStore = await Hive.openBox('antiiqBox');
-  playlistStore = await Hive.openBox("playlists");
-  playlistNameStore = await Hive.openBox("playlistNames");
+  antiiqStore = await Hive.openBox(Boxes().mainBox);
+  playlistStore = await Hive.openBox(Boxes().playlistBox);
+  playlistNameStore = await Hive.openBox(Boxes().playlistNameBox);
   dataIsInitialized = await antiiqStore.get("dataInit", defaultValue: false);
   await initializeUserSettings();
   antiiqDirectory = await getApplicationDocumentsDirectory();
