@@ -263,6 +263,9 @@ showLicences(context) {
     useSafeArea: true,
     shape: bottomSheetShape,
     context: context,
-    builder: (context) => const LicensePage(),
+    builder: (context) => SizedBox(
+      height: MediaQuery.of(context).size.height - 150,
+      child: const LicensePage(),
+    ),
   );
 }
