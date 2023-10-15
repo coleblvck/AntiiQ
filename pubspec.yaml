@@ -50,6 +50,7 @@ dependencies:
   image_picker: ^1.0.4
   image_cropper: ^5.0.0
   flutter_round_slider: ^1.0.0
+  url_launcher: ^6.1.14
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +62,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_oss_licenses: ^2.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -75,7 +77,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-      - assets/placeholder.jpeg
+      - assets/placeholder.png
+      - assets/AntiiQ.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

@@ -86,7 +86,8 @@ int libraryLoadTotal = 1;
 int libraryLoadProgress = 0;
 String loadingMessage = "Loading Library";
 
-String placeholderAssetImage = "assets/placeholder.jpeg";
+String placeholderAssetImage = "assets/placeholder.png";
+String logoImage = "assets/AntiiQ.png";
 
 RoundedRectangleBorder bottomSheetShape = const RoundedRectangleBorder(
   borderRadius: BorderRadius.only(

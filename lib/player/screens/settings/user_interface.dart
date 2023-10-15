@@ -1,4 +1,3 @@
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
@@ -58,38 +57,20 @@ class _UserInterfaceState extends State<UserInterface> {
                   theme: CardThemes().surfaceColor,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                            "Enable/Disable Swipe Gestures on the Now Playing Screen and Mini Player:"),
-                        Switch(
-                          value: swipeGestures,
-                          onChanged: (value) {
-                            setState(() {
-                              setSwipeGestures(value);
-                            });
-                          },
-                        ),
-                      ],
+                    child: Text(
+                      "Colours",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 30,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    "Colours",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontSize: 30,
-                    ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
                 Text(
                   "You will need to restart application for colours to apply properly.",
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).colorScheme.onBackground,
                     fontSize: 15,
                   ),
                   textAlign: TextAlign.center,

@@ -115,6 +115,12 @@ class CardThemes {
     elevation: generalCardElevation,
     color: currentColorScheme.surface,
   );
+
+  final primaryColor = CardTheme(
+    shape: CardShapes().antiiqCardShape1,
+    elevation: generalCardElevation,
+    color: currentColorScheme.primary,
+  );
 }
 
 const double generalCardElevation = 5;

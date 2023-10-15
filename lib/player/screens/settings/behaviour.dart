@@ -74,7 +74,7 @@ class _BehaviourState extends State<Behaviour> {
                 CustomCard(
                   theme: CardThemes().surfaceColor,
                   child: Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -144,11 +144,32 @@ class _BehaviourState extends State<Behaviour> {
                 CustomCard(
                   theme: CardThemes().surfaceColor,
                   child: Padding(
-                    padding: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Previous Button restarts Track first:"),
+                        const Text(
+                            "Enable/Disable Swipe Gestures on the Now Playing Screen and Mini Player:"),
+                        Switch(
+                          value: swipeGestures,
+                          onChanged: (value) {
+                            setState(() {
+                              setSwipeGestures(value);
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                CustomCard(
+                  theme: CardThemes().surfaceColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Previous Button restarts current Track first:"),
                         Switch(
                           value: previousRestart,
                           onChanged: (value) {
@@ -160,7 +181,7 @@ class _BehaviourState extends State<Behaviour> {
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),

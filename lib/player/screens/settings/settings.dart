@@ -1,3 +1,4 @@
+import 'package:antiiq/player/screens/settings/about.dart';
 import 'package:antiiq/player/screens/settings/behaviour.dart';
 import 'package:antiiq/player/screens/settings/library.dart';
 import 'package:antiiq/player/screens/settings/user_interface.dart';
@@ -68,8 +69,9 @@ class Settings extends StatelessWidget {
                           Text(
                             "Interface",
                             style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontSize: 30),
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontSize: 30,
+                            ),
                           ),
                         ],
                       ),
@@ -89,7 +91,7 @@ class Settings extends StatelessWidget {
                   );
                 },
                 child: CustomCard(
-                  theme: CardThemes().settingsItemTheme,
+                  theme: CardThemes().surfaceColor,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: SizedBox(
@@ -99,14 +101,15 @@ class Settings extends StatelessWidget {
                         children: [
                           Icon(
                             RemixIcon.folder,
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: Theme.of(context).colorScheme.onSurface,
                             size: 30,
                           ),
                           Text(
                             "Library",
                             style: TextStyle(
-                                color: Theme.of(context).colorScheme.onBackground,
-                                fontSize: 30),
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontSize: 30,
+                            ),
                           ),
                         ],
                       ),
@@ -142,8 +145,47 @@ class Settings extends StatelessWidget {
                           Text(
                             "Behaviour",
                             style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontSize: 30),
+                              color: Theme.of(context).colorScheme.primary,
+                              fontSize: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const About(),
+                    ),
+                  );
+                },
+                child: CustomCard(
+                  theme: CardThemes().primaryColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      height: 100,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Icon(
+                            RemixIcon.information,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            size: 30,
+                          ),
+                          Text(
+                            "About",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontSize: 30,
+                            ),
                           ),
                         ],
                       ),
