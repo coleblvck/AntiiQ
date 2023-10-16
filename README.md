@@ -13,14 +13,14 @@ AntiiQ is an offline Android music player which started as a personal project du
 ## Screenshots
 
 <p align="center">
-    <img src="collection/data/screenshots/Screenshot_1.png" width=200>
-    <img src="collection/data/screenshots/Screenshot_2.png" width=200>
-    <img src="collection/data/screenshots/Screenshot_3.png" width=200>
-    <img src="collection/data/screenshots/Screenshot_4.png" width=200>
-    <img src="collection/data/screenshots/Screenshot_5.png" width=200>
-    <img src="collection/data/screenshots/Screenshot_6.png" width=200>
-    <img src="collection/data/screenshots/Screenshot_7.png" width=200>
-    <img src="collection/data/screenshots/Screenshot_8.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" width=200>
 </p>
 
 
@@ -39,7 +39,11 @@ AntiiQ is an offline Android music player which started as a personal project du
 
 ## Todo
 - Additional Sort types from the default
-- Some minor UI rearrangements
+- Some minor UI rearrangements and improvements
+- Fix scroll in main Settings Page
+- Move minimum track length from the "Behaviour" section
+- Automatically rescan metadata for newly added music without requiring a full rescan
+- Additional configurations
 
 
 Note: This player has been tested to be working fully on Android 13, and partially tested on a device running Android 10. Your mileage may vary and so, some feedback would be needed if any behaviour improvements would be necessary.
