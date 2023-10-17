@@ -159,7 +159,8 @@ showAlbum(context, Album album) {
                       listToShuffle: album.albumTracks!,
                     ),
                   ),
-                  SliverList.builder(
+                  SliverFixedExtentList.builder(
+                    itemExtent: 100,
                     itemCount: album.albumTracks!.length,
                     itemBuilder: (context, index) {
                       final thisTrack = album.albumTracks![index];

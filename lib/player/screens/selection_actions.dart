@@ -29,108 +29,110 @@ doThingsWithAudioSheet(context, List<Track> tracks) {
     shape: bottomSheetShape,
     context: context,
     builder: (context) {
-      return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Available Options:",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Theme.of(context).colorScheme.primary,
-                  )),
-            ),
-            CustomButton(
-              style: ButtonStyles().style1,
-              function: () {
-                addSelectionToPlaylistDialog(context, tracks);
-              },
-              child: const Text("Add to Playlist"),
-            ),
-            tracks.length > 1
-                ? CustomButton(
-                    style: ButtonStyles().style3,
-                    function: () {
-                      shuffleTracks(tracks);
-                    },
-                    child: const Text("Shuffle Tracks"),
-                  )
-                : Container(),
-            tracks.length == 1
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      currentAlbumListSort
-                              .map((album) => album.albumId)
-                              .toList()
-                              .contains(tracks[0].trackData!.albumId)
-                          ? CustomButton(
-                              style: ButtonStyles().style2,
-                              function: () {
-                                goToAlbum(context, tracks);
-                              },
-                              child: const Text("Go to Album"),
-                            )
-                          : Container(),
-                      currentArtistListSort
-                              .map((artist) => artist.artistId)
-                              .toList()
-                              .contains(tracks[0].trackData!.artistId)
-                          ? CustomButton(
-                              style: ButtonStyles().style3,
-                              function: () {
-                                goToArtist(context, tracks);
-                              },
-                              child: const Text("Go to Artist"),
-                            )
-                          : Container(),
-                      currentGenreListSort
-                              .map((genre) => genre.genreName)
-                              .toList()
-                              .contains(tracks[0].trackData!.genre)
-                          ? CustomButton(
-                              style: ButtonStyles().style1,
-                              function: () {
-                                goToGenre(context, tracks);
-                              },
-                              child: const Text("Go to Genre"),
-                            )
-                          : Container(),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            TextScroll(
-                              tracks[0].trackData!.trackName!,
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Theme.of(context).colorScheme.primary,
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Available Options:",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Theme.of(context).colorScheme.primary,
+                    )),
+              ),
+              CustomButton(
+                style: ButtonStyles().style1,
+                function: () {
+                  addSelectionToPlaylistDialog(context, tracks);
+                },
+                child: const Text("Add to Playlist"),
+              ),
+              tracks.length > 1
+                  ? CustomButton(
+                      style: ButtonStyles().style3,
+                      function: () {
+                        shuffleTracks(tracks);
+                      },
+                      child: const Text("Shuffle Tracks"),
+                    )
+                  : Container(),
+              tracks.length == 1
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        currentAlbumListSort
+                                .map((album) => album.albumId)
+                                .toList()
+                                .contains(tracks[0].trackData!.albumId)
+                            ? CustomButton(
+                                style: ButtonStyles().style2,
+                                function: () {
+                                  goToAlbum(context, tracks);
+                                },
+                                child: const Text("Go to Album"),
+                              )
+                            : Container(),
+                        currentArtistListSort
+                                .map((artist) => artist.artistId)
+                                .toList()
+                                .contains(tracks[0].trackData!.artistId)
+                            ? CustomButton(
+                                style: ButtonStyles().style3,
+                                function: () {
+                                  goToArtist(context, tracks);
+                                },
+                                child: const Text("Go to Artist"),
+                              )
+                            : Container(),
+                        currentGenreListSort
+                                .map((genre) => genre.genreName)
+                                .toList()
+                                .contains(tracks[0].trackData!.genre)
+                            ? CustomButton(
+                                style: ButtonStyles().style1,
+                                function: () {
+                                  goToGenre(context, tracks);
+                                },
+                                child: const Text("Go to Genre"),
+                              )
+                            : Container(),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            children: [
+                              TextScroll(
+                                tracks[0].trackData!.trackName!,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                               ),
-                            ),
-                            TextScroll(
-                              tracks[0].trackData!.trackArtistNames!,
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Theme.of(context).colorScheme.primary,
+                              TextScroll(
+                                tracks[0].trackData!.trackArtistNames!,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                               ),
-                            ),
-                            TextScroll(
-                              tracks[0].trackData!.albumName!,
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Theme.of(context).colorScheme.primary,
+                              TextScroll(
+                                tracks[0].trackData!.albumName!,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  )
-                : Container(),
-          ],
+                      ],
+                    )
+                  : Container(),
+            ],
+          ),
         ),
       );
     },

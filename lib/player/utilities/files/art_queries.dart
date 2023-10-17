@@ -79,6 +79,18 @@ Future<Uri> getAlbumArt(id) async {
       art,
       mode: FileMode.write,
     );
+  } else {
+    if (!await File(artFilePath).exists()) {
+      Uint8List? art = await getAlbumArtBytes(id);
+      art ??= await defaultArt();
+
+      File artFile = await File(artFilePath).create(recursive: true);
+
+      await artFile.writeAsBytes(
+        art,
+        mode: FileMode.write,
+      );
+    }
   }
   return Uri.file(artFilePath);
 }

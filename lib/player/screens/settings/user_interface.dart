@@ -50,6 +50,16 @@ class _UserInterfaceState extends State<UserInterface> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    "Interface",
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 30),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
                 const SizedBox(
                   height: 20,
                 ),

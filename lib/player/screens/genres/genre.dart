@@ -40,7 +40,9 @@ class GenreItem extends StatelessWidget {
               image: FileImage(
                 File.fromUri(genre.genreTracks![0].mediaItem!.artUri!),
               ),
+              fit: BoxFit.cover,
             ),
+            borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -124,7 +126,8 @@ showGenre(context, Genre genre) {
                       listToShuffle: genre.genreTracks!,
                     ),
                   ),
-                  SliverList.builder(
+                  SliverFixedExtentList.builder(
+                    itemExtent: 100,
                     itemCount: genre.genreTracks!.length,
                     itemBuilder: (context, index) {
                       final thisTrack = genre.genreTracks![index];

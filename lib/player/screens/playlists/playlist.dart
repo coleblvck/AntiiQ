@@ -135,7 +135,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                         });
                         await savePlaylistToStore(playlist.playlistId!);
                       },
-                      itemExtent: 120,
+                      itemExtent: 100,
                       itemCount: playlist.playlistTracks!.length,
                       itemBuilder: (context, index) {
                         final thisTrack = playlist.playlistTracks![index];

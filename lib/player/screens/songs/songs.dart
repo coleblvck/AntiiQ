@@ -47,7 +47,7 @@ class SongsList extends StatelessWidget {
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
               primary: true,
-              itemExtent: 120,
+              itemExtent: 100,
               itemCount: currentTrackListSort.length,
               itemBuilder: (context, index) {
                 final Track thisTrack = currentTrackListSort[index];

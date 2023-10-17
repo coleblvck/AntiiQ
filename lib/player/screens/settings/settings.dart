@@ -40,161 +40,163 @@ class Settings extends StatelessWidget {
             ),
           ],
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const UserInterface(),
-                    ),
-                  );
-                },
-                child: CustomCard(
-                  theme: CardThemes().settingsItemTheme,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SizedBox(
-                      height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Icon(
-                            RemixIcon.magic,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: 30,
-                          ),
-                          Text(
-                            "Interface",
-                            style: TextStyle(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const UserInterface(),
+                      ),
+                    );
+                  },
+                  child: CustomCard(
+                    theme: CardThemes().settingsItemTheme,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: SizedBox(
+                        height: 80,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Icon(
+                              RemixIcon.magic,
                               color: Theme.of(context).colorScheme.secondary,
-                              fontSize: 30,
+                              size: 30,
                             ),
-                          ),
-                        ],
+                            Text(
+                              "Interface",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontSize: 30,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const Library(),
-                    ),
-                  );
-                },
-                child: CustomCard(
-                  theme: CardThemes().surfaceColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SizedBox(
-                      height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Icon(
-                            RemixIcon.folder,
-                            color: Theme.of(context).colorScheme.onSurface,
-                            size: 30,
-                          ),
-                          Text(
-                            "Library",
-                            style: TextStyle(
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const Library(),
+                      ),
+                    );
+                  },
+                  child: CustomCard(
+                    theme: CardThemes().surfaceColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: SizedBox(
+                        height: 80,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Icon(
+                              RemixIcon.folder,
                               color: Theme.of(context).colorScheme.onSurface,
-                              fontSize: 30,
+                              size: 30,
                             ),
-                          ),
-                        ],
+                            Text(
+                              "Library",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontSize: 30,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const Behaviour(),
-                    ),
-                  );
-                },
-                child: CustomCard(
-                  theme: CardThemes().settingsItemTheme,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SizedBox(
-                      height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Icon(
-                            RemixIcon.play,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 30,
-                          ),
-                          Text(
-                            "Behaviour",
-                            style: TextStyle(
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const Behaviour(),
+                      ),
+                    );
+                  },
+                  child: CustomCard(
+                    theme: CardThemes().settingsItemTheme,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: SizedBox(
+                        height: 80,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Icon(
+                              RemixIcon.play,
                               color: Theme.of(context).colorScheme.primary,
-                              fontSize: 30,
+                              size: 30,
                             ),
-                          ),
-                        ],
+                            Text(
+                              "Behaviour",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 30,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const About(),
-                    ),
-                  );
-                },
-                child: CustomCard(
-                  theme: CardThemes().primaryColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SizedBox(
-                      height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Icon(
-                            RemixIcon.information,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            size: 30,
-                          ),
-                          Text(
-                            "About",
-                            style: TextStyle(
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const About(),
+                      ),
+                    );
+                  },
+                  child: CustomCard(
+                    theme: CardThemes().primaryColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: SizedBox(
+                        height: 80,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Icon(
+                              RemixIcon.information,
                               color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 30,
+                              size: 30,
                             ),
-                          ),
-                        ],
+                            Text(
+                              "About",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontSize: 30,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

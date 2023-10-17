@@ -6,14 +6,12 @@ Setup Song Library:
 
 */
 
-
 //Flutter Packages
 import 'package:antiiq/player/utilities/files/query_and_sort.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
 
 //Path Provider
 import 'package:path_provider/path_provider.dart';
-
 
 //Hive
 import 'package:hive_flutter/hive_flutter.dart';
@@ -43,7 +41,6 @@ initialLoad() async {
   await setDefaultArt();
 }
 
-
 loadLibrary() async {
   if (hasPermissions) {
     await queryAndSort();
@@ -61,19 +58,9 @@ checkAndRequestPermissions({bool retry = false, stateSet}) async {
 
 furtherPermissionRequest() async {
   PermissionStatus status = await Permission.manageExternalStorage.status;
-  if (status.isRestricted) {
+
+  if (!status.isGranted) {
     status = await Permission.manageExternalStorage.request();
   }
-
-  if (status.isDenied) {
-    status = await Permission.manageExternalStorage.request();
-  }
-
-  if (status.isPermanentlyDenied) {
-    furtherPermissionPermanentlyDenied = true;
-  }
-
-  if (status.isGranted) {
-    furtherPermissionGranted = true;
-  }
+  furtherPermissionGranted = true;
 }

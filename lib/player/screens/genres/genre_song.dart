@@ -1,12 +1,9 @@
-//Flutter Packages
-import 'package:antiiq/player/screens/selection_actions.dart';
 import 'package:antiiq/player/utilities/files/metadata.dart';
 import 'package:flutter/material.dart';
 
-//Antiiq Packages
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/activity_handlers.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:audio_service/audio_service.dart';
+
+import 'package:antiiq/player/widgets/song_cards/song_card.dart';
 
 class GenreSong extends StatelessWidget {
   final Widget title;
@@ -26,118 +23,22 @@ class GenreSong extends StatelessWidget {
   });
 
   final PageController controller = PageController();
+  final String selectionList = "album";
+  late final List<MediaItem> albumToPlay =
+      genre.genreTracks!.map((e) => e.mediaItem!).toList();
+
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 120,
-      child: PageView(
-        controller: controller,
-        children: [
-          GestureDetector(
-            onTap: () {
-              playTrack(index, "album",
-                  albumToPlay: genre.genreTracks!.map((e) => e.mediaItem!).toList());
-            },
-            child: CustomCard(
-              theme: CardThemes().albumSongsItemTheme,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 70,
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: leading,
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            title,
-                            subtitle,
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 40,
-                      child: IconButton(
-                        color: Theme.of(context).colorScheme.primary,
-                        onPressed: () {
-                          openSheetFromTrack(context, track);
-                        },
-                        icon: const Icon(RemixIcon.menu_4),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          CustomCard(
-            theme: CardThemes().songsItemSwipedTheme,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        CustomButton(
-                          function: () {
-                            playOnlyThis(track.mediaItem!);
-                            controller.jumpToPage(0);
-                          },
-                          style: ButtonStyles().style1,
-                          child: const Text("Play Only"),
-                        ),
-                        const Padding(
-                            padding: EdgeInsetsDirectional.only(end: 3)),
-                        CustomButton(
-                          function: () {
-                            playTrackNext(track.mediaItem!);
-                            controller.jumpToPage(0);
-                          },
-                          style: ButtonStyles().style2,
-                          child: const Text("Play Next"),
-                        ),
-                        const Padding(
-                            padding: EdgeInsetsDirectional.only(end: 3)),
-                        CustomButton(
-                          function: () {
-                            addToQueue(track.mediaItem);
-                            controller.jumpToPage(0);
-                          },
-                          style: ButtonStyles().style3,
-                          child: const Text("Play Later"),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: CustomCard(
-                      theme: CardThemes().albumSongsItemTheme,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: title,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+    return SongCard(
+      controller: controller,
+      index: index,
+      selectionList: selectionList,
+      leading: leading,
+      title: title,
+      subtitle: subtitle,
+      track: track,
+      albumToPlay: albumToPlay,
     );
   }
 }

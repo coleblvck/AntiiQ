@@ -39,11 +39,10 @@ AntiiQ is an offline Android music player which started as a personal project du
 
 ## Todo
 - Additional Sort types from the default
-- Some minor UI rearrangements and improvements
-- Fix scroll in main Settings Page
-- Move minimum track length from the "Behaviour" section
-- Automatically rescan metadata for newly added music without requiring a full rescan
 - Additional configurations
+- Disable Equalizer/Audio Effects for unsupported devices
+- Fix Storage permissions on Android 10
+- Landscape mode.
 
 
 Note: This player has been tested to be working fully on Android 13, and partially tested on a device running Android 10. Your mileage may vary and so, some feedback would be needed if any behaviour improvements would be necessary.

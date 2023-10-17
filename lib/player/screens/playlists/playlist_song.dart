@@ -8,6 +8,7 @@ import 'package:remix_icon_icons/remix_icon_icons.dart';
 //Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
+import 'package:antiiq/player/widgets/song_cards/swiped_card.dart';
 
 class PlaylistSong extends StatelessWidget {
   final Widget title;
@@ -35,7 +36,7 @@ class PlaylistSong extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 120,
+      height: 100,
       child: PageView(
         controller: controller,
         children: [
@@ -52,11 +53,11 @@ class PlaylistSong extends StatelessWidget {
               child: CustomCard(
                 theme: CardThemes().albumSongsItemTheme,
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(5.0),
                   child: Row(
                     children: [
                       SizedBox(
-                        width: 70,
+                        width: 80,
                         child: AspectRatio(
                           aspectRatio: 1,
                           child: leading,
@@ -104,62 +105,7 @@ class PlaylistSong extends StatelessWidget {
               ),
             ),
           ),
-          CustomCard(
-            theme: CardThemes().songsItemSwipedTheme,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        CustomButton(
-                          function: () {
-                            playOnlyThis(track.mediaItem!);
-                            controller.jumpToPage(0);
-                          },
-                          style: ButtonStyles().style1,
-                          child: const Text("Play Only"),
-                        ),
-                        const Padding(
-                            padding: EdgeInsetsDirectional.only(end: 3)),
-                        CustomButton(
-                          function: () {
-                            playTrackNext(track.mediaItem!);
-                            controller.jumpToPage(0);
-                          },
-                          style: ButtonStyles().style2,
-                          child: const Text("Play Next"),
-                        ),
-                        const Padding(
-                            padding: EdgeInsetsDirectional.only(end: 3)),
-                        CustomButton(
-                          function: () {
-                            addToQueue(track.mediaItem);
-                            controller.jumpToPage(0);
-                          },
-                          style: ButtonStyles().style3,
-                          child: const Text("Play Later"),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: CustomCard(
-                      theme: CardThemes().albumSongsItemTheme,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: title,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          SwipedCard(track: track, controller: controller, title: title)
         ],
       ),
     );

@@ -124,7 +124,8 @@ showArtist(context, Artist artist) {
                       listToShuffle: artist.artistTracks!,
                     ),
                   ),
-                  SliverList.builder(
+                  SliverFixedExtentList.builder(
+                    itemExtent: 100,
                     itemCount: artist.artistTracks!.length,
                     itemBuilder: (context, index) {
                       final thisTrack = artist.artistTracks![index];

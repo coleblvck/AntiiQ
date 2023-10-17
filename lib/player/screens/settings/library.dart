@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:easy_folder_picker/FolderPicker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:flutter_xlider/flutter_xlider.dart';
 
 class Library extends StatefulWidget {
   const Library({
@@ -194,11 +195,94 @@ class _LibraryState extends State<Library> {
         ),
         backgroundColor: Theme.of(context).colorScheme.background,
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    "Library",
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onBackground,
+                        fontSize: 30),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomCard(
+                  theme: CardThemes().surfaceColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                            "Minimum Track Length: $minimumTrackLength seconds"),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        SizedBox(
+                          height: 20,
+                          child: FlutterSlider(
+                              selectByTap: true,
+                              tooltip: FlutterSliderTooltip(
+                                disabled: true,
+                              ),
+                              handlerHeight: 20,
+                              handlerWidth: 5,
+                              step: const FlutterSliderStep(
+                                  step: 1, isPercentRange: false),
+                              values: [minimumTrackLength.toDouble()],
+                              min: 5,
+                              max: 120,
+                              handler: FlutterSliderHandler(
+                                decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(),
+                              ),
+                              foregroundDecoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(1)),
+                              trackBar: FlutterSliderTrackBar(
+                                inactiveTrackBar: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Theme.of(context).colorScheme.primary,
+                                  border: Border.all(
+                                    width: 3,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                                activeTrackBar: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
+                              onDragging: (handlerIndex, lowerValue,
+                                      upperValue) =>
+                                  {
+                                    setState(() {
+                                      setMinimumTrackLength(lowerValue.round());
+                                    })
+                                  }),
+                        ),
+                        CustomButton(
+                          style: ButtonStyles().style1,
+                          function: () {
+                            rescan();
+                          },
+                          child: const Text("!Re-Scan Library!"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
