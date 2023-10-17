@@ -6,6 +6,9 @@
 <h3 align="center">A Music Player for Music Collectors and Enthusiasts.</h3>
 
 
+<center><img src="https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.coleblvck.antiiq&label=IzzyOnDroid&cacheSeconds=86400"></center>
+
+
 ## About
 
 AntiiQ is an offline Android music player which started as a personal project due to my search for an open source music player with some specific features without finding one, so here we go.
