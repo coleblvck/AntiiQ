@@ -11,7 +11,7 @@
 
 ## About
 
-AntiiQ is an offline Android music player which started as a personal project due to my search for an open source music player with some specific features without finding one, so here we go.
+AntiiQ as in "Antique" is an offline Android music player which started as a personal project due to my search for an open source music player with some specific features without finding one, so here we go.
 
 ## Screenshots
 
