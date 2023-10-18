@@ -1,5 +1,5 @@
 //Flutter Packages
-import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:flutter/material.dart';
 
 //Icon Pack

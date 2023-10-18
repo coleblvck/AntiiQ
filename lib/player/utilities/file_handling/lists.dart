@@ -1,4 +1,4 @@
-import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 
 List<Track> currentTrackListSort = [];
 

@@ -1,10 +1,10 @@
-import 'package:antiiq/player/utilities/files/lists.dart';
-import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/lists.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/files/art_queries.dart';
+import 'package:antiiq/player/utilities/file_handling/art_queries.dart';
 
 String tracksStorage = "Tracks";
 

@@ -1,7 +1,7 @@
-import 'package:antiiq/player/utilities/files/lists.dart';
+import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:flutter/services.dart';
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'dart:io';
 
 class PlayList {

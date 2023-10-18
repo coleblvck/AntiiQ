@@ -3,8 +3,8 @@ import 'package:audio_service/audio_service.dart';
 
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/files/lists.dart';
-import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/lists.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/audio_preferences.dart';
 
 playTrack(int index, String list, {albumToPlay}) async {

@@ -7,7 +7,7 @@ Setup Song Library:
 */
 
 //Flutter Packages
-import 'package:antiiq/player/utilities/files/query_and_sort.dart';
+import 'package:antiiq/player/utilities/file_handling/query_and_sort.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
 
 //Path Provider
@@ -20,7 +20,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/files/art_queries.dart';
+import 'package:antiiq/player/utilities/file_handling/art_queries.dart';
 
 class Boxes {
   String mainBox = "antiiqBox";

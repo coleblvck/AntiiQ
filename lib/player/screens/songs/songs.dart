@@ -4,7 +4,7 @@ This Renders the screen for all songs
 
 */
 
-import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:text_scroll/text_scroll.dart';
 
@@ -13,7 +13,7 @@ import 'package:antiiq/player/screens/songs/song.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
-import 'package:antiiq/player/utilities/files/lists.dart';
+import 'package:antiiq/player/utilities/file_handling/lists.dart';
 
 class SongsList extends StatelessWidget {
   const SongsList({

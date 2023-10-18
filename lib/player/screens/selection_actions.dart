@@ -4,8 +4,8 @@ import 'package:antiiq/player/screens/artists/artist.dart';
 import 'package:antiiq/player/screens/genres/genre.dart';
 import 'package:antiiq/player/screens/playlists/add_to_playlist.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
-import 'package:antiiq/player/utilities/files/lists.dart';
-import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/lists.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_service/audio_service.dart';
 

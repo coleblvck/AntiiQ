@@ -4,8 +4,8 @@ This Renders the screen for Album songs
 
 */
 
-import 'package:antiiq/player/utilities/files/metadata.dart';
-import 'package:antiiq/player/utilities/files/lists.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:flutter/material.dart';
 import 'package:text_scroll/text_scroll.dart';
 

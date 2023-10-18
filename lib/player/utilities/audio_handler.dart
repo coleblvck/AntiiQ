@@ -9,7 +9,7 @@ import 'package:just_audio/just_audio.dart';
 
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/files/lists.dart';
+import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/audio_preferences.dart';
 
 //Audio Handler

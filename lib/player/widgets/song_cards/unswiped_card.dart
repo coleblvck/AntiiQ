@@ -1,5 +1,5 @@
 import 'package:antiiq/player/screens/selection_actions.dart';
-import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 

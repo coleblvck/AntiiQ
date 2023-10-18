@@ -1,8 +1,8 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/playlists/playlist.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/files/lists.dart';
-import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/lists.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/pick_and_crop.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,7 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/artists/artist_song.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
-import 'package:antiiq/player/utilities/files/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
