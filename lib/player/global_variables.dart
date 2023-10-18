@@ -97,12 +97,24 @@ RoundedRectangleBorder bottomSheetShape = const RoundedRectangleBorder(
 );
 
 //User Settings Related Variables
+List<MediaItem> queueState = [];
+
+late bool interactiveMiniPlayerSeekbar;
+
+StreamController<bool> interactiveSeekbarStream = StreamController.broadcast();
+
+late Timer runtimeAutoScanTimer;
+
+late Duration runtimeAutoScanInterval;
+
+late bool runtimeAutoScanEnabled;
+
 late int minimumTrackLength;
 
 List<String> specificPathsToQuery = [];
 
 late String currentTheme;
-StreamController<ColorScheme> themeStream = StreamController();
+StreamController<ColorScheme> themeStream = StreamController.broadcast();
 
 late bool previousRestart;
 

@@ -2,7 +2,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Links {
   String github = "https://github.com/coleblvck";
-  String twitter = "https://x.com/coleiscold";
+  String twitter = "https://x.com/riseofblvck";
   String email = "mailto:coleblvck@gmail.com";
 }
 

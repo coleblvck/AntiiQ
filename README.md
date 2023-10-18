@@ -45,7 +45,8 @@ AntiiQ as in "Antique" is an offline Android music player which started as a per
 - Additional configurations
 - Disable Equalizer/Audio Effects for unsupported devices
 - Fix Storage permissions on Android 10
-- Landscape mode.
+- Landscape mode
+- Search to include results for matching Artist Names and Album Names.
 
 
 Note: This player has been tested to be working fully on Android 13, and partially tested on a device running Android 10. Your mileage may vary and so, some feedback would be needed if any behaviour improvements would be necessary.

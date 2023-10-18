@@ -1,6 +1,7 @@
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
+import 'package:antiiq/player/utilities/queue_state.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:antiiq/player/global_variables.dart';
@@ -14,6 +15,7 @@ queryAndSort() async {
   await sortArtists();
   await sortGenres();
   await getPlaylistsfromStore();
+  await initQueueState();
 
   dataIsInitialized = true;
   await antiiqStore.put("dataInit", true);
@@ -204,13 +206,15 @@ Future<Track> getTrackFromSong(SongModel song) async {
 
 Future<MediaItem> getMediaItemFromSong(SongModel song) async {
   final MediaItem songMediaItem = MediaItem(
-    id: song.data,
-    title: song.title,
-    artist: song.artist,
-    album: song.album,
-    artUri: albumArtsList[song.albumId],
-    duration: Duration(milliseconds: song.duration!),
-  );
+      id: song.data,
+      title: song.title,
+      artist: song.artist,
+      album: song.album,
+      artUri: albumArtsList[song.albumId],
+      duration: Duration(milliseconds: song.duration!),
+      extras: {
+        "id": song.id,
+      });
 
   return songMediaItem;
 }

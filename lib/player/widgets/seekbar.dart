@@ -1,4 +1,5 @@
 //Flutter Packages
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
 
 //Audio Service
@@ -9,7 +10,6 @@ import 'package:flutter_xlider/flutter_xlider.dart';
 
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
-
 
 class SeekBarBuilder extends StatelessWidget {
   const SeekBarBuilder({
@@ -25,8 +25,7 @@ class SeekBarBuilder extends StatelessWidget {
       stream: currentPosition(),
       builder: (context, data) {
         int? position = data.data?.abs().inMilliseconds;
-        int? duration =
-            currentTrack?.duration?.abs().inMilliseconds;
+        int? duration = currentTrack?.duration?.abs().inMilliseconds;
         position ??= 0;
         final progress = position / duration!;
         return SeekBar(progress: progress, duration: duration);
@@ -85,6 +84,29 @@ class SeekBar extends StatelessWidget {
             audioHandler.seek(Duration(
                 milliseconds: (duration! * (lowerValue / 1000)).toInt())),
       ),
+    );
+  }
+}
+
+class ProgressBarBuilder extends StatelessWidget {
+  const ProgressBarBuilder({
+    super.key,
+    required this.currentTrack,
+  });
+
+  final MediaItem? currentTrack;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Duration>(
+      stream: currentPosition(),
+      builder: (context, data) {
+        int? position = data.data?.abs().inMilliseconds;
+        int? duration = currentTrack?.duration?.abs().inMilliseconds;
+        position ??= 0;
+        final progress = position / duration!;
+        return CustomProgressIndicator(progress: progress);
+      },
     );
   }
 }

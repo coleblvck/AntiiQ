@@ -28,47 +28,44 @@ class ArtistItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5.0),
-      child: GestureDetector(
-        onTap: () {
-          showArtist(context, artist);
-        },
-        child: CustomCard(
-          theme: CardThemes().songsItemTheme,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 80,
-                  child: getUriImage(artist.artistArt),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        title,
-                        subtitle,
-                      ],
-                    ),
+    return GestureDetector(
+      onTap: () {
+        showArtist(context, artist);
+      },
+      child: CustomCard(
+        theme: CardThemes().songsItemTheme,
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Row(
+            children: [
+              SizedBox(
+                height: 80,
+                child: getUriImage(artist.artistArt),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      title,
+                      subtitle,
+                    ],
                   ),
                 ),
-                SizedBox(
-                  width: 40,
-                  child: IconButton(
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () {
-                      doThingsWithAudioSheet(context, artist.artistTracks!);
-                    },
-                    icon: const Icon(RemixIcon.menu_4),
-                  ),
+              ),
+              SizedBox(
+                width: 40,
+                child: IconButton(
+                  color: Theme.of(context).colorScheme.primary,
+                  onPressed: () {
+                    doThingsWithAudioSheet(context, artist.artistTracks!);
+                  },
+                  icon: const Icon(RemixIcon.menu_4),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

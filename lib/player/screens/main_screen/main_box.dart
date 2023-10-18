@@ -1,18 +1,14 @@
-//Dart Packages
 import 'dart:async';
 import 'dart:io';
 
-//Flutter Packages
+import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-//Sliding Box Packages
 import 'package:flutter_sliding_box/flutter_sliding_box.dart';
 
-//Icon Packs
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 
-//Antiiq Packages
 import 'package:antiiq/player/screens/main_screen/main_backdrop.dart';
 import 'package:antiiq/player/widgets/mini_player.dart';
 import 'package:antiiq/player/screens/now_playing/now_playing.dart';
@@ -104,6 +100,8 @@ class _MainBoxState extends State<MainBox> {
     await loadLibrary();
 
     libraryLoadTimer.cancel();
+
+    initRuntimeAutoScan();
 
     if (mounted) {
       popDialog = true;

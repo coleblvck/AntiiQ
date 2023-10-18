@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/utilities/audio_preferences.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
+import 'package:antiiq/player/utilities/initialize.dart';
 
 class BoxKeys {
   String userTheme = "currentTheme";
@@ -12,6 +15,10 @@ class BoxKeys {
   String loopModeStorage = "loopMode";
   String shuffleModeStorage = "shuffleMode";
   String swipeGestures = "swipeGestures";
+  String runtimeAutoScanEnabled = "runtimeAutoScanEnabled";
+  String runtimeAutoScanInterval = "runtimeAutoScanInterval";
+  String interactiveSeekBar = "interactiveSeekBar";
+  String queueState = "queueState";
 }
 
 changeTheme(String theme) async {
@@ -41,6 +48,7 @@ initializeUserSettings() async {
   await getMinimumTrackLength();
   await getPreviousButtonAction();
   await getSwipeGestures();
+  await initInteractiveSeekBarSwitch();
 }
 
 initializeAudioPreferences() async {
@@ -79,4 +87,55 @@ setSwipeGestures(bool enabled) async {
 getSwipeGestures() async {
   swipeGestures =
       await antiiqStore.get(BoxKeys().swipeGestures, defaultValue: true);
+}
+
+switchRuntimeAutoScanEnabled(bool value) async {
+  runtimeAutoScanTimer.isActive ? runtimeAutoScanTimer.cancel() : null;
+  runtimeAutoScanEnabled = value;
+  if (value) {
+    runtimeAutoScanTimer =
+        Timer.periodic(runtimeAutoScanInterval, (timer) => loadLibrary());
+  } else {
+    runtimeAutoScanTimer.isActive ? runtimeAutoScanTimer.cancel() : null;
+  }
+  await antiiqStore.put(BoxKeys().runtimeAutoScanEnabled, value);
+}
+
+changeRuntimeAutoScanInterval(int minutes) async {
+  runtimeAutoScanInterval = Duration(minutes: minutes);
+  runtimeAutoScanEnabled
+      ? await switchRuntimeAutoScanEnabled(runtimeAutoScanEnabled)
+      : null;
+  await antiiqStore.put(BoxKeys().runtimeAutoScanInterval, minutes);
+}
+
+initRuntimeAutoScan() async {
+  final bool value = await antiiqStore.get(BoxKeys().runtimeAutoScanEnabled,
+      defaultValue: true);
+
+  final int autoScanInterval =
+      await antiiqStore.get(BoxKeys().runtimeAutoScanInterval, defaultValue: 3);
+
+  runtimeAutoScanInterval = Duration(minutes: autoScanInterval);
+
+  runtimeAutoScanTimer =
+      Timer.periodic(runtimeAutoScanInterval, (timer) => loadLibrary());
+  runtimeAutoScanEnabled = value;
+  if (value) {
+    runtimeAutoScanTimer =
+        Timer.periodic(runtimeAutoScanInterval, (timer) => loadLibrary());
+  } else {
+    runtimeAutoScanTimer.isActive ? runtimeAutoScanTimer.cancel() : null;
+  }
+}
+
+initInteractiveSeekBarSwitch() async {
+  interactiveMiniPlayerSeekbar =
+      await antiiqStore.get(BoxKeys().interactiveSeekBar, defaultValue: true);
+}
+
+interactiveSeekBarSwitch(bool value) async {
+  interactiveMiniPlayerSeekbar = value;
+  interactiveSeekbarStream.add(value);
+  await antiiqStore.put(BoxKeys().interactiveSeekBar, value);
 }

@@ -131,7 +131,15 @@ class MiniPlayer extends StatelessWidget {
                     ),
                   ),
                 ),
-                SeekBarBuilder(currentTrack: currentTrack),
+                StreamBuilder<bool>(
+                    stream: interactiveSeekbarStream.stream,
+                    builder: (context, snapshot) {
+                      bool seekbarIsInteractive =
+                          snapshot.data ?? interactiveMiniPlayerSeekbar;
+                      return seekbarIsInteractive
+                          ? SeekBarBuilder(currentTrack: currentTrack)
+                          : ProgressBarBuilder(currentTrack: currentTrack);
+                    }),
               ],
             );
           },
