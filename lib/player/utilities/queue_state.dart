@@ -13,7 +13,7 @@ saveQueueState() async {
 initQueueState() async {
   List<MediaItem> queueToInit = [];
   List<int> stateToInit =
-      await antiiqStore.get(BoxKeys().queueState, defaultValue: []);
+      await antiiqStore.get(BoxKeys().queueState, defaultValue: <int>[]);
   for (int id in stateToInit) {
     for (Track track in currentTrackListSort) {
       if (track.trackData!.trackId == id) {

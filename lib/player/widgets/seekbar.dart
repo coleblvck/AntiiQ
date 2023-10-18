@@ -105,7 +105,10 @@ class ProgressBarBuilder extends StatelessWidget {
         int? duration = currentTrack?.duration?.abs().inMilliseconds;
         position ??= 0;
         final progress = position / duration!;
-        return CustomProgressIndicator(progress: progress);
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: CustomProgressIndicator(progress: progress),
+        );
       },
     );
   }
