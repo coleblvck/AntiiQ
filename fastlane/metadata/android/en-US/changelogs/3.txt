@@ -2,4 +2,4 @@
 - Added Automatic scanning during runtime and its related tweaks in settings
 - Added settings to enable/disable interactive Mini Player Seekbar
 - Added current queue "remembrance", so tapping on the play button on start simply resumes previous queue if there was any
-- Added Global selection feature, so tracks can be selected from anywhere across the app (Except for Playlist and Search views) and used in various ways. This list can be accessed from its own menu on the main dashboard and is also "remembered" on app close and reopen. Tapping on Cover Art still plays tracks when in this mode.
+- Added Global selection feature[Quite Experimental], so tracks can be selected from anywhere across the app (Except for Playlist and Search views) and used in various ways. This list can be accessed from its own menu on the main dashboard and is also "remembered" on app close and reopen. Tapping on Cover Art still plays tracks when in this mode.
