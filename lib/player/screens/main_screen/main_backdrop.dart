@@ -4,6 +4,7 @@ import 'package:antiiq/player/screens/equalizer/equalizer.dart';
 import 'package:antiiq/player/screens/genres/genres.dart';
 import 'package:antiiq/player/screens/playlists/playlists.dart';
 import 'package:antiiq/player/screens/search/search.dart';
+import 'package:antiiq/player/screens/selection/selection.dart';
 import 'package:flutter/material.dart';
 
 //Antiiq Packages
@@ -29,6 +30,7 @@ Widget mainBackdrop() {
           ArtistsList(),
           GenresGrid(),
           Playlists(),
+          SelectionList(),
         ],
       ),
     ),

@@ -1,3 +1,4 @@
+import 'package:antiiq/player/utilities/file_handling/global_selection.dart';
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
@@ -16,9 +17,17 @@ queryAndSort() async {
   await sortGenres();
   await getPlaylistsfromStore();
   await initQueueState();
+  await initGlobalSelection();
 
   dataIsInitialized = true;
   await antiiqStore.put("dataInit", true);
+}
+
+autoReScan() async {
+  await getAndSortSongs();
+  await sortAlbums();
+  await sortArtists();
+  await sortGenres();
 }
 
 getAndSortSongs() async {
@@ -46,7 +55,7 @@ getAndSortSongs() async {
 }
 
 sortAlbums() async {
-  allAlbums[AlbumSortTypes().alphabetical] = [];
+  List<Album> sortedAlbums = [];
   List<AlbumModel> albumSortQuery = await audioQuery.queryAlbums();
   //Progress Count init
   loadingMessage = "Loading Albums";
@@ -73,11 +82,11 @@ sortAlbums() async {
         albumTracks: albumTracks,
         year: albumTracks[0].trackData!.year,
       );
-      allAlbums[AlbumSortTypes().alphabetical]!.add(thisAlbum);
+      sortedAlbums.add(thisAlbum);
     }
   }
-
-  currentAlbumListSort = allAlbums[AlbumSortTypes().alphabetical]!;
+  allAlbums[AlbumSortTypes().alphabetical] = sortedAlbums;
+  currentAlbumListSort = sortedAlbums;
   //Progress reset
   loadingMessage = "Loading Library";
   libraryLoadTotal = 1;
@@ -85,7 +94,7 @@ sortAlbums() async {
 }
 
 sortArtists() async {
-  allArtists[ArtistSortTypes().alphabetical] = [];
+  List<Artist> sortedArtists = [];
   List<ArtistModel> artistSortQuery = await audioQuery.queryArtists();
   //Progress Count init
   loadingMessage = "Loading Artists";
@@ -108,11 +117,11 @@ sortArtists() async {
         artistTracks: artistTracks,
         artistArt: artistTracks[0].mediaItem!.artUri,
       );
-      allArtists[ArtistSortTypes().alphabetical]!.add(thisArtist);
+      sortedArtists.add(thisArtist);
     }
   }
-
-  currentArtistListSort = allArtists[ArtistSortTypes().alphabetical]!;
+  allArtists[ArtistSortTypes().alphabetical] = sortedArtists;
+  currentArtistListSort = sortedArtists;
   //Progress reset
   loadingMessage = "Loading Library";
   libraryLoadTotal = 1;
@@ -120,7 +129,7 @@ sortArtists() async {
 }
 
 sortGenres() async {
-  allGenres[GenreSortTypes().alphabetical] = [];
+  List<Genre> sortedGenres = [];
   List<GenreModel> genreSortQuery = await audioQuery.queryGenres();
   //Progress Count init
   loadingMessage = "Loading Genres";
@@ -142,11 +151,11 @@ sortGenres() async {
         genreName: genreTracks[0].trackData!.genre,
         genreTracks: genreTracks,
       );
-      allGenres[GenreSortTypes().alphabetical]!.add(thisGenre);
+      sortedGenres.add(thisGenre);
     }
   }
-
-  currentGenreListSort = allGenres[GenreSortTypes().alphabetical]!;
+  allGenres[GenreSortTypes().alphabetical] = sortedGenres;
+  currentGenreListSort = sortedGenres;
   //Progress reset
   loadingMessage = "Loading Library";
   libraryLoadTotal = 1;

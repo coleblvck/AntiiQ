@@ -187,7 +187,7 @@ class Settings extends StatelessWidget {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              "Backup & Restore",
+                              "Backup/Restore",
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 30,

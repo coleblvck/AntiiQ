@@ -47,6 +47,12 @@ loadLibrary() async {
   }
 }
 
+autoReloadLibrary() async {
+  if (hasPermissions) {
+    await autoReScan();
+  }
+}
+
 checkAndRequestPermissions({bool retry = false, stateSet}) async {
   // The param 'retryRequest' is false, by default.
   hasPermissions = await audioQuery.checkAndRequest(

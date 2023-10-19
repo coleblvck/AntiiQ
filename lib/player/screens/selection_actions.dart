@@ -4,6 +4,7 @@ import 'package:antiiq/player/screens/artists/artist.dart';
 import 'package:antiiq/player/screens/genres/genre.dart';
 import 'package:antiiq/player/screens/playlists/add_to_playlist.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
+import 'package:antiiq/player/utilities/file_handling/global_selection.dart';
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,8 @@ openSheetFromTrack(context, Track track) {
   doThingsWithAudioSheet(context, [track]);
 }
 
-doThingsWithAudioSheet(context, List<Track> tracks) {
+doThingsWithAudioSheet(context, List<Track> tracks,
+    {bool thisGlobalSelection = false}) {
   showModalBottomSheet(
     enableDrag: true,
     shape: bottomSheetShape,
@@ -44,12 +46,29 @@ doThingsWithAudioSheet(context, List<Track> tracks) {
                       color: Theme.of(context).colorScheme.primary,
                     )),
               ),
+              thisGlobalSelection
+                  ? CustomButton(
+                      style: ButtonStyles().style3,
+                      function: () {
+                        clearGlobalSelection();
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Clear Selection"),
+                    )
+                  : Container(),
               CustomButton(
                 style: ButtonStyles().style1,
                 function: () {
                   addSelectionToPlaylistDialog(context, tracks);
                 },
                 child: const Text("Add to Playlist"),
+              ),
+              CustomButton(
+                style: ButtonStyles().style3,
+                function: () {
+                  playTracks(tracks);
+                },
+                child: Text("Play Track${tracks.length > 1 ? "s" : ""}"),
               ),
               tracks.length > 1
                   ? CustomButton(

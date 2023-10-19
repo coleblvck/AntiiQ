@@ -21,6 +21,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 //Antiiq Packages
 import 'package:antiiq/player/utilities/audio_handler.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 
 late AntiiqAudioHandler audioHandler;
 PageController mainPageController = PageController();
@@ -45,6 +46,7 @@ var mainPageIndexes = {
   "artists": 5,
   "genres": 6,
   "playlists": 7,
+  "selection": 8,
 };
 
 Velocity defaultTextScrollvelocity =
@@ -95,6 +97,10 @@ RoundedRectangleBorder bottomSheetShape = const RoundedRectangleBorder(
     topRight: Radius.circular(10),
   ),
 );
+
+List<Track> globalSelection = [];
+StreamController<List<Track>> globalSelectionStream =
+    StreamController.broadcast();
 
 //User Settings Related Variables
 List<MediaItem> queueState = [];

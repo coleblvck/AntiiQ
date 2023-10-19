@@ -148,7 +148,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "Backup & Restore",
+                    "Backup/Restore",
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onBackground,
                         fontSize: 30),

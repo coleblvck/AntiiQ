@@ -19,6 +19,7 @@ class BoxKeys {
   String runtimeAutoScanInterval = "runtimeAutoScanInterval";
   String interactiveSeekBar = "interactiveSeekBar";
   String queueState = "queueState";
+  String globalSelection = "globalSelection";
 }
 
 changeTheme(String theme) async {
@@ -94,7 +95,7 @@ switchRuntimeAutoScanEnabled(bool value) async {
   runtimeAutoScanEnabled = value;
   if (value) {
     runtimeAutoScanTimer =
-        Timer.periodic(runtimeAutoScanInterval, (timer) => loadLibrary());
+        Timer.periodic(runtimeAutoScanInterval, (timer) => autoReloadLibrary());
   } else {
     runtimeAutoScanTimer.isActive ? runtimeAutoScanTimer.cancel() : null;
   }
@@ -119,11 +120,12 @@ initRuntimeAutoScan() async {
   runtimeAutoScanInterval = Duration(minutes: autoScanInterval);
 
   runtimeAutoScanTimer =
-      Timer.periodic(runtimeAutoScanInterval, (timer) => loadLibrary());
+      Timer.periodic(runtimeAutoScanInterval, (timer) => autoReloadLibrary());
   runtimeAutoScanEnabled = value;
   if (value) {
+    runtimeAutoScanTimer.cancel();
     runtimeAutoScanTimer =
-        Timer.periodic(runtimeAutoScanInterval, (timer) => loadLibrary());
+        Timer.periodic(runtimeAutoScanInterval, (timer) => autoReloadLibrary());
   } else {
     runtimeAutoScanTimer.isActive ? runtimeAutoScanTimer.cancel() : null;
   }

@@ -50,4 +50,13 @@ dashboardItems(context) => {
           );
         },
       },
+      "selection": {
+        "title": "Selection",
+        "icon": RemixIcon.check_double,
+        "function": () {
+          mainPageController.jumpToPage(
+            mainPageIndexes["selection"] as int,
+          );
+        },
+      },
     };

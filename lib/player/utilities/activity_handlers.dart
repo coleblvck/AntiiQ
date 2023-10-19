@@ -47,7 +47,7 @@ Future<void> goToAudioService(
   await loadQueue(queueToLoad);
 }
 
-Future<void> loadQueue(queue) async {
+Future<void> loadQueue(List<MediaItem> queue) async {
   await audioHandler.updateQueue(queue);
 }
 
@@ -77,6 +77,12 @@ rewind() async {
 
 playOnlyThis(MediaItem item) async {
   queueToLoad = [item];
+  await loadQueue(queueToLoad);
+  await audioHandler.play();
+}
+
+playTracks(List<Track> tracks) async {
+  queueToLoad = tracks.map((track) => track.mediaItem!).toList();
   await loadQueue(queueToLoad);
   await audioHandler.play();
 }

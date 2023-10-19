@@ -1,4 +1,6 @@
 //Flutter Packages
+import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/screens/selection_actions.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:flutter/material.dart';
 
@@ -37,19 +39,46 @@ class ListHeader extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: listToShuffle.length > 1
-                ? IconButton(
-                    padding: EdgeInsets.zero,
-                    color: Theme.of(context).colorScheme.secondary,
-                    iconSize: 15,
-                    onPressed: () {
-                      shuffleTracks(listToShuffle);
-                    },
-                    icon: const Icon(
-                      RemixIcon.shuffle,
-                    ),
-                  )
-                : Container(),
+            child: Row(
+              children: [
+                StreamBuilder<List<Track>>(
+                    stream: globalSelectionStream.stream,
+                    builder: (context, snapshot) {
+                      final List<Track> selectionSituation =
+                          snapshot.data ?? globalSelection;
+                      return selectionSituation.isNotEmpty
+                          ? IconButton(
+                              padding: EdgeInsets.zero,
+                              color: Theme.of(context).colorScheme.secondary,
+                              iconSize: 15,
+                              onPressed: () {
+                                doThingsWithAudioSheet(
+                                  context,
+                                  selectionSituation,
+                                  thisGlobalSelection: true,
+                                );
+                              },
+                              icon: const Icon(
+                                RemixIcon.list_check_3,
+                              ),
+                            )
+                          : Container();
+                    }),
+                listToShuffle.length > 1
+                    ? IconButton(
+                        padding: EdgeInsets.zero,
+                        color: Theme.of(context).colorScheme.secondary,
+                        iconSize: 15,
+                        onPressed: () {
+                          shuffleTracks(listToShuffle);
+                        },
+                        icon: const Icon(
+                          RemixIcon.shuffle,
+                        ),
+                      )
+                    : Container(),
+              ],
+            ),
           ),
         ],
       ),
