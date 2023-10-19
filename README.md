@@ -8,6 +8,8 @@
 
 [![IzzyOnDroid Badge](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.coleblvck.antiiq&label=IzzyOnDroid&cacheSeconds=86400)](https://apt.izzysoft.de/packages/com.coleblvck.antiiq/)
 
+[Grab the latest APK from Codeberg](https://codeberg.org/coleblvck/AntiiQ/releases)
+
 
 ## About
 
