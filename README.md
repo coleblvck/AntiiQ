@@ -40,15 +40,23 @@ AntiiQ as in "Antique" is an offline Android music player which started as a per
 - Pitch, gain and speed tweaks
 - Embedded covers support
 - Search functionality
+- Global Selection
 
 
-## Todo
+## To-Do
 - Additional Sort types from the default
 - Additional configurations
 - Disable Equalizer/Audio Effects for unsupported devices
 - Fix Storage permissions on Android 10
 - Landscape mode
-- Search to include results for matching Artist Names and Album Names.
+- Search to include results for matching Artist Names and Album Names
+- Remove Auto-Scanning new media during runtime and replace it with a manual refresh button(For now, as it somehow breaks selection in a weird way)
+- Add warning dialogs for actions such as "Delete Playlist"
+- UI tweaking options
+- More Themes(Probably including user theming, importing & exporting).
+
+## Might-Not-DO
+- Tag Editing: Attempted in a few different ways; app became quite heavy, while also leaving some pretty large footprints in cache and data storages.
 
 
 Note: This player has been tested to be working fully on Android 13, and partially tested on a device running Android 10. Your mileage may vary and so, some feedback would be needed if any behaviour improvements would be necessary.
