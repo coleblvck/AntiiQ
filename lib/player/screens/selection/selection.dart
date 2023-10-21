@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 //Antiiq Packages
-import 'package:antiiq/player/screens/songs/song.dart';
+import 'package:antiiq/player/screens/selection/selection_song.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
@@ -54,7 +54,7 @@ class SelectionList extends StatelessWidget {
                     itemCount: selectionSituation.length,
                     itemBuilder: (context, index) {
                       final Track thisTrack = selectionSituation[index];
-                      return SongItem(
+                      return SelectionSong(
                         title: TextScroll(
                           thisTrack.trackData!.trackName!,
                           textAlign: TextAlign.left,
@@ -75,6 +75,7 @@ class SelectionList extends StatelessWidget {
                         ),
                         leading: getUriImage(thisTrack.mediaItem!.artUri!),
                         track: thisTrack,
+                        album: selectionSituation,
                         index: index,
                       );
                     },

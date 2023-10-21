@@ -101,7 +101,7 @@ class _MainBoxState extends State<MainBox> {
 
     libraryLoadTimer.cancel();
 
-    initRuntimeAutoScan();
+    //initRuntimeAutoScan();
 
     if (mounted) {
       popDialog = true;

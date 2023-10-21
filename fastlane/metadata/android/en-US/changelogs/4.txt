@@ -1,0 +1,2 @@
+- Important fixes to selection (Tapping Item cover art on the selection page didn't play from selection)
+- Temporarily removed auto-runtime scan due to glitches

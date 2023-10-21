@@ -48,7 +48,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
               ),
               thisGlobalSelection
                   ? CustomButton(
-                      style: ButtonStyles().style3,
+                      style: ButtonStyles().style2,
                       function: () {
                         clearGlobalSelection();
                         Navigator.of(context).pop();
@@ -72,7 +72,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
               ),
               tracks.length > 1
                   ? CustomButton(
-                      style: ButtonStyles().style3,
+                      style: ButtonStyles().style2,
                       function: () {
                         shuffleTracks(tracks);
                       },
@@ -88,7 +88,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                 .toList()
                                 .contains(tracks[0].trackData!.albumId)
                             ? CustomButton(
-                                style: ButtonStyles().style2,
+                                style: ButtonStyles().style1,
                                 function: () {
                                   goToAlbum(context, tracks);
                                 },
@@ -112,7 +112,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                 .toList()
                                 .contains(tracks[0].trackData!.genre)
                             ? CustomButton(
-                                style: ButtonStyles().style1,
+                                style: ButtonStyles().style2,
                                 function: () {
                                   goToGenre(context, tracks);
                                 },

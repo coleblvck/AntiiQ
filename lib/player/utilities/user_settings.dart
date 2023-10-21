@@ -90,6 +90,7 @@ getSwipeGestures() async {
       await antiiqStore.get(BoxKeys().swipeGestures, defaultValue: true);
 }
 
+/*
 switchRuntimeAutoScanEnabled(bool value) async {
   runtimeAutoScanTimer.isActive ? runtimeAutoScanTimer.cancel() : null;
   runtimeAutoScanEnabled = value;
@@ -130,6 +131,7 @@ initRuntimeAutoScan() async {
     runtimeAutoScanTimer.isActive ? runtimeAutoScanTimer.cancel() : null;
   }
 }
+*/
 
 initInteractiveSeekBarSwitch() async {
   interactiveMiniPlayerSeekbar =

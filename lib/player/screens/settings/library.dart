@@ -54,9 +54,13 @@ class _LibraryState extends State<Library> {
     setState(() {});
   }
 
-  rescan() async {
+  fullRescan() async {
     dataIsInitialized = false;
     await antiiqStore.put("dataInit", false);
+    Restart.restartApp();
+  }
+
+  rescan() async {
     Restart.restartApp();
   }
 
@@ -110,13 +114,20 @@ class _LibraryState extends State<Library> {
                   height: 20,
                 ),
                 CustomButton(
-                  style: ButtonStyles().style1,
+                  style: ButtonStyles().style3,
                   function: () {
                     rescan();
                   },
-                  child: const Text("!Re-Scan Library!"),
+                  child: const Text("Re-Scan Library"),
                 ),
-                CustomCard(
+                CustomButton(
+                  style: ButtonStyles().style2,
+                  function: () {
+                    fullRescan();
+                  },
+                  child: const Text("!Full Re-Scan!"),
+                ),
+                /*CustomCard(
                   theme: CardThemes().surfaceColor,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -191,7 +202,7 @@ class _LibraryState extends State<Library> {
                       ],
                     ),
                   ),
-                ),
+                ),*/
                 CustomCard(
                   theme: CardThemes().surfaceColor,
                   child: Padding(
