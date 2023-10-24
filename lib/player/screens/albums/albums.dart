@@ -6,6 +6,7 @@ This Renders the screen for Album songs
 
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
+import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:flutter/material.dart';
 import 'package:text_scroll/text_scroll.dart';
 
@@ -34,6 +35,8 @@ class AlbumsGrid extends StatelessWidget {
           headerTitle: headerTitle,
           listToCount: currentAlbumListSort,
           listToShuffle: const [],
+          sortList: "allAlbums",
+          availableSortTypes: albumListSortTypes,
         ),
         Divider(
           color: Theme.of(context).colorScheme.secondary,
@@ -44,38 +47,44 @@ class AlbumsGrid extends StatelessWidget {
             interactive: true,
             thickness: 18,
             radius: const Radius.circular(5),
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
-              physics: const BouncingScrollPhysics(),
-              primary: true,
-              itemCount: currentAlbumListSort.length,
-              itemBuilder: (context, index) {
-                final Album thisAlbum = currentAlbumListSort[index];
-                return AlbumItem(
-                  title: TextScroll(
-                    thisAlbum.albumName!,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                    velocity: defaultTextScrollvelocity,
-                    delayBefore: delayBeforeScroll,
-                  ),
-                  subtitle: TextScroll(
-                    thisAlbum.albumArtistName!,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                    velocity: defaultTextScrollvelocity,
-                    delayBefore: delayBeforeScroll,
-                  ),
-                  leading: getUriImage(thisAlbum.albumArt),
-                  album: thisAlbum,
-                  index: index,
+            child: StreamBuilder<List<Album>>(
+              stream: allAlbumsStream.stream,
+              builder: (context, snapshot) {
+                final List<Album> currentAlbumStream = snapshot.data ?? currentAlbumListSort;
+                return GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
+                  physics: const BouncingScrollPhysics(),
+                  primary: true,
+                  itemCount: currentAlbumStream.length,
+                  itemBuilder: (context, index) {
+                    final Album thisAlbum = currentAlbumStream[index];
+                    return AlbumItem(
+                      title: TextScroll(
+                        thisAlbum.albumName!,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                        velocity: defaultTextScrollvelocity,
+                        delayBefore: delayBeforeScroll,
+                      ),
+                      subtitle: TextScroll(
+                        thisAlbum.albumArtistName!,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                        velocity: defaultTextScrollvelocity,
+                        delayBefore: delayBeforeScroll,
+                      ),
+                      leading: getUriImage(thisAlbum.albumArt),
+                      album: thisAlbum,
+                      index: index,
+                    );
+                  },
                 );
-              },
+              }
             ),
           ),
         ),

@@ -37,6 +37,8 @@ class SelectionList extends StatelessWidget {
                 headerTitle: headerTitle,
                 listToCount: selectionSituation,
                 listToShuffle: selectionSituation,
+                sortList: "none",
+                availableSortTypes: const [],
               ),
               Divider(
                 color: Theme.of(context).colorScheme.secondary,

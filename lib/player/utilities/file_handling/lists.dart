@@ -1,4 +1,11 @@
+import 'dart:async';
+
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+
+StreamController<List<Track>> allTracksStream = StreamController.broadcast();
+StreamController<List<Album>> allAlbumsStream = StreamController.broadcast();
+StreamController<List<Artist>> allArtistsStream = StreamController.broadcast();
+StreamController<List<Genre>> allGenresStream = StreamController.broadcast();
 
 List<Track> currentTrackListSort = [];
 

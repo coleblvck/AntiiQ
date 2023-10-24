@@ -35,14 +35,11 @@ class UnswipedCard extends StatelessWidget {
     return StreamBuilder<List<Track>>(
         stream: globalSelectionStream.stream,
         builder: (context, snapshot) {
-          final List<Track> selectionSituation = snapshot.data ?? globalSelection;
+          final List<Track> selectionSituation =
+              snapshot.data ?? globalSelection;
           return GestureDetector(
             onTap: () {
-              if (selectionSituation.isEmpty) {
-                playTrack(index, selectionList, albumToPlay: albumToPlay);
-              } else {
-                globalSelectOrDeselect(track);
-              }
+              playTrack(index, selectionList, albumToPlay: albumToPlay);
             },
             onLongPress: () {
               if (selectionSituation.isEmpty) {
@@ -57,15 +54,9 @@ class UnswipedCard extends StatelessWidget {
                   children: [
                     SizedBox(
                       height: 80,
-                      child: GestureDetector(
-                        onTap: () {
-                          playTrack(index, selectionList,
-                              albumToPlay: albumToPlay);
-                        },
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: leading,
-                        ),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: leading,
                       ),
                     ),
                     Expanded(
@@ -81,12 +72,14 @@ class UnswipedCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    selectionSituation.contains(track)
+                    selectionSituation.isNotEmpty
                         ? SizedBox(
                             width: 40,
-                            child: Icon(
-                              RemixIcon.check,
-                              color: Theme.of(context).colorScheme.secondary,
+                            child: Checkbox(
+                              value: selectionSituation.contains(track),
+                              onChanged: (value) {
+                                globalSelectOrDeselect(track);
+                              },
                             ),
                           )
                         : Container(),

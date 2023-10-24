@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:antiiq/player/screens/playlists/playlist_song.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/utilities/duration_getters.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -97,7 +98,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                     ),
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -111,6 +112,21 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                               velocity: defaultTextScrollvelocity,
                               delayBefore: delayBeforeScroll,
                             ),
+                            Card(
+                              color: Theme.of(context).colorScheme.background,
+                              surfaceTintColor: Colors.transparent,
+                              margin: const EdgeInsets.symmetric(vertical: 5),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  "Length: ${totalDuration(playlist.playlistTracks!)}",
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -120,6 +136,8 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                         headerTitle: "Tracks",
                         listToCount: playlist.playlistTracks,
                         listToShuffle: playlist.playlistTracks!,
+                        sortList: "none",
+                        availableSortTypes: const [],
                       ),
                     ),
                     SliverReorderableList(
@@ -267,7 +285,8 @@ showPlaylistEditDialog(
                   },
                   child: const Text("Select Image"),
                 ),
-                const Text("Note: Changes to art may not reflect until restart."),
+                const Text(
+                    "Note: Changes to art may not reflect until restart."),
                 CustomButton(
                   style: ButtonStyles().style3,
                   function: () async {

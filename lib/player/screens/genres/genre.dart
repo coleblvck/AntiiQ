@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/genres/genre_song.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
+import 'package:antiiq/player/utilities/duration_getters.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
@@ -101,65 +103,97 @@ showGenre(context, Genre genre) {
         height: MediaQuery.of(context).size.height - 200,
         child: Column(
           children: [
-            Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: TextScroll(
-                        genre.genreName!,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).colorScheme.primary,
+            StatefulBuilder(builder: (context, setState) {
+              return Expanded(
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Genre",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 20,
+                              ),
+                            ),
+                            TextScroll(
+                              genre.genreName!,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              velocity: defaultTextScrollvelocity,
+                              delayBefore: delayBeforeScroll,
+                            ),
+                            Card(
+                              color: Theme.of(context).colorScheme.background,
+                              surfaceTintColor: Colors.transparent,
+                              margin: const EdgeInsets.symmetric(vertical: 5),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  "Length: ${totalDuration(genre.genreTracks!)}",
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        velocity: defaultTextScrollvelocity,
-                        delayBefore: delayBeforeScroll,
                       ),
                     ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: ListHeader(
-                      headerTitle: "Tracks",
-                      listToCount: genre.genreTracks,
-                      listToShuffle: genre.genreTracks!,
+                    SliverToBoxAdapter(
+                      child: ListHeader(
+                        headerTitle: "Tracks",
+                        listToCount: genre.genreTracks,
+                        listToShuffle: genre.genreTracks!,
+                        sortList: "allGenreTracks",
+                        availableSortTypes: genreTrackListSortTypes,
+                        setState: setState,
+                      ),
                     ),
-                  ),
-                  SliverFixedExtentList.builder(
-                    itemExtent: 100,
-                    itemCount: genre.genreTracks!.length,
-                    itemBuilder: (context, index) {
-                      final thisTrack = genre.genreTracks![index];
-                      return GenreSong(
-                        title: TextScroll(
-                          thisTrack.trackData!.trackName!,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
+                    SliverFixedExtentList.builder(
+                      itemExtent: 100,
+                      itemCount: genre.genreTracks!.length,
+                      itemBuilder: (context, index) {
+                        final thisTrack = genre.genreTracks![index];
+                        return GenreSong(
+                          title: TextScroll(
+                            thisTrack.trackData!.trackName!,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            velocity: defaultTextScrollvelocity,
+                            delayBefore: delayBeforeScroll,
                           ),
-                          velocity: defaultTextScrollvelocity,
-                          delayBefore: delayBeforeScroll,
-                        ),
-                        subtitle: TextScroll(
-                          thisTrack.mediaItem!.artist!,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
+                          subtitle: TextScroll(
+                            thisTrack.mediaItem!.artist!,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            velocity: defaultTextScrollvelocity,
+                            delayBefore: delayBeforeScroll,
                           ),
-                          velocity: defaultTextScrollvelocity,
-                          delayBefore: delayBeforeScroll,
-                        ),
-                        leading: getUriImage(thisTrack.mediaItem!.artUri),
-                        track: thisTrack,
-                        genre: genre,
-                        index: index,
-                      );
-                    },
-                  )
-                ],
-              ),
-            ),
+                          leading: getUriImage(thisTrack.mediaItem!.artUri),
+                          track: thisTrack,
+                          genre: genre,
+                          index: index,
+                        );
+                      },
+                    )
+                  ],
+                ),
+              );
+            }),
             CustomCard(
               theme: CardThemes().bottomSheetListHeaderTheme,
               child: Row(

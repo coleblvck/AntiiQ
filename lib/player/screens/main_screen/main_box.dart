@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -100,8 +99,6 @@ class _MainBoxState extends State<MainBox> {
     await loadLibrary();
 
     libraryLoadTimer.cancel();
-
-    //initRuntimeAutoScan();
 
     if (mounted) {
       popDialog = true;

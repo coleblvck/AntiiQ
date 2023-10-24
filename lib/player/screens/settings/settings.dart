@@ -45,7 +45,7 @@ class Settings extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(5.0),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
@@ -84,7 +84,7 @@ class Settings extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(5.0),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
@@ -123,7 +123,7 @@ class Settings extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(5.0),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
@@ -162,7 +162,7 @@ class Settings extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(5.0),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
@@ -201,7 +201,7 @@ class Settings extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(5.0),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(

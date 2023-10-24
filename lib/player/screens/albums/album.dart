@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
+import 'package:antiiq/player/utilities/duration_getters.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
@@ -105,94 +107,123 @@ showAlbum(context, Album album) {
         height: MediaQuery.of(context).size.height - 200,
         child: Column(
           children: [
-            Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: getUriImage(album.albumArt),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextScroll(
-                            album.albumName!,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onBackground,
-                            ),
-                            velocity: defaultTextScrollvelocity,
-                            delayBefore: delayBeforeScroll,
-                          ),
-                          TextScroll(
-                            album.albumArtistName!,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onBackground,
-                            ),
-                            velocity: defaultTextScrollvelocity,
-                            delayBefore: delayBeforeScroll,
-                          ),
-                          (album.year != null)
-                              ? Text(
-                                  "${album.year}",
-                                  style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
-                                  ),
-                                )
-                              : Container(),
-                        ],
+            StatefulBuilder(builder: (context, setState) {
+              return Expanded(
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: getUriImage(album.albumArt),
                       ),
                     ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: ListHeader(
-                      headerTitle: "Tracks",
-                      listToCount: album.albumTracks,
-                      listToShuffle: album.albumTracks!,
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Album",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 20,
+                              ),
+                            ),
+                            TextScroll(
+                              album.albumName!,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              velocity: defaultTextScrollvelocity,
+                              delayBefore: delayBeforeScroll,
+                            ),
+                            TextScroll(
+                              album.albumArtistName!,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                              ),
+                              velocity: defaultTextScrollvelocity,
+                              delayBefore: delayBeforeScroll,
+                            ),
+                            (album.year != null)
+                                ? Text(
+                                    "${album.year}",
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                    ),
+                                  )
+                                : Container(),
+                            Card(
+                              color: Theme.of(context).colorScheme.background,
+                              surfaceTintColor: Colors.transparent,
+                              margin: const EdgeInsets.symmetric(vertical: 5),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  "Length: ${totalDuration(album.albumTracks!)}",
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                  SliverFixedExtentList.builder(
-                    itemExtent: 100,
-                    itemCount: album.albumTracks!.length,
-                    itemBuilder: (context, index) {
-                      final thisTrack = album.albumTracks![index];
-                      return AlbumSong(
-                        title: TextScroll(
-                          thisTrack.trackData!.trackName!,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
+                    SliverToBoxAdapter(
+                      child: ListHeader(
+                        headerTitle: "Tracks",
+                        listToCount: album.albumTracks,
+                        listToShuffle: album.albumTracks!,
+                        sortList: "allAlbumTracks",
+                        availableSortTypes: albumTrackListSortTypes,
+                        setState: setState,
+                      ),
+                    ),
+                    SliverFixedExtentList.builder(
+                      itemExtent: 100,
+                      itemCount: album.albumTracks!.length,
+                      itemBuilder: (context, index) {
+                        final thisTrack = album.albumTracks![index];
+                        return AlbumSong(
+                          title: TextScroll(
+                            thisTrack.trackData!.trackName!,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            velocity: defaultTextScrollvelocity,
+                            delayBefore: delayBeforeScroll,
                           ),
-                          velocity: defaultTextScrollvelocity,
-                          delayBefore: delayBeforeScroll,
-                        ),
-                        subtitle: TextScroll(
-                          thisTrack.mediaItem!.artist!,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
+                          subtitle: TextScroll(
+                            thisTrack.mediaItem!.artist!,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            velocity: defaultTextScrollvelocity,
+                            delayBefore: delayBeforeScroll,
                           ),
-                          velocity: defaultTextScrollvelocity,
-                          delayBefore: delayBeforeScroll,
-                        ),
-                        leading: getUriImage(thisTrack.mediaItem!.artUri),
-                        track: thisTrack,
-                        album: album,
-                        index: index,
-                      );
-                    },
-                  )
-                ],
-              ),
-            ),
+                          leading: getUriImage(thisTrack.mediaItem!.artUri),
+                          track: thisTrack,
+                          album: album,
+                          index: index,
+                        );
+                      },
+                    )
+                  ],
+                ),
+              );
+            }),
             CustomCard(
               theme: CardThemes().bottomSheetListHeaderTheme,
               child: Row(

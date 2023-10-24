@@ -14,4 +14,4 @@ AntiiQ is an offline Android Music Player with some opinionated features and a d
 - Search functionality
 - Swipe a track left to access other options (Works with Songs, Album Songs, Genre Songs, Artist Songs and Playlist Songs)
 - Global selection feature: Tracks can be selected across multiple screens(Albums, All Songs, Artists and Genres) and the selected tracks can also be accessed in the "Selection" screen on the main dashboard.
-Long press a track to begin selection and when in this mode, tapping tracks, selects them and tapping a Cover Art will play the track normally.
+Long press a track to begin selection.

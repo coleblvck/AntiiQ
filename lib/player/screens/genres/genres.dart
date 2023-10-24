@@ -6,6 +6,7 @@ This Renders the screen for Album songs
 
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
+import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:flutter/material.dart';
 import 'package:text_scroll/text_scroll.dart';
 
@@ -33,6 +34,8 @@ class GenresGrid extends StatelessWidget {
           headerTitle: headerTitle,
           listToCount: currentGenreListSort,
           listToShuffle: const [],
+          sortList: "allGenres",
+          availableSortTypes: genreListSortTypes,
         ),
         Divider(
           color: Theme.of(context).colorScheme.secondary,
@@ -43,39 +46,46 @@ class GenresGrid extends StatelessWidget {
             interactive: true,
             thickness: 18,
             radius: const Radius.circular(5),
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-              ),
-              physics: const BouncingScrollPhysics(),
-              primary: true,
-              itemCount: currentGenreListSort.length,
-              itemBuilder: (context, index) {
-                final Genre thisGenre = currentGenreListSort[index];
-                return GenreItem(
-                  title: TextScroll(
-                    thisGenre.genreName!,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onBackground,
+            child: StreamBuilder<List<Genre>>(
+                stream: allGenresStream.stream,
+                builder: (context, snapshot) {
+                  final List<Genre> currentGenreStream =
+                      snapshot.data ?? currentGenreListSort;
+                  return GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
                     ),
-                    velocity: defaultTextScrollvelocity,
-                    delayBefore: delayBeforeScroll,
-                  ),
-                  subtitle: TextScroll(
-                    "${thisGenre.genreTracks!.length} ${(thisGenre.genreTracks!.length > 1) ? "Songs" : "song"}",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                    velocity: defaultTextScrollvelocity,
-                    delayBefore: delayBeforeScroll,
-                  ),
-                  genre: thisGenre,
-                  index: index,
-                );
-              },
-            ),
+                    physics: const BouncingScrollPhysics(),
+                    primary: true,
+                    itemCount: currentGenreStream.length,
+                    itemBuilder: (context, index) {
+                      final Genre thisGenre = currentGenreStream[index];
+                      return GenreItem(
+                        title: TextScroll(
+                          thisGenre.genreName!,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                          velocity: defaultTextScrollvelocity,
+                          delayBefore: delayBeforeScroll,
+                        ),
+                        subtitle: TextScroll(
+                          "${thisGenre.genreTracks!.length} ${(thisGenre.genreTracks!.length > 1) ? "Songs" : "song"}",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                          velocity: defaultTextScrollvelocity,
+                          delayBefore: delayBeforeScroll,
+                        ),
+                        genre: thisGenre,
+                        index: index,
+                      );
+                    },
+                  );
+                }),
           ),
         ),
       ],

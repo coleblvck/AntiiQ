@@ -1,16 +1,30 @@
-import 'package:easy_folder_picker/FolderPicker.dart';
 import 'dart:io';
 
+import 'package:antiiq/player/global_variables.dart';
 import 'package:flutter/material.dart';
+import 'package:filesystem_picker/filesystem_picker.dart';
 
 Future<Directory?> pickFolder(String path, context) async {
-  Directory? newPath = await FolderPicker.pick(
-    backgroundColor: Theme.of(context).colorScheme.background,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
+
+  String? newPath = await FilesystemPicker.openBottomSheet(
     context: context,
+    shape: bottomSheetShape,
     rootDirectory: Directory(path),
+    fsType: FilesystemType.folder,
+    barrierColor: Colors.transparent,
+    constraints: const BoxConstraints(),
+    theme: FilesystemPickerTheme(
+      topBar: FilesystemPickerTopBarThemeData(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
+      )
+    ),
+    pickText: "Select Folder",
+    folderIconColor: Theme.of(context).colorScheme.secondary,
   );
-  return newPath;
+  Directory? directoryToReturn;
+  if (newPath != null) {
+    directoryToReturn = Directory(newPath);
+  }
+  return directoryToReturn;
 }

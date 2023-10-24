@@ -1,0 +1,4 @@
+- Important UX improvements
+- Added Sort
+- Included Album Name match and Artist Name match in search results
+- Fixed Folder Selection.

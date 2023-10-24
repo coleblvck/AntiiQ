@@ -4,9 +4,11 @@ import 'package:antiiq/player/screens/artists/artist.dart';
 import 'package:antiiq/player/screens/genres/genre.dart';
 import 'package:antiiq/player/screens/playlists/add_to_playlist.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
+import 'package:antiiq/player/utilities/duration_getters.dart';
 import 'package:antiiq/player/utilities/file_handling/global_selection.dart';
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_service/audio_service.dart';
 
@@ -38,12 +40,184 @@ doThingsWithAudioSheet(context, List<Track> tracks,
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              tracks.length == 1
+                  ? Column(
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: getUriImage(tracks[0].mediaItem!.artUri),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    TextScroll(
+                                      tracks[0].trackData!.trackName!,
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (currentArtistListSort
+                                            .map((artist) => artist.artistId)
+                                            .toList()
+                                            .contains(tracks[0]
+                                                .trackData!
+                                                .artistId)) {
+                                          goToArtist(context, tracks);
+                                        }
+                                      },
+                                      child: TextScroll(
+                                        tracks[0].trackData!.trackArtistNames!,
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (currentAlbumListSort
+                                            .map((album) => album.albumId)
+                                            .toList()
+                                            .contains(
+                                                tracks[0].trackData!.albumId)) {
+                                          goToAlbum(context, tracks);
+                                        }
+                                      },
+                                      child: TextScroll(
+                                        tracks[0].trackData!.albumName!,
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (currentGenreListSort
+                                            .map((genre) => genre.genreName)
+                                            .toList()
+                                            .contains(
+                                                tracks[0].trackData!.genre)) {
+                                          goToGenre(context, tracks);
+                                        }
+                                      },
+                                      child: TextScroll(
+                                        tracks[0].trackData!.genre!,
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        StreamBuilder<List<Track>>(
+                            stream: globalSelectionStream.stream,
+                            builder: (context, snapshot) {
+                              final List<Track> selectionSituation =
+                                  snapshot.data ?? globalSelection;
+                              return Card(
+                                margin: EdgeInsets.zero,
+                                color: Theme.of(context).colorScheme.background,
+                                shadowColor: Colors.black,
+                                surfaceTintColor: Colors.transparent,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Select Track:",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                      ),
+                                      Checkbox(
+                                        value: selectionSituation
+                                            .contains(tracks[0]),
+                                        onChanged: (value) {
+                                          globalSelectOrDeselect(tracks[0]);
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            })
+                      ],
+                    )
+                  : Container(),
+              thisGlobalSelection
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Selection",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontSize: 20,
+                              decoration: TextDecoration.underline,
+                              decorationColor:
+                                  Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          Text("Selected Tracks: ${globalSelection.length}"),
+                        ],
+                      ),
+                    )
+                  : Container(),
+              Card(
+                color: Theme.of(context).colorScheme.background,
+                surfaceTintColor: Colors.transparent,
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    "Length: ${totalDuration(tracks)}",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(5.0),
                 child: Text("Available Options:",
                     style: TextStyle(
                       fontSize: 18,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.onSurface,
                     )),
               ),
               thisGlobalSelection
@@ -77,77 +251,6 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                         shuffleTracks(tracks);
                       },
                       child: const Text("Shuffle Tracks"),
-                    )
-                  : Container(),
-              tracks.length == 1
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        currentAlbumListSort
-                                .map((album) => album.albumId)
-                                .toList()
-                                .contains(tracks[0].trackData!.albumId)
-                            ? CustomButton(
-                                style: ButtonStyles().style1,
-                                function: () {
-                                  goToAlbum(context, tracks);
-                                },
-                                child: const Text("Go to Album"),
-                              )
-                            : Container(),
-                        currentArtistListSort
-                                .map((artist) => artist.artistId)
-                                .toList()
-                                .contains(tracks[0].trackData!.artistId)
-                            ? CustomButton(
-                                style: ButtonStyles().style3,
-                                function: () {
-                                  goToArtist(context, tracks);
-                                },
-                                child: const Text("Go to Artist"),
-                              )
-                            : Container(),
-                        currentGenreListSort
-                                .map((genre) => genre.genreName)
-                                .toList()
-                                .contains(tracks[0].trackData!.genre)
-                            ? CustomButton(
-                                style: ButtonStyles().style2,
-                                function: () {
-                                  goToGenre(context, tracks);
-                                },
-                                child: const Text("Go to Genre"),
-                              )
-                            : Container(),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            children: [
-                              TextScroll(
-                                tracks[0].trackData!.trackName!,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                              TextScroll(
-                                tracks[0].trackData!.trackArtistNames!,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                              TextScroll(
-                                tracks[0].trackData!.albumName!,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
                     )
                   : Container(),
             ],

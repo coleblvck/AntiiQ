@@ -1,5 +1,7 @@
-import 'package:antiiq/player/utilities/activity_handlers.dart';
-import 'package:antiiq/player/screens/playlists/add_to_playlist.dart';
+import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/screens/albums/album.dart';
+import 'package:antiiq/player/screens/artists/artist.dart';
+import 'package:antiiq/player/widgets/song_cards/song_card.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
@@ -19,10 +21,13 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   List<Track> searchResults = [];
-  List<Track> selectedTracks = [];
+  List<Album> albumResults = [];
+  List<Artist> artistResults = [];
   TextEditingController searchController = TextEditingController();
   search(term) {
     searchResults = [];
+    albumResults = [];
+    artistResults = [];
     if (term != "") {
       for (Track track in currentTrackListSort) {
         if (track.trackData!.trackName!
@@ -31,22 +36,18 @@ class _SearchState extends State<Search> {
           searchResults.add(track);
         }
       }
+      for (Album album in currentAlbumListSort) {
+        if (album.albumName!.toLowerCase().contains(term.toLowerCase())) {
+          albumResults.add(album);
+        }
+      }
+
+      for (Artist artist in currentArtistListSort) {
+        if (artist.artistName!.toLowerCase().contains(term.toLowerCase())) {
+          artistResults.add(artist);
+        }
+      }
     }
-    setState(() {});
-  }
-
-  selectOrDeselect(Track track) {
-    if (selectedTracks.contains(track)) {
-      selectedTracks.remove(track);
-    } else {
-      selectedTracks.add(track);
-    }
-
-    setState(() {});
-  }
-
-  clearSelection() {
-    selectedTracks = [];
     setState(() {});
   }
 
@@ -68,9 +69,13 @@ class _SearchState extends State<Search> {
                       onChanged: (term) {
                         search(term);
                       },
+                      textAlignVertical: TextAlignVertical.center,
+                      autofocus: false,
                       controller: searchController,
                       decoration: const InputDecoration(
+                        prefixIcon: Icon(RemixIcon.search),
                         border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         hintText: "Start Typing to Search...",
                       ),
                     ),
@@ -88,117 +93,202 @@ class _SearchState extends State<Search> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: selectedTracks.isNotEmpty
-                ? SizedBox(
-                  height: 25,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("${selectedTracks.length} Selected Songs"),
-                        IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            clearSelection();
-                          },
-                          icon: const Icon(RemixIcon.close_circle),
-                        )
-                      ],
-                    ),
-                )
-                : Container(),
-          ),
-          selectedTracks.isNotEmpty
-              ? SizedBox(
-                height: 30,
-                child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: CustomButton(
-                            style: ButtonStyles().style1,
-                            function: () {
-                              addSelectionToPlaylistDialog(
-                                  context, selectedTracks);
-                            },
-                            child: const Text("Add Selection to Playlist"),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: CustomButton(
-                            style: ButtonStyles().style2,
-                            function: () {
-                              shuffleTracks(selectedTracks);
-                            },
-                            child: const Text("Shuffle Selection"),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              )
-              : Container(),
           Expanded(
-            child: ListView.builder(
-              itemCount: searchResults.length,
-              itemExtent: 80,
-              itemBuilder: (context, index) {
-                final Track thisTrack = searchResults[index];
-                return GestureDetector(
-                  onLongPress: () {
-                    selectedTracks.isEmpty ? selectOrDeselect(thisTrack) : null;
-                  },
-                  onTap: () {
-                    selectedTracks.isNotEmpty
-                        ? selectOrDeselect(thisTrack)
-                        : playOnlyThis(thisTrack.mediaItem!);
-                  },
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            height: 80,
-                            child: getUriImage(thisTrack.mediaItem!.artUri),
+            child: CustomScrollView(
+              slivers: [
+                searchResults.isNotEmpty
+                    ? SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Text(
+                            "Tracks:",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
-                          Expanded(
+                        ),
+                      )
+                    : SliverToBoxAdapter(child: Container()),
+                SliverFixedExtentList.builder(
+                  itemExtent: 100,
+                  itemCount: searchResults.length,
+                  itemBuilder: (context, index) {
+                    final Track thisTrack = searchResults[index];
+                    final PageController controller = PageController();
+                    return SongCard(
+                      controller: controller,
+                      title: TextScroll(
+                        thisTrack.trackData!.trackName!,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        velocity: defaultTextScrollvelocity,
+                        delayBefore: delayBeforeScroll,
+                      ),
+                      subtitle: TextScroll(
+                        thisTrack.mediaItem!.artist!,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        velocity: defaultTextScrollvelocity,
+                        delayBefore: delayBeforeScroll,
+                      ),
+                      leading: getUriImage(thisTrack.mediaItem!.artUri),
+                      track: thisTrack,
+                      selectionList: "album",
+                      albumToPlay:
+                          searchResults.map((e) => e.mediaItem!).toList(),
+                      index: index,
+                    );
+                  },
+                ),
+                albumResults.isNotEmpty
+                    ? SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Text(
+                            "Albums:",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                      )
+                    : SliverToBoxAdapter(child: Container()),
+                SliverFixedExtentList.builder(
+                    itemExtent: 100,
+                    itemCount: albumResults.length,
+                    itemBuilder: (context, index) {
+                      final Album thisAlbum = albumResults[index];
+
+                      return GestureDetector(
+                        onTap: () {
+                          showAlbum(context, thisAlbum);
+                        },
+                        child: CustomCard(
+                            theme: CardThemes().surfaceColor,
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  TextScroll(
-                                    thisTrack.trackData!.trackName!,
+                                  SizedBox(
+                                    height: 80,
+                                    child: AspectRatio(
+                                      aspectRatio: 1,
+                                      child: getUriImage(thisAlbum.albumArt),
+                                    ),
                                   ),
-                                  TextScroll(
-                                    thisTrack.trackData!.trackArtistNames!,
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          TextScroll(
+                                            thisAlbum.albumName!,
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface,
+                                            ),
+                                          ),
+                                          TextScroll(
+                                            "${thisAlbum.numOfSongs!} Songs",
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
+                            )),
+                      );
+                    }),
+                artistResults.isNotEmpty
+                    ? SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Text(
+                            "Artists:",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
-                          SizedBox(
-                            width: 30,
-                            child: selectedTracks.isNotEmpty
-                                ? Checkbox(
-                                    value: (selectedTracks.contains(thisTrack)),
-                                    onChanged: null,
-                                  )
-                                : Container(),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+                        ),
+                      )
+                    : SliverToBoxAdapter(child: Container()),
+                SliverFixedExtentList.builder(
+                    itemExtent: 100,
+                    itemCount: artistResults.length,
+                    itemBuilder: (context, index) {
+                      final Artist thisArtist = artistResults[index];
+
+                      return GestureDetector(
+                        onTap: () {
+                          showArtist(context, thisArtist);
+                        },
+                        child: CustomCard(
+                            theme: CardThemes().primaryColor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 80,
+                                    child: AspectRatio(
+                                      aspectRatio: 1,
+                                      child: getUriImage(thisArtist.artistArt),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          TextScroll(
+                                            thisArtist.artistName!,
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary,
+                                            ),
+                                          ),
+                                          TextScroll(
+                                            "${thisArtist.artistTracks!.length} Songs",
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      );
+                    }),
+              ],
             ),
           ),
         ],

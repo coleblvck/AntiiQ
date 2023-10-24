@@ -1,6 +1,7 @@
 import 'package:antiiq/player/utilities/file_handling/global_selection.dart';
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/sort.dart' show initSort;
 import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
 import 'package:antiiq/player/utilities/queue_state.dart';
 import 'package:audio_service/audio_service.dart';
@@ -12,22 +13,16 @@ String tracksStorage = "Tracks";
 
 queryAndSort() async {
   await getAndSortSongs();
-  await sortAlbums();
-  await sortArtists();
-  await sortGenres();
+  await getAlbums();
+  await getArtists();
+  await getGenres();
   await getPlaylistsfromStore();
   await initQueueState();
   await initGlobalSelection();
+  await initSort();
 
   dataIsInitialized = true;
   await antiiqStore.put("dataInit", true);
-}
-
-autoReScan() async {
-  await getAndSortSongs();
-  await sortAlbums();
-  await sortArtists();
-  await sortGenres();
 }
 
 getAndSortSongs() async {
@@ -54,7 +49,7 @@ getAndSortSongs() async {
   currentTrackListSort = sortedSongs;
 }
 
-sortAlbums() async {
+getAlbums() async {
   List<Album> sortedAlbums = [];
   List<AlbumModel> albumSortQuery = await audioQuery.queryAlbums();
   //Progress Count init
@@ -93,7 +88,7 @@ sortAlbums() async {
   libraryLoadProgress = 0;
 }
 
-sortArtists() async {
+getArtists() async {
   List<Artist> sortedArtists = [];
   List<ArtistModel> artistSortQuery = await audioQuery.queryArtists();
   //Progress Count init
@@ -128,7 +123,7 @@ sortArtists() async {
   libraryLoadProgress = 0;
 }
 
-sortGenres() async {
+getGenres() async {
   List<Genre> sortedGenres = [];
   List<GenreModel> genreSortQuery = await audioQuery.queryGenres();
   //Progress Count init
