@@ -1,3 +1,3 @@
 - Added Favourites
 
-NOTE: You will need to uninstall any previous version due to a change in signing keys so, make a backup before doing this; if applicable.
+NOTE: You will need to uninstall any previous version before installing this one due to a change in signing keys so, make a backup before doing this; if applicable.
