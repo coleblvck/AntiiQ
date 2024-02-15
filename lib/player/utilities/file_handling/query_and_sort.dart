@@ -1,3 +1,4 @@
+import 'package:antiiq/player/utilities/file_handling/favourites.dart';
 import 'package:antiiq/player/utilities/file_handling/global_selection.dart';
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
@@ -19,6 +20,7 @@ queryAndSort() async {
   await getPlaylistsfromStore();
   await initQueueState();
   await initGlobalSelection();
+  await initFavourites();
   await initSort();
 
   dataIsInitialized = true;

@@ -50,6 +50,15 @@ dashboardItems(context) => {
           );
         },
       },
+      "favourites": {
+        "title": "Favourites",
+        "icon": RemixIcon.heart_pulse,
+        "function": () {
+          mainPageController.jumpToPage(
+            mainPageIndexes["favourites"] as int,
+          );
+        },
+      },
       "selection": {
         "title": "Selection",
         "icon": RemixIcon.check_double,

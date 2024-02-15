@@ -40,6 +40,7 @@ AntiiQ as in "Antique" is an offline Android music player which started as a per
 - Pitch, gain and speed tweaks
 - Embedded covers support
 - Search functionality
+- Favourites
 - Global Selection
 
 

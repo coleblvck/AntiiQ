@@ -5,6 +5,7 @@ import 'package:antiiq/player/screens/genres/genre.dart';
 import 'package:antiiq/player/screens/playlists/add_to_playlist.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
 import 'package:antiiq/player/utilities/duration_getters.dart';
+import 'package:antiiq/player/utilities/file_handling/favourites.dart';
 import 'package:antiiq/player/utilities/file_handling/global_selection.dart';
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
@@ -14,6 +15,7 @@ import 'package:audio_service/audio_service.dart';
 
 //Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 findTrackAndOpenSheet(context, MediaItem item) {
@@ -136,43 +138,78 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                           ],
                         ),
                         StreamBuilder<List<Track>>(
-                            stream: globalSelectionStream.stream,
-                            builder: (context, snapshot) {
-                              final List<Track> selectionSituation =
-                                  snapshot.data ?? globalSelection;
-                              return Card(
-                                margin: EdgeInsets.zero,
-                                color: Theme.of(context).colorScheme.background,
-                                shadowColor: Colors.black,
-                                surfaceTintColor: Colors.transparent,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Select Track:",
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ),
-                                      ),
-                                      Checkbox(
-                                        value: selectionSituation
-                                            .contains(tracks[0]),
-                                        onChanged: (value) {
-                                          globalSelectOrDeselect(tracks[0]);
-                                        },
-                                      )
-                                    ],
+                          stream: favouritesStream.stream,
+                          builder: (context, snapshot) {
+                            final List<Track> favouritesSituation =
+                                snapshot.data ?? favourites;
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Favourite:",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
                                   ),
+                                  IconButton(
+                                    onPressed: () =>
+                                        addOrRemoveFavourite(tracks[0]),
+                                    icon: const Icon(RemixIcon.heart_pulse),
+                                    color:
+                                        favouritesSituation.contains(tracks[0])
+                                            ? Colors.red
+                                            : Colors.white,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        StreamBuilder<List<Track>>(
+                          stream: globalSelectionStream.stream,
+                          builder: (context, snapshot) {
+                            final List<Track> selectionSituation =
+                                snapshot.data ?? globalSelection;
+                            return Card(
+                              margin: EdgeInsets.zero,
+                              color: Theme.of(context).colorScheme.background,
+                              shadowColor: Colors.black,
+                              surfaceTintColor: Colors.transparent,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Select Track:",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
+                                    Checkbox(
+                                      value: selectionSituation
+                                          .contains(tracks[0]),
+                                      onChanged: (value) {
+                                        globalSelectOrDeselect(tracks[0]);
+                                      },
+                                    )
+                                  ],
                                 ),
-                              );
-                            })
+                              ),
+                            );
+                          },
+                        ),
                       ],
                     )
                   : Container(),

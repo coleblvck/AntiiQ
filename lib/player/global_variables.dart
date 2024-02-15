@@ -46,7 +46,8 @@ var mainPageIndexes = {
   "artists": 5,
   "genres": 6,
   "playlists": 7,
-  "selection": 8,
+  "favourites": 8,
+  "selection": 9,
 };
 
 Velocity defaultTextScrollvelocity =
@@ -101,6 +102,9 @@ RoundedRectangleBorder bottomSheetShape = const RoundedRectangleBorder(
 List<Track> globalSelection = [];
 StreamController<List<Track>> globalSelectionStream =
     StreamController.broadcast();
+
+List<Track> favourites = [];
+StreamController<List<Track>> favouritesStream = StreamController.broadcast();
 
 //User Settings Related Variables
 List<MediaItem> queueState = [];

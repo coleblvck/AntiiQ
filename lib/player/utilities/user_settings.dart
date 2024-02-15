@@ -1,4 +1,3 @@
-
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/utilities/audio_preferences.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
@@ -18,6 +17,7 @@ class BoxKeys {
   String interactiveSeekBar = "interactiveSeekBar";
   String queueState = "queueState";
   String globalSelection = "globalSelection";
+  String favourites = "favourites";
 }
 
 changeTheme(String theme) async {

@@ -1,6 +1,7 @@
 //Flutter Packages
 import 'package:antiiq/player/screens/artists/artists.dart';
 import 'package:antiiq/player/screens/equalizer/equalizer.dart';
+import 'package:antiiq/player/screens/favourites/favourites.dart';
 import 'package:antiiq/player/screens/genres/genres.dart';
 import 'package:antiiq/player/screens/playlists/playlists.dart';
 import 'package:antiiq/player/screens/search/search.dart';
@@ -30,6 +31,7 @@ Widget mainBackdrop() {
           ArtistsList(),
           GenresGrid(),
           Playlists(),
+          FavouritesList(),
           SelectionList(),
         ],
       ),

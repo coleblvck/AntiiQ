@@ -14,6 +14,14 @@ class Version {
 
 List<Version> versions = [
   const Version(
+    version: "1.0.8",
+    title: "Early Bird",
+    date: "15-FEB-2024",
+    changes: [
+      "- Added Favourites",
+    ],
+  ),
+  const Version(
     version: "1.0.6",
     title: "Early Bird",
     date: "24-OCT-2023",
