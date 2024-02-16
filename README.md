@@ -56,4 +56,4 @@ AntiiQ as in "Antique" is an offline Android music player which started as a per
 - Tag Editing: Attempted in a few different ways; app became quite heavy, while also leaving some pretty large footprints in cache and data storages.
 
 
-Note: This player has been tested to be working fully on Android 13, and partially tested on a device running Android 10. Your mileage may vary and so, some feedback would be needed if any behaviour improvements would be necessary.
+Note: This player has been tested to be working fully on Android 14 & 13, also partially tested on a device running Android 10. Your mileage may vary and so, some feedback would be needed if any behaviour improvements would be necessary.
