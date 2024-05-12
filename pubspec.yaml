@@ -51,6 +51,7 @@ dependencies:
   flutter_round_slider: ^1.0.0
   url_launcher: ^6.1.14
   filesystem_picker: ^4.0.0
+  receive_intent: ^0.2.5
 
 dev_dependencies:
   flutter_test:

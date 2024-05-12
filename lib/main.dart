@@ -1,4 +1,5 @@
 //Flutter Packages
+import 'package:antiiq/player/utilities/file_handling/intent.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,6 +36,8 @@ void main() async {
         androidNotificationIcon: "drawable/antiiq_icon",
       ));
   await initializeAudioPreferences();
+  // Remove this from here or invoke optional popup.
+  await initReceiveIntent();
 
   runApp(const Antiiq());
 }
