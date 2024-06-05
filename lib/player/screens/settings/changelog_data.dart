@@ -14,6 +14,17 @@ class Version {
 
 List<Version> versions = [
   const Version(
+    version: "1.2.0",
+    title: "Melomaniac",
+    date: "5-JUN-2024",
+    changes: [
+      "- Important bug fixes",
+      "- Added an option to show/hide currently playing track duration",
+      "- Quit using back button",
+      "- Added the ability to play tracks from the file manager and to set AntiiQ as the default music player",
+    ],
+  ),
+  const Version(
     version: "1.0.8",
     title: "Early Bird",
     date: "15-FEB-2024",

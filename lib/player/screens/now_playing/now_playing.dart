@@ -285,7 +285,13 @@ class NowPlayingFullCard extends StatelessWidget {
                                       padding: EdgeInsets.zero,
                                       onPressed: () {
                                         if (audioHandler
-                                            .antiiqQueue.isNotEmpty) {
+                                                .antiiqQueue.isNotEmpty &&
+                                            audioHandler
+                                                    .antiiqQueue[audioHandler
+                                                        .audioPlayer
+                                                        .currentIndex!]
+                                                    .extras!["id"] !=
+                                                "no-id") {
                                           findTrackAndOpenSheet(
                                             context,
                                             audioHandler.antiiqQueue[
@@ -303,6 +309,8 @@ class NowPlayingFullCard extends StatelessWidget {
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
                                   children: [
+                                    TrackDurationDisplayWidget(
+                                        currentTrack: currentTrack),
                                     SeekBarBuilder(currentTrack: currentTrack),
                                     StreamBuilder<PlaybackState>(
                                       stream: currentPlaybackState(),
@@ -428,4 +436,48 @@ class NowPlayingFullCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class TrackDurationDisplayWidget extends StatelessWidget {
+  const TrackDurationDisplayWidget({
+    super.key,
+    required this.currentTrack,
+  });
+
+  final MediaItem? currentTrack;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<bool>(
+      stream: trackDurationDisplayStream.stream,
+      builder: (context, snapshot) {
+        bool displayDuration = snapshot.data ?? showTrackDuration;
+        return displayDuration
+            ? Center(
+                child: CustomCard(
+                  theme: CardThemes().surfaceColor,
+                  child: StreamBuilder<Duration>(
+                    stream: currentPosition(),
+                    builder: (context, data) {
+                      int? position = data.data?.abs().inSeconds;
+                      int? duration = currentTrack?.duration?.abs().inSeconds;
+                      position ??= 0;
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("${toMinuteSeconds(position)} / ${toMinuteSeconds(duration)}"),
+                      );
+                    },
+                  ),
+                ),
+              )
+            : Container();
+      },
+    );
+  }
+}
+
+String toMinuteSeconds(secondsToConvert) {
+  int minutes = secondsToConvert ~/ 60;
+  int seconds = secondsToConvert % 60;
+  return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
 }

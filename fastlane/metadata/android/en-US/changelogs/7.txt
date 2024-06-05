@@ -1,0 +1,4 @@
+- Important bug fixes
+- Added an option to show/hide currently playing track duration
+- Quit using back button
+- Added the ability to play tracks from the file manager and to set AntiiQ as the default music player.

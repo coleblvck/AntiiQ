@@ -42,8 +42,42 @@ class _MainBoxState extends State<MainBox> {
     );
   }
 
+  Future<bool?> showPopDialog() {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          title: const Text('Exit?'),
+          content: const Text(
+            'Are you sure',
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Stay'),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Exit'),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   initData() async {
-    bool popDialog = false;
     showDialog(
       useSafeArea: true,
       barrierDismissible: false,
@@ -53,15 +87,14 @@ class _MainBoxState extends State<MainBox> {
           int loadProgress = libraryLoadProgress;
           int loadTotal = libraryLoadTotal;
           String message = loadingMessage;
-          libraryLoadTimer = Timer.periodic(
-              const Duration(seconds: 1),
-              (timer) => {
-                    if (context.mounted) {setState(() {})}
-                  });
-          return WillPopScope(
-            onWillPop: () async {
-              return popDialog;
-            },
+          libraryLoadTimer =
+              Timer.periodic(const Duration(seconds: 1), (timer) {
+            if (context.mounted) {
+              setState(() {});
+            }
+          });
+          return PopScope(
+            canPop: false,
             child: Dialog(
               backgroundColor: Theme.of(context).colorScheme.background,
               surfaceTintColor: Colors.transparent,
@@ -101,7 +134,6 @@ class _MainBoxState extends State<MainBox> {
     libraryLoadTimer.cancel();
 
     if (mounted) {
-      popDialog = true;
       stateSet();
       libraryLoadTotal = 1;
       libraryLoadProgress = 0;
@@ -133,16 +165,25 @@ class _MainBoxState extends State<MainBox> {
         bottomNavigationBarHeight;
 
     //
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) async {
+        if (didPop) {
+          return;
+        }
         if (boxController.isBoxClosed) {
           if (mainPageController.page != 0) {
             mainPageController.jumpToPage(0);
+          } else {
+            final bool shouldPop = await showPopDialog() ?? false;
+            if (context.mounted && shouldPop) {
+              audioHandler.stop();
+              SystemNavigator.pop();
+            }
           }
         } else {
           boxController.closeBox();
         }
-        return false;
       },
       child: SafeArea(
         child: Scaffold(
@@ -159,16 +200,6 @@ class _MainBoxState extends State<MainBox> {
               ),
             ),
             actions: [
-              IconButton(
-                iconSize: 27,
-                icon: Icon(
-                  RemixIcon.shut_down_outline,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                onPressed: () {
-                  exit(0);
-                },
-              ),
               IconButton(
                 iconSize: 27,
                 icon: Icon(

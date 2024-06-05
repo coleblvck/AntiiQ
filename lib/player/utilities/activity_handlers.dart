@@ -1,5 +1,9 @@
 //Audio Service
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
+import 'package:audiotags/audiotags.dart';
+import 'package:uri_to_file/uri_to_file.dart';
 
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
@@ -113,4 +117,20 @@ shuffleList(List<MediaItem> list) async {
 shuffleTracks(List<Track> list) async {
   List<MediaItem> itemList = list.map((e) => e.mediaItem!).toList();
   await shuffleList(itemList);
+}
+
+playFromIntentLink(String link) async {
+  File file = await toFile(link);
+  Tag? tag = await AudioTags.read(file.path);
+  final songItem = MediaItem(
+      id: link,
+      title: tag?.title ?? "Unknown",
+      artist: tag?.trackArtist ?? "Unknown Artist",
+      album: tag?.album ?? "Unknown Album",
+      artUri: defaultArtUri,
+      duration: Duration(seconds:  tag!.duration!),
+      extras: {
+        "id": "no-id",
+      });
+  playOnlyThis(songItem);
 }

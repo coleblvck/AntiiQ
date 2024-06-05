@@ -201,6 +201,10 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                       value: selectionSituation
                                           .contains(tracks[0]),
                                       onChanged: (value) {
+                                        // Check back. Better solution needed.
+                                        thisGlobalSelection && value == false
+                                            ? Navigator.of(context).pop()
+                                            : null;
                                         globalSelectOrDeselect(tracks[0]);
                                       },
                                     )

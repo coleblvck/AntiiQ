@@ -100,3 +100,6 @@ Uri directAlbumArtPath(id) {
 }
 
 Map<int, Uri> albumArtsList = {};
+
+//ToDo
+setTempArt(Uint8List picture) {}

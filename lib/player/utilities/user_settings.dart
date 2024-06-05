@@ -18,6 +18,7 @@ class BoxKeys {
   String queueState = "queueState";
   String globalSelection = "globalSelection";
   String favourites = "favourites";
+  String showTrackDuration = "showTrackDuration";
 }
 
 changeTheme(String theme) async {
@@ -48,6 +49,7 @@ initializeUserSettings() async {
   await getPreviousButtonAction();
   await getSwipeGestures();
   await initInteractiveSeekBarSwitch();
+  await initTrackDurationShowSwitch();
 }
 
 initializeAudioPreferences() async {
@@ -97,4 +99,15 @@ interactiveSeekBarSwitch(bool value) async {
   interactiveMiniPlayerSeekbar = value;
   interactiveSeekbarStream.add(value);
   await antiiqStore.put(BoxKeys().interactiveSeekBar, value);
+}
+
+initTrackDurationShowSwitch() async {
+  showTrackDuration =
+      await antiiqStore.get(BoxKeys().showTrackDuration, defaultValue: true);
+}
+
+trackDurationShowSwitch(bool value) async {
+  showTrackDuration = value;
+  trackDurationDisplayStream.add(value);
+  await antiiqStore.put(BoxKeys().showTrackDuration, value);
 }

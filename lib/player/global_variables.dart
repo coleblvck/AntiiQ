@@ -113,6 +113,10 @@ late bool interactiveMiniPlayerSeekbar;
 
 StreamController<bool> interactiveSeekbarStream = StreamController.broadcast();
 
+late bool showTrackDuration;
+
+StreamController<bool> trackDurationDisplayStream = StreamController.broadcast();
+
 late Timer runtimeAutoScanTimer;
 
 late Duration runtimeAutoScanInterval;

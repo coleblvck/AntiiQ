@@ -34,6 +34,8 @@ void main() async {
         androidNotificationChannelId: "com.coleblvck.antiiq.channel.audio",
         androidNotificationChannelName: "Antiiq Player",
         androidNotificationIcon: "drawable/antiiq_icon",
+        androidNotificationOngoing: false,
+        androidStopForegroundOnPause: false,
       ));
   await initializeAudioPreferences();
   // Remove this from here or invoke optional popup.

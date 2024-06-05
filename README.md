@@ -45,6 +45,9 @@ AntiiQ as in "Antique" is an offline Android music player which started as a per
 
 
 ## To-Do...?
+- Scan Cover Arts present in track folder
+- Better Usability & Accessibility
+- Translations(?)
 - Additional configurations
 - Landscape mode
 - Add warning dialogs for actions such as "Delete Playlist"
