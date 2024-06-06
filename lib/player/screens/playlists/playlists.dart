@@ -219,7 +219,7 @@ class _PlaylistsState extends State<Playlists> {
       playlistTitleController.clear();
       playlistSearchController.clear();
       selectedTracks = [];
-      if (context.mounted) {
+      if (mounted) {
         stateSet();
         Navigator.of(context).pop();
       }

@@ -128,7 +128,7 @@ playFromIntentLink(String link) async {
       artist: tag?.trackArtist ?? "Unknown Artist",
       album: tag?.album ?? "Unknown Album",
       artUri: defaultArtUri,
-      duration: Duration(seconds:  tag!.duration!),
+      duration: Duration(seconds:  tag?.duration ?? 1),
       extras: {
         "id": "no-id",
       });

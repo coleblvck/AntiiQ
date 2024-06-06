@@ -16,8 +16,6 @@ class BackupRestore extends StatefulWidget {
 }
 
 class _BackupRestoreState extends State<BackupRestore> {
-  
-
   showBackUpRestoreDirectoryList() async {
     backupRestoreDirectoryList = [];
     final List<Directory>? rootList = await getExternalStorageDirectories();
@@ -46,19 +44,14 @@ class _BackupRestoreState extends State<BackupRestore> {
   String backupRestorePath = "";
   List<String> backupRestoreDirectoryList = [];
 
- 
-
   backupOrRestore(bool toBackUp) async {
-    bool popDialog = false;
     showDialog(
       useSafeArea: true,
       barrierDismissible: false,
       context: context,
       builder: (context) {
-        return WillPopScope(
-          onWillPop: () async {
-            return popDialog;
-          },
+        return PopScope(
+          canPop: false,
           child: Dialog(
             backgroundColor: Theme.of(context).colorScheme.background,
             surfaceTintColor: Colors.transparent,
@@ -97,7 +90,6 @@ class _BackupRestoreState extends State<BackupRestore> {
       }
     }
     if (mounted) {
-      popDialog = true;
       setState(() {
         backupRestorePath = "";
         backupRestoreDirectoryList = [];

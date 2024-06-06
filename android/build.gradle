@@ -3,6 +3,40 @@ allprojects {
         google()
         mavenCentral()
     }
+
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+                def javaVersion = JavaVersion.VERSION_17
+                android {
+                    def minimumApiVersion = 21
+                    def androidApiVersion = 33
+                    compileSdkVersion androidApiVersion
+                    defaultConfig {
+                        minSdkVersion minimumApiVersion
+                        targetSdkVersion androidApiVersion
+                    }
+                    compileOptions {
+                        sourceCompatibility javaVersion
+                        targetCompatibility javaVersion
+                    }
+                    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+                        kotlinOptions {
+                            jvmTarget = javaVersion.toString()
+                        }
+                    }
+                    println("Setting java version to ${javaVersion.toString()} which is $javaVersion")
+                    println("Setting minSdkVersion to $minimumApiVersion")
+                    println("Setting compileSdkVersion and targetSdkVersion to $androidApiVersion")
+                }
+            }
+        }
+    }
 }
 
 rootProject.buildDir = '../build'

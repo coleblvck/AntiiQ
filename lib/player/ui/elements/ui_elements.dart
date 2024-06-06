@@ -157,46 +157,46 @@ class CustomButton extends StatelessWidget {
 
 class ButtonStyles {
   ButtonStyle style1 = ButtonStyle(
-    backgroundColor: MaterialStatePropertyAll(currentColorScheme.background),
-    foregroundColor: MaterialStatePropertyAll(currentColorScheme.primary),
-    surfaceTintColor: const MaterialStatePropertyAll(Colors.transparent),
-    elevation: const MaterialStatePropertyAll(5),
+    backgroundColor: WidgetStatePropertyAll(currentColorScheme.background),
+    foregroundColor: WidgetStatePropertyAll(currentColorScheme.primary),
+    surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+    elevation: const WidgetStatePropertyAll(5),
     padding:
-        const MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 5)),
-    shape: MaterialStatePropertyAll(
+        const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 5)),
+    shape: WidgetStatePropertyAll(
       RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
     ),
-    textStyle: MaterialStatePropertyAll(TextStyles().onPrimaryText),
+    textStyle: WidgetStatePropertyAll(TextStyles().onPrimaryText),
   );
   ButtonStyle style2 = ButtonStyle(
-    backgroundColor: MaterialStatePropertyAll(currentColorScheme.primary),
-    foregroundColor: MaterialStatePropertyAll(currentColorScheme.background),
-    surfaceTintColor: const MaterialStatePropertyAll(Colors.transparent),
-    elevation: const MaterialStatePropertyAll(5),
+    backgroundColor: WidgetStatePropertyAll(currentColorScheme.primary),
+    foregroundColor: WidgetStatePropertyAll(currentColorScheme.background),
+    surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+    elevation: const WidgetStatePropertyAll(5),
     padding:
-        const MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 5)),
-    shape: MaterialStatePropertyAll(
+        const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 5)),
+    shape: WidgetStatePropertyAll(
       RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
     ),
-    textStyle: MaterialStatePropertyAll(TextStyles().onBackgroundText),
+    textStyle: WidgetStatePropertyAll(TextStyles().onBackgroundText),
   );
   ButtonStyle style3 = ButtonStyle(
-    backgroundColor: MaterialStatePropertyAll(currentColorScheme.secondary),
-    foregroundColor: MaterialStatePropertyAll(currentColorScheme.onSecondary),
-    surfaceTintColor: const MaterialStatePropertyAll(Colors.transparent),
-    elevation: const MaterialStatePropertyAll(5),
+    backgroundColor: WidgetStatePropertyAll(currentColorScheme.secondary),
+    foregroundColor: WidgetStatePropertyAll(currentColorScheme.onSecondary),
+    surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+    elevation: const WidgetStatePropertyAll(5),
     padding:
-        const MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 5)),
-    shape: MaterialStatePropertyAll(
+        const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 5)),
+    shape: WidgetStatePropertyAll(
       RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
     ),
-    textStyle: MaterialStatePropertyAll(TextStyles().onBackgroundText),
+    textStyle: WidgetStatePropertyAll(TextStyles().onBackgroundText),
   );
 }
 
