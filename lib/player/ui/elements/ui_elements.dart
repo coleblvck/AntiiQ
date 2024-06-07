@@ -161,6 +161,10 @@ class CustomButton extends StatelessWidget {
   }
 }
 
+class SwitchThemes {
+  SwitchThemeData defaultTheme = SwitchThemeData();
+}
+
 class ButtonStyles {
   ButtonStyle style1 = ButtonStyle(
     backgroundColor: WidgetStatePropertyAll(currentColorScheme.background),
@@ -261,7 +265,7 @@ class TextStyles {
 }
 
 class FontFamilies {
-  String defaultFont = "monospace";
+  String defaultFont = "Roboto";
 }
 
 class FontSizes {

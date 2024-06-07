@@ -77,9 +77,15 @@ class _BehaviourState extends State<Behaviour> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                            "Enable/Disable Swipe Gestures on the Now Playing Screen and Mini Player:"),
+                        Text(
+                          "Enable/Disable Swipe Gestures on the Now Playing Screen and Mini Player:",
+                          style: AntiiQTheme.of(context).textStyle,
+                        ),
                         Switch(
+                          activeTrackColor:
+                              AntiiQTheme.of(context).colorScheme.primary,
+                          activeColor:
+                              AntiiQTheme.of(context).colorScheme.onPrimary,
                           value: swipeGestures,
                           onChanged: (value) {
                             setState(() {
@@ -98,7 +104,8 @@ class _BehaviourState extends State<Behaviour> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Previous Button restarts current Track first:"),
+                        const Text(
+                            "Previous Button restarts current Track first:"),
                         Switch(
                           value: previousRestart,
                           onChanged: (value) {

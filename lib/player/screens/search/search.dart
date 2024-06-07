@@ -70,13 +70,18 @@ class _SearchState extends State<Search> {
                         search(term);
                       },
                       textAlignVertical: TextAlignVertical.center,
+                      style: TextStyles().onSurfaceText,
                       autofocus: false,
                       controller: searchController,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(RemixIcon.search),
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          RemixIcon.search,
+                          color: AntiiQTheme.of(context).colorScheme.primary,
+                        ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                         hintText: "Start Typing to Search...",
+                        hintStyle: TextStyles().onSurfaceText,
                       ),
                     ),
                   ),
@@ -85,8 +90,9 @@ class _SearchState extends State<Search> {
                       searchController.clear();
                       search("");
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       RemixIcon.close,
+                      color: AntiiQTheme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -103,7 +109,8 @@ class _SearchState extends State<Search> {
                           child: Text(
                             "Tracks:",
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.primary,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
@@ -151,7 +158,8 @@ class _SearchState extends State<Search> {
                           child: Text(
                             "Albums:",
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.primary,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
@@ -223,7 +231,8 @@ class _SearchState extends State<Search> {
                           child: Text(
                             "Artists:",
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.primary,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
