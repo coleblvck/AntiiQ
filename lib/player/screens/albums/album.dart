@@ -39,7 +39,7 @@ class AlbumItem extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.background,
+              color: AntiiQTheme.of(context).colorScheme.background,
               backgroundBlendMode: BlendMode.colorDodge,
               image: DecorationImage(
                 image: FileImage(
@@ -96,9 +96,9 @@ showAlbum(context, Album album) {
     enableDrag: true,
     elevation: 10,
     isScrollControlled: true,
-    backgroundColor: Theme.of(context).colorScheme.background,
+    backgroundColor: AntiiQTheme.of(context).colorScheme.background,
     showDragHandle: true,
-    barrierColor: Theme.of(context).colorScheme.background.withAlpha(200),
+    barrierColor: AntiiQTheme.of(context).colorScheme.background.withAlpha(200),
     shape: bottomSheetShape,
     context: context,
     builder: (context) => Padding(
@@ -126,7 +126,7 @@ showAlbum(context, Album album) {
                             Text(
                               "Album",
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
+                                color: AntiiQTheme.of(context).colorScheme.primary,
                                 fontSize: 20,
                               ),
                             ),
@@ -135,7 +135,7 @@ showAlbum(context, Album album) {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Theme.of(context).colorScheme.primary,
+                                color: AntiiQTheme.of(context).colorScheme.primary,
                               ),
                               velocity: defaultTextScrollvelocity,
                               delayBefore: delayBeforeScroll,
@@ -145,7 +145,7 @@ showAlbum(context, Album album) {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 color:
-                                    Theme.of(context).colorScheme.onBackground,
+                                    AntiiQTheme.of(context).colorScheme.onBackground,
                               ),
                               velocity: defaultTextScrollvelocity,
                               delayBefore: delayBeforeScroll,
@@ -154,14 +154,14 @@ showAlbum(context, Album album) {
                                 ? Text(
                                     "${album.year}",
                                     style: TextStyle(
-                                      color: Theme.of(context)
+                                      color: AntiiQTheme.of(context)
                                           .colorScheme
                                           .onBackground,
                                     ),
                                   )
                                 : Container(),
                             Card(
-                              color: Theme.of(context).colorScheme.background,
+                              color: AntiiQTheme.of(context).colorScheme.background,
                               surfaceTintColor: Colors.transparent,
                               margin: const EdgeInsets.symmetric(vertical: 5),
                               child: Padding(
@@ -170,7 +170,7 @@ showAlbum(context, Album album) {
                                   "Length: ${totalDuration(album.albumTracks!)}",
                                   style: TextStyle(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        AntiiQTheme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               ),
@@ -199,7 +199,7 @@ showAlbum(context, Album album) {
                             thisTrack.trackData!.trackName!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -208,7 +208,7 @@ showAlbum(context, Album album) {
                             thisTrack.mediaItem!.artist!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -236,7 +236,7 @@ showAlbum(context, Album album) {
                         album.albumName!,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: AntiiQTheme.of(context).colorScheme.onBackground,
                         ),
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,

@@ -20,13 +20,13 @@ class _UserInterfaceState extends State<UserInterface> {
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 75,
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: AntiiQTheme.of(context).colorScheme.background,
           elevation: 2,
           surfaceTintColor: Colors.transparent,
-          shadowColor: Theme.of(context).colorScheme.onBackground,
+          shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
             iconSize: 50,
-            color: Theme.of(context).colorScheme.secondary,
+            color: AntiiQTheme.of(context).colorScheme.secondary,
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -37,13 +37,13 @@ class _UserInterfaceState extends State<UserInterface> {
               padding: const EdgeInsets.only(right: 20.0),
               child: Icon(
                 RemixIcon.magic,
-                color: Theme.of(context).colorScheme.secondary,
+                color: AntiiQTheme.of(context).colorScheme.secondary,
                 size: 30,
               ),
             ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: AntiiQTheme.of(context).colorScheme.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: SingleChildScrollView(
@@ -55,7 +55,7 @@ class _UserInterfaceState extends State<UserInterface> {
                   child: Text(
                     "Interface",
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: AntiiQTheme.of(context).colorScheme.secondary,
                         fontSize: 30),
                     textAlign: TextAlign.center,
                   ),
@@ -70,7 +70,7 @@ class _UserInterfaceState extends State<UserInterface> {
                     child: Text(
                       "Colours",
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: AntiiQTheme.of(context).colorScheme.onSurface,
                         fontSize: 30,
                       ),
                       textAlign: TextAlign.center,
@@ -80,7 +80,7 @@ class _UserInterfaceState extends State<UserInterface> {
                 Text(
                   "You will need to restart application for colours to apply properly.",
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.onBackground,
+                    color: AntiiQTheme.of(context).colorScheme.onBackground,
                     fontSize: 15,
                   ),
                   textAlign: TextAlign.center,
@@ -97,7 +97,7 @@ class _UserInterfaceState extends State<UserInterface> {
                 ),
                 CustomCard(
                   theme: CardThemes().settingsItemTheme.copyWith(
-                        color: Theme.of(context).colorScheme.surface,
+                        color: AntiiQTheme.of(context).colorScheme.surface,
                       ),
                   child: Column(
                     children: [
@@ -156,11 +156,11 @@ class _UserInterfaceState extends State<UserInterface> {
                                 CustomButton(
                                   style: ButtonStyles().style1.copyWith(
                                         backgroundColor:
-                                            MaterialStatePropertyAll(
+                                            WidgetStatePropertyAll(
                                           customThemes[theme]!.secondary,
                                         ),
                                         foregroundColor:
-                                            MaterialStatePropertyAll(
+                                            WidgetStatePropertyAll(
                                           customThemes[theme]!.onSecondary,
                                         ),
                                       ),

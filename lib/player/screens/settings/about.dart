@@ -17,13 +17,13 @@ class About extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 75,
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: AntiiQTheme.of(context).colorScheme.background,
           elevation: 2,
           surfaceTintColor: Colors.transparent,
-          shadowColor: Theme.of(context).colorScheme.onBackground,
+          shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
             iconSize: 50,
-            color: Theme.of(context).colorScheme.primary,
+            color: AntiiQTheme.of(context).colorScheme.primary,
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -34,13 +34,13 @@ class About extends StatelessWidget {
               padding: const EdgeInsets.only(right: 20.0),
               child: Icon(
                 RemixIcon.information,
-                color: Theme.of(context).colorScheme.primary,
+                color: AntiiQTheme.of(context).colorScheme.primary,
                 size: 30,
               ),
             ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: AntiiQTheme.of(context).colorScheme.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: SingleChildScrollView(
@@ -57,7 +57,7 @@ class About extends StatelessWidget {
                   child: Text(
                     "About",
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
                         fontSize: 30),
                     textAlign: TextAlign.center,
                   ),
@@ -77,7 +77,7 @@ class About extends StatelessWidget {
                           child: Text(
                             "AntiiQ is an Open Source Music Player for Music Collectors and Enthusiasts, built with Flutter.",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: AntiiQTheme.of(context).colorScheme.onSurface,
                               fontSize: 18,
                             ),
                           ),
@@ -93,7 +93,7 @@ class About extends StatelessWidget {
                                   "Developer:",
                                   style: TextStyle(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        AntiiQTheme.of(context).colorScheme.primary,
                                     fontSize: 18,
                                   ),
                                 ),
@@ -101,7 +101,7 @@ class About extends StatelessWidget {
                                   "Cole Blvck",
                                   style: TextStyle(
                                     color:
-                                        Theme.of(context).colorScheme.secondary,
+                                        AntiiQTheme.of(context).colorScheme.secondary,
                                     fontSize: 18,
                                   ),
                                 ),
@@ -153,7 +153,7 @@ class About extends StatelessWidget {
                           child: Text(
                             "Changelog:",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: AntiiQTheme.of(context).colorScheme.onPrimary,
                               fontSize: 20,
                             ),
                           ),
@@ -163,7 +163,7 @@ class About extends StatelessWidget {
                           child: Text(
                             "Latest:",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: AntiiQTheme.of(context).colorScheme.onPrimary,
                               fontSize: 18,
                             ),
                           ),
@@ -179,7 +179,7 @@ class About extends StatelessWidget {
                                   versions[0].version,
                                   style: TextStyle(
                                     color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                        AntiiQTheme.of(context).colorScheme.onSurface,
                                     fontSize: 18,
                                   ),
                                 ),
@@ -187,7 +187,7 @@ class About extends StatelessWidget {
                                   "Codename: ${versions[0].title}",
                                   style: TextStyle(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        AntiiQTheme.of(context).colorScheme.primary,
                                     fontSize: 18,
                                   ),
                                 ),
@@ -195,7 +195,7 @@ class About extends StatelessWidget {
                                   versions[0].date,
                                   style: TextStyle(
                                     color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                        AntiiQTheme.of(context).colorScheme.onSurface,
                                     fontSize: 18,
                                   ),
                                 ),
@@ -204,7 +204,7 @@ class About extends StatelessWidget {
                                   Text(
                                     change,
                                     style: TextStyle(
-                                      color: Theme.of(context)
+                                      color: AntiiQTheme.of(context)
                                           .colorScheme
                                           .onSurface,
                                       fontSize: 15,
@@ -241,7 +241,7 @@ class About extends StatelessWidget {
                     child: CustomButton(
                       style: ButtonStyles().style1,
                       function: () {
-                        showLicences(context);
+                        showLicenses(context);
                       },
                       child: const Text("Licenses"),
                     ),
@@ -256,7 +256,7 @@ class About extends StatelessWidget {
   }
 }
 
-showLicences(context) {
+showLicenses(context) {
   showModalBottomSheet(
     enableDrag: true,
     isScrollControlled: true,

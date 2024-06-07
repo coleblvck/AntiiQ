@@ -43,10 +43,10 @@ class _EqualizerState extends State<Equalizer> {
                               stepLineCount: 30,
                               glowDistance: 100,
                               borderColor: targetGain == 0.0
-                                  ? Theme.of(context).colorScheme.primary
+                                  ? AntiiQTheme.of(context).colorScheme.primary
                                   : Colors.white,
                               lineColor:
-                                  Theme.of(context).colorScheme.secondary,
+                                  AntiiQTheme.of(context).colorScheme.secondary,
                             ),
                             value: targetGain,
                             onChanged: (value) {
@@ -63,7 +63,7 @@ class _EqualizerState extends State<Equalizer> {
                           "Gain!",
                           style: TextStyle(
                             fontSize: 20,
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: AntiiQTheme.of(context).colorScheme.secondary,
                           ),
                         ),
                         StreamBuilder<bool>(
@@ -103,7 +103,7 @@ class _EqualizerState extends State<Equalizer> {
                                 "Pitch",
                                 style: TextStyle(
                                   fontSize: 20,
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: AntiiQTheme.of(context).colorScheme.primary,
                                 ),
                               ),
                               RoundSlider(
@@ -115,9 +115,9 @@ class _EqualizerState extends State<Equalizer> {
                                   radius: 70,
                                   friction: 2,
                                   borderColor:
-                                      Theme.of(context).colorScheme.secondary,
+                                      AntiiQTheme.of(context).colorScheme.secondary,
                                   lineColor: pitchValue == 1.0
-                                      ? Theme.of(context).colorScheme.primary
+                                      ? AntiiQTheme.of(context).colorScheme.primary
                                       : Colors.white,
                                 ),
                                 value: pitchValue / 2,
@@ -177,7 +177,7 @@ class _EqualizerState extends State<Equalizer> {
                         handler: FlutterSliderHandler(
                           decoration: BoxDecoration(
                               color: speed == 1.0
-                                  ? Theme.of(context).colorScheme.primary
+                                  ? AntiiQTheme.of(context).colorScheme.primary
                                   : Colors.white,
                               borderRadius: BorderRadius.circular(5)),
                           child: Container(),
@@ -187,15 +187,15 @@ class _EqualizerState extends State<Equalizer> {
                         trackBar: FlutterSliderTrackBar(
                           inactiveTrackBar: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: AntiiQTheme.of(context).colorScheme.secondary,
                             border: Border.all(
                               width: 3,
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: AntiiQTheme.of(context).colorScheme.secondary,
                             ),
                           ),
                           activeTrackBar: BoxDecoration(
                             borderRadius: BorderRadius.circular(4),
-                            color: Theme.of(context).colorScheme.primary,
+                            color: AntiiQTheme.of(context).colorScheme.primary,
                           ),
                         ),
                         onDragCompleted:
@@ -221,7 +221,7 @@ class _EqualizerState extends State<Equalizer> {
                       "EQ",
                       style: TextStyle(
                         fontSize: 20,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: AntiiQTheme.of(context).colorScheme.secondary,
                       ),
                     ),
                   ),
@@ -268,7 +268,7 @@ class _EqualizerState extends State<Equalizer> {
                             max: parameters.maxDecibels * 100,
                             handler: FlutterSliderHandler(
                               decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: AntiiQTheme.of(context).colorScheme.primary,
                                   borderRadius: BorderRadius.circular(5)),
                               child: Container(),
                             ),
@@ -277,15 +277,15 @@ class _EqualizerState extends State<Equalizer> {
                             trackBar: FlutterSliderTrackBar(
                               inactiveTrackBar: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Theme.of(context).colorScheme.primary,
+                                color: AntiiQTheme.of(context).colorScheme.primary,
                                 border: Border.all(
                                   width: 3,
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: AntiiQTheme.of(context).colorScheme.primary,
                                 ),
                               ),
                               activeTrackBar: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
-                                color: Theme.of(context).colorScheme.secondary,
+                                color: AntiiQTheme.of(context).colorScheme.secondary,
                               ),
                             ),
                             onDragCompleted:

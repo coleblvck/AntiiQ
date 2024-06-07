@@ -18,13 +18,13 @@ class Settings extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 75,
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: AntiiQTheme.of(context).colorScheme.background,
           elevation: 2,
           surfaceTintColor: Colors.transparent,
-          shadowColor: Theme.of(context).colorScheme.onBackground,
+          shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
             iconSize: 50,
-            color: Theme.of(context).colorScheme.primary,
+            color: AntiiQTheme.of(context).colorScheme.primary,
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -36,11 +36,12 @@ class Settings extends StatelessWidget {
               child: Text(
                 "Settings",
                 style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary, fontSize: 50),
+                    color: AntiiQTheme.of(context).colorScheme.primary, fontSize: 50),
               ),
             ),
           ],
         ),
+        backgroundColor: AntiiQTheme.of(context).colorScheme.background,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -65,14 +66,14 @@ class Settings extends StatelessWidget {
                           children: [
                             Icon(
                               RemixIcon.magic,
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: AntiiQTheme.of(context).colorScheme.secondary,
                               size: 30,
                             ),
                             const SizedBox(width: 10),
                             Text(
                               "Interface",
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
+                                color: AntiiQTheme.of(context).colorScheme.secondary,
                                 fontSize: 30,
                               ),
                             ),
@@ -104,14 +105,14 @@ class Settings extends StatelessWidget {
                           children: [
                             Icon(
                               RemixIcon.folder,
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: AntiiQTheme.of(context).colorScheme.onSurface,
                               size: 30,
                             ),
                             const SizedBox(width: 10),
                             Text(
                               "Library",
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface,
+                                color: AntiiQTheme.of(context).colorScheme.onSurface,
                                 fontSize: 30,
                               ),
                             ),
@@ -143,14 +144,14 @@ class Settings extends StatelessWidget {
                           children: [
                             Icon(
                               RemixIcon.play,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: AntiiQTheme.of(context).colorScheme.primary,
                               size: 30,
                             ),
                             const SizedBox(width: 10),
                             Text(
                               "Behaviour",
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
+                                color: AntiiQTheme.of(context).colorScheme.primary,
                                 fontSize: 30,
                               ),
                             ),
@@ -182,14 +183,14 @@ class Settings extends StatelessWidget {
                           children: [
                             Icon(
                               RemixIcon.save_3,
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: AntiiQTheme.of(context).colorScheme.onSurface,
                               size: 30,
                             ),
                             const SizedBox(width: 10),
                             Text(
                               "Backup/Restore",
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface,
+                                color: AntiiQTheme.of(context).colorScheme.onSurface,
                                 fontSize: 30,
                               ),
                             ),
@@ -221,14 +222,14 @@ class Settings extends StatelessWidget {
                           children: [
                             Icon(
                               RemixIcon.information,
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: AntiiQTheme.of(context).colorScheme.onPrimary,
                               size: 30,
                             ),
                             const SizedBox(width: 10),
                             Text(
                               "About",
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
+                                color: AntiiQTheme.of(context).colorScheme.onPrimary,
                                 fontSize: 30,
                               ),
                             ),

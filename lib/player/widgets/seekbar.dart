@@ -60,7 +60,7 @@ class SeekBar extends StatelessWidget {
         max: 1000,
         handler: FlutterSliderHandler(
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+              color: AntiiQTheme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(5)),
           child: Container(),
         ),
@@ -69,15 +69,15 @@ class SeekBar extends StatelessWidget {
         trackBar: FlutterSliderTrackBar(
           inactiveTrackBar: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Theme.of(context).colorScheme.primary,
+            color: AntiiQTheme.of(context).colorScheme.primary,
             border: Border.all(
               width: 3,
-              color: Theme.of(context).colorScheme.primary,
+              color: AntiiQTheme.of(context).colorScheme.primary,
             ),
           ),
           activeTrackBar: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
-            color: Theme.of(context).colorScheme.secondary,
+            color: AntiiQTheme.of(context).colorScheme.secondary,
           ),
         ),
         onDragCompleted: (handlerIndex, lowerValue, upperValue) =>

@@ -5,6 +5,7 @@ This Renders the screen for all songs
 */
 
 import 'package:antiiq/player/screens/favourites/favourites_song.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:text_scroll/text_scroll.dart';
@@ -30,7 +31,7 @@ class FavouritesList extends StatelessWidget {
           return Column(
             children: [
               Divider(
-                color: Theme.of(context).colorScheme.secondary,
+                color: AntiiQTheme.of(context).colorScheme.secondary,
                 height: 1,
               ),
               ListHeader(
@@ -41,7 +42,7 @@ class FavouritesList extends StatelessWidget {
                 availableSortTypes: const [],
               ),
               Divider(
-                color: Theme.of(context).colorScheme.secondary,
+                color: AntiiQTheme.of(context).colorScheme.secondary,
                 height: 1,
               ),
               Expanded(
@@ -61,7 +62,7 @@ class FavouritesList extends StatelessWidget {
                           thisTrack.trackData!.trackName!,
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
                           ),
                           velocity: defaultTextScrollvelocity,
                           delayBefore: delayBeforeScroll,
@@ -70,7 +71,7 @@ class FavouritesList extends StatelessWidget {
                           thisTrack.trackData!.trackArtistNames ?? "No Artist",
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
                           ),
                           velocity: defaultTextScrollvelocity,
                           delayBefore: delayBeforeScroll,

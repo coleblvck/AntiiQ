@@ -34,6 +34,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
     enableDrag: true,
     shape: bottomSheetShape,
     context: context,
+    backgroundColor: AntiiQTheme.of(context).colorScheme.background,
     builder: (context) {
       return SingleChildScrollView(
         child: Padding(
@@ -65,7 +66,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                       tracks[0].trackData!.trackName!,
                                       style: TextStyle(
                                         fontSize: 17,
-                                        color: Theme.of(context)
+                                        color: AntiiQTheme.of(context)
                                             .colorScheme
                                             .primary,
                                       ),
@@ -85,7 +86,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                         tracks[0].trackData!.trackArtistNames!,
                                         style: TextStyle(
                                           fontSize: 17,
-                                          color: Theme.of(context)
+                                          color: AntiiQTheme.of(context)
                                               .colorScheme
                                               .primary,
                                         ),
@@ -105,7 +106,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                         tracks[0].trackData!.albumName!,
                                         style: TextStyle(
                                           fontSize: 17,
-                                          color: Theme.of(context)
+                                          color: AntiiQTheme.of(context)
                                               .colorScheme
                                               .primary,
                                         ),
@@ -125,7 +126,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                         tracks[0].trackData!.genre!,
                                         style: TextStyle(
                                           fontSize: 17,
-                                          color: Theme.of(context)
+                                          color: AntiiQTheme.of(context)
                                               .colorScheme
                                               .primary,
                                         ),
@@ -154,7 +155,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                     style: TextStyle(
                                       fontSize: 18,
                                       color:
-                                          Theme.of(context).colorScheme.primary,
+                                          AntiiQTheme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                   IconButton(
@@ -178,7 +179,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                 snapshot.data ?? globalSelection;
                             return Card(
                               margin: EdgeInsets.zero,
-                              color: Theme.of(context).colorScheme.background,
+                              color: AntiiQTheme.of(context).colorScheme.background,
                               shadowColor: Colors.black,
                               surfaceTintColor: Colors.transparent,
                               child: Padding(
@@ -192,7 +193,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                       "Select Track:",
                                       style: TextStyle(
                                         fontSize: 18,
-                                        color: Theme.of(context)
+                                        color: AntiiQTheme.of(context)
                                             .colorScheme
                                             .primary,
                                       ),
@@ -227,11 +228,11 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                           Text(
                             "Selection",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: AntiiQTheme.of(context).colorScheme.primary,
                               fontSize: 20,
                               decoration: TextDecoration.underline,
                               decorationColor:
-                                  Theme.of(context).colorScheme.primary,
+                                  AntiiQTheme.of(context).colorScheme.primary,
                             ),
                           ),
                           Text("Selected Tracks: ${globalSelection.length}"),
@@ -240,7 +241,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                     )
                   : Container(),
               Card(
-                color: Theme.of(context).colorScheme.background,
+                color: AntiiQTheme.of(context).colorScheme.background,
                 surfaceTintColor: Colors.transparent,
                 margin: const EdgeInsets.symmetric(vertical: 5),
                 child: Padding(
@@ -248,7 +249,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                   child: Text(
                     "Length: ${totalDuration(tracks)}",
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: AntiiQTheme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),
@@ -258,7 +259,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                 child: Text("Available Options:",
                     style: TextStyle(
                       fontSize: 18,
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: AntiiQTheme.of(context).colorScheme.onSurface,
                     )),
               ),
               thisGlobalSelection

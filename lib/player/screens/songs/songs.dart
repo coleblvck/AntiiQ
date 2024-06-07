@@ -4,6 +4,7 @@ This Renders the screen for all songs
 
 */
 
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class SongsList extends StatelessWidget {
     return Column(
       children: [
         Divider(
-          color: Theme.of(context).colorScheme.secondary,
+          color: AntiiQTheme.of(context).colorScheme.secondary,
           height: 1,
         ),
         ListHeader(
@@ -39,7 +40,7 @@ class SongsList extends StatelessWidget {
           availableSortTypes: trackListSortTypes,
         ),
         Divider(
-          color: Theme.of(context).colorScheme.secondary,
+          color: AntiiQTheme.of(context).colorScheme.secondary,
           height: 1,
         ),
         Expanded(
@@ -63,7 +64,7 @@ class SongsList extends StatelessWidget {
                         thisTrack.trackData!.trackName!,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: AntiiQTheme.of(context).colorScheme.onBackground,
                         ),
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,
@@ -72,7 +73,7 @@ class SongsList extends StatelessWidget {
                         thisTrack.trackData!.trackArtistNames ?? "No Artist",
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: AntiiQTheme.of(context).colorScheme.onBackground,
                         ),
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,

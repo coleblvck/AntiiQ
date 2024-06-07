@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
+import 'package:flutter/services.dart';
 
 Future<Directory?> pickFolder(String path, context) async {
 
@@ -15,12 +17,24 @@ Future<Directory?> pickFolder(String path, context) async {
     constraints: const BoxConstraints(),
     theme: FilesystemPickerTheme(
       topBar: FilesystemPickerTopBarThemeData(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        foregroundColor: Theme.of(context).colorScheme.onSurface,
-      )
+        backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
+        foregroundColor: AntiiQTheme.of(context).colorScheme.onSurface,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AntiiQTheme.of(context).colorScheme.background,
+        )
+      ),
+      backgroundColor: AntiiQTheme.of(context).colorScheme.background,
+      fileList: FilesystemPickerFileListThemeData(
+        fileTextStyle: AntiiQTheme.of(context).textStyle,
+        folderTextStyle: AntiiQTheme.of(context).textStyle,
+      ),
+      pickerAction: FilesystemPickerActionThemeData(
+        backgroundColor: AntiiQTheme.of(context).colorScheme.primary,
+        checkIconColor: AntiiQTheme.of(context).colorScheme.onPrimary,
+      ),
     ),
     pickText: "Select Folder",
-    folderIconColor: Theme.of(context).colorScheme.secondary,
+    folderIconColor: AntiiQTheme.of(context).colorScheme.secondary,
   );
   Directory? directoryToReturn;
   if (newPath != null) {

@@ -53,7 +53,7 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
                       "New Playlist",
                       style: TextStyle(
                         fontSize: 20,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
                   ),
@@ -100,7 +100,7 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
                 "Other Playlists",
                 style: TextStyle(
                   fontSize: 20,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: AntiiQTheme.of(context).colorScheme.primary,
                 ),
               ),
             ),

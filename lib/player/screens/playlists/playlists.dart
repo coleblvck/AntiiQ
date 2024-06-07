@@ -34,9 +34,9 @@ class _PlaylistsState extends State<Playlists> {
       enableDrag: true,
       elevation: 10,
       isScrollControlled: true,
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: AntiiQTheme.of(context).colorScheme.background,
       showDragHandle: true,
-      barrierColor: Theme.of(context).colorScheme.background.withAlpha(200),
+      barrierColor: AntiiQTheme.of(context).colorScheme.background.withAlpha(200),
       shape: bottomSheetShape,
       context: context,
       builder: (context) => StatefulBuilder(

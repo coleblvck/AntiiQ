@@ -1,6 +1,7 @@
 //Flutter Packages
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class ListHeader extends StatelessWidget {
             child: Text(
               "$headerTitle: ${listToCount.length}",
               style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
+                color: AntiiQTheme.of(context).colorScheme.secondary,
                 fontSize: 15,
               ),
             ),
@@ -56,7 +57,7 @@ class ListHeader extends StatelessWidget {
                       return selectionSituation.isNotEmpty
                           ? IconButton(
                               padding: EdgeInsets.zero,
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: AntiiQTheme.of(context).colorScheme.secondary,
                               iconSize: 15,
                               onPressed: () {
                                 doThingsWithAudioSheet(
@@ -74,7 +75,7 @@ class ListHeader extends StatelessWidget {
                 listToShuffle.length > 1
                     ? IconButton(
                         padding: EdgeInsets.zero,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: AntiiQTheme.of(context).colorScheme.secondary,
                         iconSize: 15,
                         onPressed: () {
                           shuffleTracks(listToShuffle);
@@ -87,7 +88,7 @@ class ListHeader extends StatelessWidget {
                 availableSortTypes.isNotEmpty
                     ? IconButton(
                         padding: EdgeInsets.zero,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: AntiiQTheme.of(context).colorScheme.secondary,
                         iconSize: 15,
                         onPressed: () {
                           showSortModal(context, sortList, availableSortTypes,
@@ -108,7 +109,7 @@ class ListHeader extends StatelessWidget {
 showSortModal(context, String sortList, List<String> availableSortTypes,
     {setState}) {
   showModalBottomSheet(
-    backgroundColor: Theme.of(context).colorScheme.surface,
+    backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
     shape: bottomSheetShape,
     context: context,
     builder: (context) {
@@ -173,7 +174,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                     "Sort by:",
                     style: TextStyle(
                       fontSize: 20,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: AntiiQTheme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),
@@ -183,7 +184,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                       commenceSort(availableSortType, currentDirection);
                     },
                     child: Card(
-                      color: Theme.of(context).colorScheme.surface,
+                      color: AntiiQTheme.of(context).colorScheme.surface,
                       margin: const EdgeInsets.symmetric(vertical: 2),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -248,7 +249,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    color: Theme.of(context).colorScheme.background,
+                    color: AntiiQTheme.of(context).colorScheme.background,
                   ),
                   child: Row(
                     children: [
@@ -262,7 +263,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                             },
                             child: Card(
                               color: currentDirection == key
-                                  ? Theme.of(context).colorScheme.surface
+                                  ? AntiiQTheme.of(context).colorScheme.surface
                                   : Colors.transparent,
                               shadowColor: Colors.transparent,
                               surfaceTintColor: Colors.transparent,
@@ -274,7 +275,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                     key,
                                     style: TextStyle(
                                       color:
-                                          Theme.of(context).colorScheme.primary,
+                                          AntiiQTheme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                 ),

@@ -1,4 +1,5 @@
 //Flutter Packages
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/intent.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
@@ -50,17 +51,18 @@ class Antiiq extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ColorScheme>(
+    return StreamBuilder<AntiiQColorScheme>(
         stream: themeStream.stream,
         builder: (context, snapshot) {
-          return MaterialApp(
-            title: 'AntiiQ',
-            theme: ThemeData(
-              colorScheme: snapshot.data ?? getColorScheme(),
-              useMaterial3: true,
+          return AntiiQTheme(
+            colorScheme: snapshot.data ?? getColorScheme(),
+            cardTheme: CardThemes().defaultTheme,
+            textStyle: TextStyles().onBackgroundText,
+            child: const MaterialApp(
+              title: 'AntiiQ',
+              debugShowCheckedModeBanner: false,
+              home: MainBox(),
             ),
-            debugShowCheckedModeBanner: false,
-            home: const MainBox(),
           );
         });
   }

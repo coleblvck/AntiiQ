@@ -85,7 +85,7 @@ class NowPlayingBottomHeader extends StatelessWidget {
               Text(
                 "Now Playing",
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: AntiiQTheme.of(context).colorScheme.onBackground,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
@@ -96,7 +96,7 @@ class NowPlayingBottomHeader extends StatelessWidget {
                 },
                 icon: Icon(
                   RemixIcon.arrow_down_double,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: AntiiQTheme.of(context).colorScheme.onBackground,
                 ),
               )
             ],
@@ -154,7 +154,8 @@ class NowPlayingFullCard extends StatelessWidget {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.background,
+                            color:
+                                AntiiQTheme.of(context).colorScheme.background,
                             backgroundBlendMode: BlendMode.colorDodge,
                             image: DecorationImage(
                               image: FileImage(
@@ -192,7 +193,8 @@ class NowPlayingFullCard extends StatelessWidget {
                                                     snapshot.data!;
                                                 return mode == LoopMode.all
                                                     ? IconButton(
-                                                        color: Theme.of(context)
+                                                        color: AntiiQTheme.of(
+                                                                context)
                                                             .colorScheme
                                                             .primary,
                                                         padding:
@@ -207,10 +209,11 @@ class NowPlayingFullCard extends StatelessWidget {
                                                       )
                                                     : mode == LoopMode.one
                                                         ? IconButton(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .primary,
+                                                            color:
+                                                                AntiiQTheme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary,
                                                             padding:
                                                                 EdgeInsets.zero,
                                                             onPressed: () {
@@ -223,10 +226,11 @@ class NowPlayingFullCard extends StatelessWidget {
                                                                     .repeat_one),
                                                           )
                                                         : IconButton(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .onSurface,
+                                                            color:
+                                                                AntiiQTheme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .onSurface,
                                                             padding:
                                                                 EdgeInsets.zero,
                                                             onPressed: () {
@@ -247,7 +251,8 @@ class NowPlayingFullCard extends StatelessWidget {
                                                     snapshot.data ?? false;
                                                 return enabled
                                                     ? IconButton(
-                                                        color: Theme.of(context)
+                                                        color: AntiiQTheme.of(
+                                                                context)
                                                             .colorScheme
                                                             .primary,
                                                         padding:
@@ -261,7 +266,8 @@ class NowPlayingFullCard extends StatelessWidget {
                                                             RemixIcon.shuffle),
                                                       )
                                                     : IconButton(
-                                                        color: Theme.of(context)
+                                                        color: AntiiQTheme.of(
+                                                                context)
                                                             .colorScheme
                                                             .onSurface,
                                                         padding:
@@ -279,7 +285,7 @@ class NowPlayingFullCard extends StatelessWidget {
                                       ),
                                     ),
                                     IconButton(
-                                      color: Theme.of(context)
+                                      color: AntiiQTheme.of(context)
                                           .colorScheme
                                           .onBackground,
                                       padding: EdgeInsets.zero,
@@ -322,7 +328,7 @@ class NowPlayingFullCard extends StatelessWidget {
                                               MainAxisAlignment.spaceAround,
                                           children: [
                                             IconButton(
-                                              color: Theme.of(context)
+                                              color: AntiiQTheme.of(context)
                                                   .colorScheme
                                                   .onBackground,
                                               onPressed: () {
@@ -333,7 +339,7 @@ class NowPlayingFullCard extends StatelessWidget {
                                                   RemixIcon.arrow_left_double),
                                             ),
                                             IconButton(
-                                              color: Theme.of(context)
+                                              color: AntiiQTheme.of(context)
                                                   .colorScheme
                                                   .onBackground,
                                               onPressed: () {
@@ -344,7 +350,7 @@ class NowPlayingFullCard extends StatelessWidget {
                                                   RemixIcon.arrow_left_circle),
                                             ),
                                             IconButton(
-                                              color: Theme.of(context)
+                                              color: AntiiQTheme.of(context)
                                                   .colorScheme
                                                   .onBackground,
                                               onPressed: () {
@@ -358,7 +364,7 @@ class NowPlayingFullCard extends StatelessWidget {
                                                       RemixIcon.play_circle),
                                             ),
                                             IconButton(
-                                              color: Theme.of(context)
+                                              color: AntiiQTheme.of(context)
                                                   .colorScheme
                                                   .onBackground,
                                               onPressed: () {
@@ -369,7 +375,7 @@ class NowPlayingFullCard extends StatelessWidget {
                                                   RemixIcon.arrow_right_circle),
                                             ),
                                             IconButton(
-                                              color: Theme.of(context)
+                                              color: AntiiQTheme.of(context)
                                                   .colorScheme
                                                   .onBackground,
                                               onPressed: () {
@@ -404,7 +410,7 @@ class NowPlayingFullCard extends StatelessWidget {
                       currentTrack.title,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                       ),
                       velocity: defaultTextScrollvelocity,
                       delayBefore: delayBeforeScroll,
@@ -413,7 +419,7 @@ class NowPlayingFullCard extends StatelessWidget {
                       currentTrack.artist!,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                       ),
                       velocity: defaultTextScrollvelocity,
                       delayBefore: delayBeforeScroll,
@@ -422,7 +428,7 @@ class NowPlayingFullCard extends StatelessWidget {
                       currentTrack.album!,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                       ),
                       velocity: defaultTextScrollvelocity,
                       delayBefore: delayBeforeScroll,
@@ -464,7 +470,10 @@ class TrackDurationDisplayWidget extends StatelessWidget {
                       position ??= 0;
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("${toMinuteSeconds(position)} / ${toMinuteSeconds(duration)}"),
+                        child: Text(
+                          "${toMinuteSeconds(position)} / ${toMinuteSeconds(duration)}",
+                          style: TextStyles().onSurfaceText,
+                        ),
                       );
                     },
                   ),

@@ -46,7 +46,7 @@ class _MainBoxState extends State<MainBox> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
           title: const Text('Exit?'),
           content: const Text(
             'Are you sure',
@@ -54,7 +54,7 @@ class _MainBoxState extends State<MainBox> {
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
+                textStyle: TextStyles().onSurfaceText,
               ),
               child: const Text('Stay'),
               onPressed: () {
@@ -63,7 +63,7 @@ class _MainBoxState extends State<MainBox> {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
+                textStyle: TextStyles().onSurfaceText,
               ),
               child: const Text('Exit'),
               onPressed: () {
@@ -95,7 +95,7 @@ class _MainBoxState extends State<MainBox> {
           return PopScope(
             canPop: false,
             child: Dialog(
-              backgroundColor: Theme.of(context).colorScheme.background,
+              backgroundColor: AntiiQTheme.of(context).colorScheme.background,
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -151,7 +151,7 @@ class _MainBoxState extends State<MainBox> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: Theme.of(context).colorScheme.background,
+        statusBarColor: AntiiQTheme.of(context).colorScheme.background,
       ),
     );
     //
@@ -189,13 +189,13 @@ class _MainBoxState extends State<MainBox> {
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             toolbarHeight: appBarHeight,
-            backgroundColor: Theme.of(context).colorScheme.background,
+            backgroundColor: AntiiQTheme.of(context).colorScheme.background,
             title: Text(
               "AntiiQ",
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
+                color: AntiiQTheme.of(context).colorScheme.primary,
               ),
             ),
             actions: [
@@ -203,7 +203,7 @@ class _MainBoxState extends State<MainBox> {
                 iconSize: 27,
                 icon: Icon(
                   RemixIcon.play_list_2,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: AntiiQTheme.of(context).colorScheme.primary,
                 ),
                 onPressed: () {
                   showQueue(context);
@@ -213,7 +213,7 @@ class _MainBoxState extends State<MainBox> {
                 iconSize: 27,
                 icon: Icon(
                   RemixIcon.settings_6,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: AntiiQTheme.of(context).colorScheme.primary,
                 ),
                 onPressed: () {
                   Navigator.of(context).push(
@@ -238,14 +238,14 @@ class _MainBoxState extends State<MainBox> {
               topLeft: Radius.circular(7),
               topRight: Radius.circular(7),
             ),
-            draggableIconColor: Theme.of(context).colorScheme.onSurface,
-            color: Theme.of(context).colorScheme.surface,
+            draggableIconColor: AntiiQTheme.of(context).colorScheme.onSurface,
+            color: AntiiQTheme.of(context).colorScheme.surface,
             style: BoxStyle.sheet,
             backdrop: Backdrop(
               overlayOpacity: 0.0,
               fading: true,
               overlay: true,
-              color: Theme.of(context).colorScheme.background,
+              color: AntiiQTheme.of(context).colorScheme.background,
               body:
                   !hasPermissions ? noAccessToLibraryWidget() : mainBackdrop(),
             ),
@@ -258,7 +258,7 @@ class _MainBoxState extends State<MainBox> {
           bottomNavigationBar: BottomAppBar(
             padding: EdgeInsets.zero,
             height: bottomNavigationBarHeight,
-            color: Theme.of(context).colorScheme.surface,
+            color: AntiiQTheme.of(context).colorScheme.surface,
             elevation: 10,
             shadowColor: Colors.black,
             surfaceTintColor: Colors.transparent,
@@ -276,7 +276,7 @@ class _MainBoxState extends State<MainBox> {
                     },
                     icon: Icon(
                       RemixIcon.dashboard,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: AntiiQTheme.of(context).colorScheme.primary,
                     ),
                   ),
                   IconButton(
@@ -288,7 +288,7 @@ class _MainBoxState extends State<MainBox> {
                     },
                     icon: Icon(
                       RemixIcon.equalizer,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: AntiiQTheme.of(context).colorScheme.primary,
                     ),
                   ),
                   IconButton(
@@ -300,7 +300,7 @@ class _MainBoxState extends State<MainBox> {
                     },
                     icon: Icon(
                       RemixIcon.search_eye,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: AntiiQTheme.of(context).colorScheme.primary,
                     ),
                   ),
                 ],

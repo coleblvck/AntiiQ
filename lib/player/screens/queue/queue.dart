@@ -15,9 +15,9 @@ showQueue(context) {
     enableDrag: true,
     elevation: 10,
     isScrollControlled: true,
-    backgroundColor: Theme.of(context).colorScheme.background,
+    backgroundColor: AntiiQTheme.of(context).colorScheme.background,
     showDragHandle: true,
-    barrierColor: Theme.of(context).colorScheme.background.withAlpha(200),
+    barrierColor: AntiiQTheme.of(context).colorScheme.background.withAlpha(200),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(10),
@@ -73,7 +73,7 @@ class QueueBottomHeader extends StatelessWidget {
               Text(
                 "Queue",
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: AntiiQTheme.of(context).colorScheme.onBackground,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
@@ -84,7 +84,7 @@ class QueueBottomHeader extends StatelessWidget {
                 },
                 icon: Icon(
                   RemixIcon.arrow_down_double,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: AntiiQTheme.of(context).colorScheme.onBackground,
                 ),
               )
             ],
@@ -119,7 +119,7 @@ class QueueCard extends StatelessWidget {
                       thisTrack.title,
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                       ),
                       velocity: defaultTextScrollvelocity,
                       delayBefore: delayBeforeScroll,
@@ -128,7 +128,7 @@ class QueueCard extends StatelessWidget {
                       thisTrack.artist ?? "No Artist",
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                       ),
                       velocity: defaultTextScrollvelocity,
                       delayBefore: delayBeforeScroll,

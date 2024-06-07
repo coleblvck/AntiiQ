@@ -34,13 +34,13 @@ class Dashboard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Icon(
                         i.value["icon"] as IconData,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
                     Text(
                       i.value["title"] as String,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
                   ],

@@ -8,6 +8,7 @@ Name says it all
 import 'dart:async';
 import 'dart:io';
 
+import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:flutter/material.dart';
 
 //On Audio Query
@@ -128,7 +129,7 @@ late int minimumTrackLength;
 List<String> specificPathsToQuery = [];
 
 late String currentTheme;
-StreamController<ColorScheme> themeStream = StreamController.broadcast();
+StreamController<AntiiQColorScheme> themeStream = StreamController.broadcast();
 
 late bool previousRestart;
 

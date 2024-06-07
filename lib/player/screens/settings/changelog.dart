@@ -14,13 +14,13 @@ class Changelog extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 75,
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: AntiiQTheme.of(context).colorScheme.background,
           elevation: 2,
           surfaceTintColor: Colors.transparent,
-          shadowColor: Theme.of(context).colorScheme.onBackground,
+          shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
             iconSize: 50,
-            color: Theme.of(context).colorScheme.primary,
+            color: AntiiQTheme.of(context).colorScheme.primary,
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -31,13 +31,13 @@ class Changelog extends StatelessWidget {
               padding: const EdgeInsets.only(right: 20.0),
               child: Icon(
                 RemixIcon.information,
-                color: Theme.of(context).colorScheme.primary,
+                color: AntiiQTheme.of(context).colorScheme.primary,
                 size: 30,
               ),
             ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: AntiiQTheme.of(context).colorScheme.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: SingleChildScrollView(
@@ -54,7 +54,7 @@ class Changelog extends StatelessWidget {
                   child: Text(
                     "Changelog",
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
                         fontSize: 30),
                     textAlign: TextAlign.center,
                   ),
@@ -75,8 +75,10 @@ class Changelog extends StatelessWidget {
                             child: Text(
                               "Code Name: ${version.title}",
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontSize: 18,
+                                color: AntiiQTheme.of(context)
+                                    .colorScheme
+                                    .onSurface,
+                                fontSize: 20,
                               ),
                             ),
                           ),
@@ -90,30 +92,35 @@ class Changelog extends StatelessWidget {
                                   Text(
                                     "Version: ${version.version}",
                                     style: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                      color: AntiiQTheme.of(context)
+                                          .colorScheme
+                                          .primary,
                                       fontSize: 18,
                                     ),
                                   ),
                                   Text(
                                     version.date,
                                     style: TextStyle(
-                                      color: Theme.of(context)
+                                      color: AntiiQTheme.of(context)
                                           .colorScheme
                                           .secondary,
                                       fontSize: 18,
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0),
                                     child: Text(
                                       "changes",
                                       style: TextStyle(
-                                        decorationStyle: TextDecorationStyle.solid,
+                                        decorationStyle:
+                                            TextDecorationStyle.solid,
                                         decoration: TextDecoration.underline,
-                                        decorationColor: Theme.of(context).colorScheme.onBackground,
+                                        decorationColor: AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .onBackground,
                                         fontSize: 20,
-                                        color: Theme.of(context)
+                                        color: AntiiQTheme.of(context)
                                             .colorScheme
                                             .onBackground,
                                       ),
@@ -124,7 +131,15 @@ class Changelog extends StatelessWidget {
                                         CrossAxisAlignment.stretch,
                                     children: [
                                       for (String change in version.changes)
-                                        Text(change),
+                                        Text(
+                                          change,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .onBackground,
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ],

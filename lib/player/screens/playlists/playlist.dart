@@ -75,9 +75,9 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
     enableDrag: true,
     elevation: 10,
     isScrollControlled: true,
-    backgroundColor: Theme.of(context).colorScheme.background,
+    backgroundColor: AntiiQTheme.of(context).colorScheme.background,
     showDragHandle: true,
-    barrierColor: Theme.of(context).colorScheme.background.withAlpha(200),
+    barrierColor: AntiiQTheme.of(context).colorScheme.background.withAlpha(200),
     shape: bottomSheetShape,
     context: context,
     builder: (context) => StatefulBuilder(builder: (context, setState) {
@@ -107,13 +107,13 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 25,
-                                color: Theme.of(context).colorScheme.primary,
+                                color: AntiiQTheme.of(context).colorScheme.primary,
                               ),
                               velocity: defaultTextScrollvelocity,
                               delayBefore: delayBeforeScroll,
                             ),
                             Card(
-                              color: Theme.of(context).colorScheme.background,
+                              color: AntiiQTheme.of(context).colorScheme.background,
                               surfaceTintColor: Colors.transparent,
                               margin: const EdgeInsets.symmetric(vertical: 5),
                               child: Padding(
@@ -122,7 +122,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                                   "Length: ${totalDuration(playlist.playlistTracks!)}",
                                   style: TextStyle(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        AntiiQTheme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               ),
@@ -165,7 +165,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                             thisTrack.trackData!.trackName!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -174,7 +174,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                             thisTrack.mediaItem!.artist!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -201,7 +201,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                           playlist.playlistName!,
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
                           ),
                           velocity: defaultTextScrollvelocity,
                           delayBefore: delayBeforeScroll,

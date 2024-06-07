@@ -53,7 +53,7 @@ class _BackupRestoreState extends State<BackupRestore> {
         return PopScope(
           canPop: false,
           child: Dialog(
-            backgroundColor: Theme.of(context).colorScheme.background,
+            backgroundColor: AntiiQTheme.of(context).colorScheme.background,
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
@@ -107,13 +107,13 @@ class _BackupRestoreState extends State<BackupRestore> {
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 75,
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: AntiiQTheme.of(context).colorScheme.background,
           elevation: 2,
           surfaceTintColor: Colors.transparent,
-          shadowColor: Theme.of(context).colorScheme.onBackground,
+          shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
             iconSize: 50,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: AntiiQTheme.of(context).colorScheme.onBackground,
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -124,13 +124,13 @@ class _BackupRestoreState extends State<BackupRestore> {
               padding: const EdgeInsets.only(right: 20.0),
               child: Icon(
                 RemixIcon.save_3,
-                color: Theme.of(context).colorScheme.onBackground,
+                color: AntiiQTheme.of(context).colorScheme.onBackground,
                 size: 30,
               ),
             ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: AntiiQTheme.of(context).colorScheme.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: SingleChildScrollView(
@@ -142,7 +142,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                   child: Text(
                     "Backup/Restore",
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                         fontSize: 30),
                     textAlign: TextAlign.center,
                   ),

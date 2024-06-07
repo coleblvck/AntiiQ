@@ -79,7 +79,7 @@ class PlaylistSong extends StatelessWidget {
                       SizedBox(
                         width: 40,
                         child: IconButton(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: AntiiQTheme.of(context).colorScheme.primary,
                           onPressed: () {
                             openSheetFromTrack(context, track);
                           },

@@ -13,8 +13,8 @@ class CustomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: theme.elevation ?? 5,
-      shape: theme.shape ?? Theme.of(context).cardTheme.shape,
-      color: theme.color ?? Theme.of(context).cardTheme.color,
+      shape: theme.shape ?? AntiiQTheme.of(context).cardTheme.shape,
+      color: theme.color ?? AntiiQTheme.of(context).cardTheme.color,
       shadowColor: Colors.black,
       surfaceTintColor: theme.surfaceTintColor ?? Colors.transparent,
       child: child,
@@ -23,6 +23,12 @@ class CustomCard extends StatelessWidget {
 }
 
 class CardThemes {
+  final defaultTheme = CardTheme(
+    shape: CardShapes().antiiqCardShape1,
+    elevation: generalCardElevation,
+    color: currentColorScheme.background,
+  );
+
   final bottomNavBarTheme = CardTheme(
     shape: CardShapes().antiiqCardShape1,
     elevation: generalCardElevation,
@@ -273,8 +279,8 @@ class CustomProgressIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return LinearProgressIndicator(
       value: progress,
-      color: Theme.of(context).colorScheme.primary,
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      color: AntiiQTheme.of(context).colorScheme.primary,
+      backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
     );
   }
 }
@@ -286,8 +292,8 @@ class CustomInfiniteProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircularProgressIndicator(
-      color: Theme.of(context).colorScheme.inversePrimary,
-      backgroundColor: Theme.of(context).colorScheme.background,
+      color: AntiiQTheme.of(context).colorScheme.primary,
+      backgroundColor: AntiiQTheme.of(context).colorScheme.background,
       strokeWidth: 10,
     );
   }
@@ -312,12 +318,42 @@ class CustomAppBar extends AppBar {
   }) : super(
           title: titleWidget,
           leading: leadingWidget,
-          foregroundColor: Theme.of(context).colorScheme.onBackground,
+          foregroundColor: AntiiQTheme.of(context).colorScheme.onBackground,
           shadowColor: Colors.black,
           surfaceTintColor: Colors.transparent,
           toolbarHeight: 40,
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: AntiiQTheme.of(context).colorScheme.background,
           elevation: generalCardElevation,
           actions: actionList,
         );
+}
+
+
+class AntiiQTheme extends InheritedWidget {
+  const AntiiQTheme({
+    super.key,
+    required super.child,
+    required this.colorScheme,
+    required this.cardTheme,
+    required this.textStyle,
+});
+
+  final AntiiQColorScheme colorScheme;
+  final CardTheme cardTheme;
+  final TextStyle textStyle;
+
+  static AntiiQTheme? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<AntiiQTheme>();
+  }
+
+  static AntiiQTheme of(BuildContext context) {
+    final AntiiQTheme? result = maybeOf(context);
+    assert(result != null, 'No AntiiQTheme found in context');
+    return result!;
+  }
+
+  @override
+  bool updateShouldNotify(AntiiQTheme oldWidget) {
+    return oldWidget.colorScheme != colorScheme;
+  }
 }

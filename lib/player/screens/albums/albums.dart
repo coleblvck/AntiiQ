@@ -4,6 +4,7 @@ This Renders the screen for Album songs
 
 */
 
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
@@ -28,7 +29,7 @@ class AlbumsGrid extends StatelessWidget {
     return Column(
       children: [
         Divider(
-          color: Theme.of(context).colorScheme.secondary,
+          color: AntiiQTheme.of(context).colorScheme.secondary,
           height: 1,
         ),
         ListHeader(
@@ -39,7 +40,7 @@ class AlbumsGrid extends StatelessWidget {
           availableSortTypes: albumListSortTypes,
         ),
         Divider(
-          color: Theme.of(context).colorScheme.secondary,
+          color: AntiiQTheme.of(context).colorScheme.secondary,
           height: 1,
         ),
         Expanded(
@@ -64,7 +65,7 @@ class AlbumsGrid extends StatelessWidget {
                         thisAlbum.albumName!,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: AntiiQTheme.of(context).colorScheme.onBackground,
                         ),
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,
@@ -73,7 +74,7 @@ class AlbumsGrid extends StatelessWidget {
                         thisAlbum.albumArtistName!,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: AntiiQTheme.of(context).colorScheme.onBackground,
                         ),
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,

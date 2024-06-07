@@ -70,13 +70,13 @@ class _LibraryState extends State<Library> {
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 75,
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: AntiiQTheme.of(context).colorScheme.background,
           elevation: 2,
           surfaceTintColor: Colors.transparent,
-          shadowColor: Theme.of(context).colorScheme.onBackground,
+          shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
             iconSize: 50,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: AntiiQTheme.of(context).colorScheme.onBackground,
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -87,13 +87,13 @@ class _LibraryState extends State<Library> {
               padding: const EdgeInsets.only(right: 20.0),
               child: Icon(
                 RemixIcon.folder,
-                color: Theme.of(context).colorScheme.onBackground,
+                color: AntiiQTheme.of(context).colorScheme.onBackground,
                 size: 30,
               ),
             ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: AntiiQTheme.of(context).colorScheme.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: SingleChildScrollView(
@@ -105,7 +105,7 @@ class _LibraryState extends State<Library> {
                   child: Text(
                     "Library",
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                         fontSize: 30),
                     textAlign: TextAlign.center,
                   ),
@@ -169,7 +169,7 @@ class _LibraryState extends State<Library> {
                               handler: FlutterSliderHandler(
                                 decoration: BoxDecoration(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        AntiiQTheme.of(context).colorScheme.primary,
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Container(),
                               ),
@@ -178,17 +178,17 @@ class _LibraryState extends State<Library> {
                               trackBar: FlutterSliderTrackBar(
                                 inactiveTrackBar: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: AntiiQTheme.of(context).colorScheme.primary,
                                   border: Border.all(
                                     width: 3,
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        AntiiQTheme.of(context).colorScheme.primary,
                                   ),
                                 ),
                                 activeTrackBar: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
                                   color:
-                                      Theme.of(context).colorScheme.secondary,
+                                      AntiiQTheme.of(context).colorScheme.secondary,
                                 ),
                               ),
                               onDragging: (handlerIndex, lowerValue,
@@ -232,7 +232,7 @@ class _LibraryState extends State<Library> {
                               handler: FlutterSliderHandler(
                                 decoration: BoxDecoration(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        AntiiQTheme.of(context).colorScheme.primary,
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Container(),
                               ),
@@ -241,17 +241,17 @@ class _LibraryState extends State<Library> {
                               trackBar: FlutterSliderTrackBar(
                                 inactiveTrackBar: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: AntiiQTheme.of(context).colorScheme.primary,
                                   border: Border.all(
                                     width: 3,
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        AntiiQTheme.of(context).colorScheme.primary,
                                   ),
                                 ),
                                 activeTrackBar: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
                                   color:
-                                      Theme.of(context).colorScheme.secondary,
+                                      AntiiQTheme.of(context).colorScheme.secondary,
                                 ),
                               ),
                               onDragging: (handlerIndex, lowerValue,
@@ -271,7 +271,7 @@ class _LibraryState extends State<Library> {
                   child: Text(
                     "Directories",
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                         fontSize: 30),
                     textAlign: TextAlign.center,
                   ),
@@ -289,7 +289,7 @@ class _LibraryState extends State<Library> {
                         child: Text(
                           "Note: Adding directories here, excludes all other directories from being scanned.",
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
                           ),
                         ),
                       ),
@@ -337,7 +337,7 @@ class _LibraryState extends State<Library> {
                       for (String directory in specificPathsToQuery)
                         CustomCard(
                           theme: CardThemes().settingsItemTheme.copyWith(
-                                color: Theme.of(context).colorScheme.surface,
+                                color: AntiiQTheme.of(context).colorScheme.surface,
                               ),
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
@@ -353,7 +353,7 @@ class _LibraryState extends State<Library> {
                                       child: TextScroll(
                                         directory,
                                         style: TextStyle(
-                                          color: Theme.of(context)
+                                          color: AntiiQTheme.of(context)
                                               .colorScheme
                                               .onSurface,
                                         ),

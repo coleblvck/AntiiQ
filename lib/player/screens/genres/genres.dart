@@ -4,6 +4,7 @@ This Renders the screen for Album songs
 
 */
 
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
@@ -27,7 +28,7 @@ class GenresGrid extends StatelessWidget {
     return Column(
       children: [
         Divider(
-          color: Theme.of(context).colorScheme.secondary,
+          color: AntiiQTheme.of(context).colorScheme.secondary,
           height: 1,
         ),
         ListHeader(
@@ -38,7 +39,7 @@ class GenresGrid extends StatelessWidget {
           availableSortTypes: genreListSortTypes,
         ),
         Divider(
-          color: Theme.of(context).colorScheme.secondary,
+          color: AntiiQTheme.of(context).colorScheme.secondary,
           height: 1,
         ),
         Expanded(
@@ -66,7 +67,7 @@ class GenresGrid extends StatelessWidget {
                           thisGenre.genreName!,
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
                           ),
                           velocity: defaultTextScrollvelocity,
                           delayBefore: delayBeforeScroll,
@@ -75,7 +76,7 @@ class GenresGrid extends StatelessWidget {
                           "${thisGenre.genreTracks!.length} ${(thisGenre.genreTracks!.length > 1) ? "Songs" : "song"}",
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
                           ),
                           velocity: defaultTextScrollvelocity,
                           delayBefore: delayBeforeScroll,

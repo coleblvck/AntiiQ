@@ -74,7 +74,7 @@ class MiniPlayer extends StatelessWidget {
                                 currentTrack.title,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                  color: Theme.of(context)
+                                  color: AntiiQTheme.of(context)
                                       .colorScheme
                                       .onBackground,
                                 ),
@@ -85,7 +85,7 @@ class MiniPlayer extends StatelessWidget {
                                 currentTrack.artist as String,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                  color: Theme.of(context)
+                                  color: AntiiQTheme.of(context)
                                       .colorScheme
                                       .onBackground,
                                 ),
@@ -113,14 +113,14 @@ class MiniPlayer extends StatelessWidget {
                                       ? Icon(
                                           RemixIcon.pause,
                                           size: 40,
-                                          color: Theme.of(context)
+                                          color: AntiiQTheme.of(context)
                                               .colorScheme
                                               .secondary,
                                         )
                                       : Icon(
                                           RemixIcon.play,
                                           size: 40,
-                                          color: Theme.of(context)
+                                          color: AntiiQTheme.of(context)
                                               .colorScheme
                                               .secondary,
                                         ),

@@ -103,7 +103,7 @@ class _SearchState extends State<Search> {
                           child: Text(
                             "Tracks:",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: AntiiQTheme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
@@ -121,7 +121,7 @@ class _SearchState extends State<Search> {
                         thisTrack.trackData!.trackName!,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: AntiiQTheme.of(context).colorScheme.onSurface,
                         ),
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,
@@ -130,7 +130,7 @@ class _SearchState extends State<Search> {
                         thisTrack.mediaItem!.artist!,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: AntiiQTheme.of(context).colorScheme.onSurface,
                         ),
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,
@@ -151,7 +151,7 @@ class _SearchState extends State<Search> {
                           child: Text(
                             "Albums:",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: AntiiQTheme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
@@ -194,7 +194,7 @@ class _SearchState extends State<Search> {
                                           TextScroll(
                                             thisAlbum.albumName!,
                                             style: TextStyle(
-                                              color: Theme.of(context)
+                                              color: AntiiQTheme.of(context)
                                                   .colorScheme
                                                   .onSurface,
                                             ),
@@ -202,7 +202,7 @@ class _SearchState extends State<Search> {
                                           TextScroll(
                                             "${thisAlbum.numOfSongs!} Songs",
                                             style: TextStyle(
-                                              color: Theme.of(context)
+                                              color: AntiiQTheme.of(context)
                                                   .colorScheme
                                                   .onSurface,
                                             ),
@@ -223,7 +223,7 @@ class _SearchState extends State<Search> {
                           child: Text(
                             "Artists:",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: AntiiQTheme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
@@ -266,7 +266,7 @@ class _SearchState extends State<Search> {
                                           TextScroll(
                                             thisArtist.artistName!,
                                             style: TextStyle(
-                                              color: Theme.of(context)
+                                              color: AntiiQTheme.of(context)
                                                   .colorScheme
                                                   .onPrimary,
                                             ),
@@ -274,7 +274,7 @@ class _SearchState extends State<Search> {
                                           TextScroll(
                                             "${thisArtist.artistTracks!.length} Songs",
                                             style: TextStyle(
-                                              color: Theme.of(context)
+                                              color: AntiiQTheme.of(context)
                                                   .colorScheme
                                                   .onPrimary,
                                             ),

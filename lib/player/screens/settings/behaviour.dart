@@ -27,13 +27,13 @@ class _BehaviourState extends State<Behaviour> {
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 75,
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: AntiiQTheme.of(context).colorScheme.background,
           elevation: 2,
           surfaceTintColor: Colors.transparent,
-          shadowColor: Theme.of(context).colorScheme.onBackground,
+          shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
             iconSize: 50,
-            color: Theme.of(context).colorScheme.primary,
+            color: AntiiQTheme.of(context).colorScheme.primary,
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -44,13 +44,13 @@ class _BehaviourState extends State<Behaviour> {
               padding: const EdgeInsets.only(right: 20.0),
               child: Icon(
                 RemixIcon.play,
-                color: Theme.of(context).colorScheme.primary,
+                color: AntiiQTheme.of(context).colorScheme.primary,
                 size: 30,
               ),
             ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: AntiiQTheme.of(context).colorScheme.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: SingleChildScrollView(
@@ -62,7 +62,7 @@ class _BehaviourState extends State<Behaviour> {
                   child: Text(
                     "Behaviour",
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
                         fontSize: 30),
                     textAlign: TextAlign.center,
                   ),
