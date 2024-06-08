@@ -48,11 +48,13 @@ class MiniPlayer extends StatelessWidget {
                     if (swipeGestures) {
                       if (details.primaryVelocity! < -200) {
                         boxController.openBox();
+                        FocusManager.instance.primaryFocus?.unfocus();
                       }
                     }
                   },
                   onTap: () {
                     boxController.openBox();
+                    FocusManager.instance.primaryFocus?.unfocus();
                   },
                   child: CustomCard(
                     theme: AntiiQTheme.of(context).cardThemes.background,
