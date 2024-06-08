@@ -198,6 +198,8 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                       ),
                                     ),
                                     Checkbox(
+                                      checkColor: AntiiQTheme.of(context).colorScheme.primary,
+                                      fillColor: WidgetStatePropertyAll(AntiiQTheme.of(context).colorScheme.surface),
                                       value: selectionSituation
                                           .contains(tracks[0]),
                                       onChanged: (value) {

@@ -141,9 +141,9 @@ class _BackupRestoreState extends State<BackupRestore> {
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
                     "Backup/Restore",
-                    style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground,
-                        fontSize: 30),
+                    style: AntiiQTheme.of(context)
+                        .textStyles
+                        .onBackgroundLargeHeader,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -171,13 +171,21 @@ class _BackupRestoreState extends State<BackupRestore> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text("Select Storage"),
+                                        Text(
+                                          "Select Storage",
+                                          style: AntiiQTheme.of(context)
+                                              .textStyles
+                                              .onBackgroundText,
+                                        ),
                                         IconButton(
                                           onPressed: () {
                                             clearBackupRestoreDirectoryList();
                                           },
-                                          icon: const Icon(
+                                          icon: Icon(
                                             RemixIcon.close_circle,
+                                            color: AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .onBackground,
                                           ),
                                         ),
                                       ],
@@ -207,9 +215,14 @@ class _BackupRestoreState extends State<BackupRestore> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(5.0),
-                                  child: Text("Select Action"),
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Text(
+                                    "Select Action",
+                                    style: AntiiQTheme.of(context)
+                                        .textStyles
+                                        .onSurfaceText,
+                                  ),
                                 ),
                                 CustomButton(
                                   style: ButtonStyles().style3,

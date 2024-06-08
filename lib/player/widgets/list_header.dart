@@ -57,7 +57,8 @@ class ListHeader extends StatelessWidget {
                       return selectionSituation.isNotEmpty
                           ? IconButton(
                               padding: EdgeInsets.zero,
-                              color: AntiiQTheme.of(context).colorScheme.secondary,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.secondary,
                               iconSize: 15,
                               onPressed: () {
                                 doThingsWithAudioSheet(
@@ -193,33 +194,76 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                           children: [
                             Text(
                               availableSortType,
+                              style: AntiiQTheme.of(context)
+                                  .textStyles
+                                  .onSurfaceText,
                             ),
                             sortList == "allTracks"
                                 ? Checkbox(
+                                    checkColor: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                    fillColor: WidgetStatePropertyAll(
+                                        AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .background),
                                     value: trackSort.currentSort ==
                                         availableSortType,
                                     onChanged: null,
                                   )
                                 : sortList == "allAlbums"
                                     ? Checkbox(
+                                        checkColor: AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fillColor: WidgetStatePropertyAll(
+                                            AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .background),
                                         value: albumSort.currentSort ==
                                             availableSortType,
                                         onChanged: null,
                                       )
                                     : sortList == "allArtists"
                                         ? Checkbox(
+                                            checkColor: AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            fillColor: WidgetStatePropertyAll(
+                                                AntiiQTheme.of(context)
+                                                    .colorScheme
+                                                    .background),
                                             value: artistSort.currentSort ==
                                                 availableSortType,
                                             onChanged: null,
                                           )
                                         : sortList == "allGenres"
                                             ? Checkbox(
+                                                checkColor:
+                                                    AntiiQTheme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                fillColor:
+                                                    WidgetStatePropertyAll(
+                                                        AntiiQTheme.of(context)
+                                                            .colorScheme
+                                                            .background),
                                                 value: genreSort.currentSort ==
                                                     availableSortType,
                                                 onChanged: null,
                                               )
                                             : sortList == "allAlbumTracks"
                                                 ? Checkbox(
+                                                    checkColor:
+                                                        AntiiQTheme.of(context)
+                                                            .colorScheme
+                                                            .primary,
+                                                    fillColor:
+                                                        WidgetStatePropertyAll(
+                                                            AntiiQTheme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .background),
                                                     value: albumTracksSort
                                                             .currentSort ==
                                                         availableSortType,
@@ -227,6 +271,17 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                                   )
                                                 : sortList == "allArtistTracks"
                                                     ? Checkbox(
+                                                        checkColor:
+                                                            AntiiQTheme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primary,
+                                                        fillColor:
+                                                            WidgetStatePropertyAll(
+                                                                AntiiQTheme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .background),
                                                         value: artistTracksSort
                                                                 .currentSort ==
                                                             availableSortType,
@@ -235,6 +290,16 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                                     : sortList ==
                                                             "allGenreTracks"
                                                         ? Checkbox(
+                                                            checkColor:
+                                                                AntiiQTheme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary,
+                                                            fillColor: WidgetStatePropertyAll(
+                                                                AntiiQTheme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .background),
                                                             value: genreTracksSort
                                                                     .currentSort ==
                                                                 availableSortType,
@@ -274,8 +339,9 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                   child: Text(
                                     key,
                                     style: TextStyle(
-                                      color:
-                                          AntiiQTheme.of(context).colorScheme.primary,
+                                      color: AntiiQTheme.of(context)
+                                          .colorScheme
+                                          .primary,
                                     ),
                                   ),
                                 ),

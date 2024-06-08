@@ -47,11 +47,10 @@ class _UserInterfaceState extends State<UserInterface> {
         backgroundColor: AntiiQTheme.of(context).colorScheme.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
                     "Interface",
@@ -61,10 +60,14 @@ class _UserInterfaceState extends State<UserInterface> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(
                   height: 20,
                 ),
-                Padding(
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Text(
                     "You will need to restart the application for these settings to apply properly.",
@@ -75,7 +78,9 @@ class _UserInterfaceState extends State<UserInterface> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Padding(
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: CustomButton(
                     style: ButtonStyles().style2,
@@ -85,85 +90,87 @@ class _UserInterfaceState extends State<UserInterface> {
                     child: const Text("Restart App"),
                   ),
                 ),
-                CustomCard(
-                  theme: AntiiQTheme.of(context).cardThemes.surface,
+              ),
+              SliverToBoxAdapter(
+                child: CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.background,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      "Colours",
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onSurface,
-                        fontSize: 30,
-                      ),
+                      "Themes",
+                      style: AntiiQTheme.of(context).textStyles.onBackgroundLargeHeader,
                       textAlign: TextAlign.center,
                     ),
                   ),
                 ),
-                CustomCard(
-                  theme: AntiiQTheme.of(context).cardThemes.surface,
-                  child: Column(
-                    children: [
-                      for (String theme in customThemes.keys)
-                        CustomCard(
+              ),
+              SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1,
+                ),
+                delegate: SliverChildListDelegate([
+                  for (String theme in customThemes.keys)
+                    CustomCard(
+                      theme: AntiiQTheme.of(context).cardThemes.background.copyWith(
+                        color: customThemes[theme]!.background,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: CustomCard(
                           theme: AntiiQTheme.of(context).cardThemes.background.copyWith(
-                                color: customThemes[theme]!.background,
+                                color: customThemes[theme]!.surface,
                               ),
                           child: Padding(
-                            padding: const EdgeInsets.all(5.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
+                                Text(
+                                  theme,
+                                  style: TextStyle(
+                                    color: customThemes[theme]!
+                                        .onSurface,
+                                    fontSize: 20
+                                  ),
+                                ),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: Text(
-                                        theme,
-                                        style: TextStyle(
-                                          color: customThemes[theme]!
-                                              .onBackground,
-                                        ),
-                                      ),
+                                    Container(
+                                      height: 20,
+                                      width: 20,
+                                      color: customThemes[theme]!.primary,
                                     ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          height: 20,
-                                          width: 20,
-                                          color: customThemes[theme]!.primary,
-                                        ),
-                                        Container(
-                                          height: 20,
-                                          width: 20,
-                                          color:
-                                              customThemes[theme]!.secondary,
-                                        ),
-                                        Container(
-                                          height: 20,
-                                          width: 20,
-                                          color: customThemes[theme]!.surface,
-                                        ),
-                                        Container(
-                                          height: 20,
-                                          width: 20,
-                                          color:
-                                              customThemes[theme]!.background,
-                                        ),
-                                      ],
-                                    )
+                                    Container(
+                                      height: 20,
+                                      width: 20,
+                                      color:
+                                      customThemes[theme]!.secondary,
+                                    ),
+                                    Container(
+                                      height: 20,
+                                      width: 20,
+                                      color: customThemes[theme]!.surface,
+                                    ),
+                                    Container(
+                                      height: 20,
+                                      width: 20,
+                                      color:
+                                      customThemes[theme]!.background,
+                                    ),
                                   ],
                                 ),
                                 CustomButton(
                                   style: ButtonStyles().style1.copyWith(
                                         backgroundColor:
                                             WidgetStatePropertyAll(
-                                          customThemes[theme]!.secondary,
+                                          customThemes[theme]!.primary,
                                         ),
                                         foregroundColor:
                                             WidgetStatePropertyAll(
-                                          customThemes[theme]!.onSecondary,
+                                          customThemes[theme]!.onPrimary,
                                         ),
                                       ),
                                   function: () {
@@ -175,18 +182,33 @@ class _UserInterfaceState extends State<UserInterface> {
                             ),
                           ),
                         ),
-                    ],
-                  ),
-                ),
-                CustomCard(
-                  theme: AntiiQTheme.of(context).cardThemes.surface,
+                      ),
+                    ),
+                ],),
+              ),
+              SliverToBoxAdapter(
+                child: CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.background,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      "UI Roundness",
+                      style: AntiiQTheme.of(context).textStyles.onBackgroundLargeHeader,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          "Roundness: $generalRadius",
+                          "Radius: ${generalRadius.round()}",
                           style:
                           AntiiQTheme.of(context).textStyles.onSurfaceText,
                         ),
@@ -196,7 +218,7 @@ class _UserInterfaceState extends State<UserInterface> {
                         SizedBox(
                           height: 20,
                           child: FlutterSlider(
-                              selectByTap: true,
+                              selectByTap: false,
                               tooltip: FlutterSliderTooltip(
                                 disabled: true,
                               ),
@@ -206,7 +228,7 @@ class _UserInterfaceState extends State<UserInterface> {
                                   step: 5, isPercentRange: false),
                               values: [generalRadius],
                               min: 0,
-                              max: 35,
+                              max: 25,
                               handler: FlutterSliderHandler(
                                 decoration: BoxDecoration(
                                     color: AntiiQTheme.of(context)
@@ -249,8 +271,8 @@ class _UserInterfaceState extends State<UserInterface> {
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

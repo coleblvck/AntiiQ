@@ -49,11 +49,11 @@ class _MainBoxState extends State<MainBox> {
           backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(generalRadius)),
           title: Text(
-            'Exit?',
-            style: AntiiQTheme.of(context).textStyles.onSurfaceText,
+            'Exit:',
+            style: AntiiQTheme.of(context).textStyles.onSurfaceLargeHeader,
           ),
           content: Text(
-            'Are you sure',
+            'Are you sure?',
             style: AntiiQTheme.of(context).textStyles.onSurfaceText,
           ),
           actions: <Widget>[

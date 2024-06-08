@@ -104,9 +104,9 @@ class _LibraryState extends State<Library> {
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
                     "Library",
-                    style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground,
-                        fontSize: 30),
+                    style: AntiiQTheme.of(context)
+                        .textStyles
+                        .onBackgroundLargeHeader,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -206,7 +206,7 @@ class _LibraryState extends State<Library> {
                 CustomCard(
                   theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -278,9 +278,9 @@ class _LibraryState extends State<Library> {
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
                     "Directories",
-                    style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground,
-                        fontSize: 30),
+                    style: AntiiQTheme.of(context)
+                        .textStyles
+                        .onBackgroundLargeHeader,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -314,13 +314,19 @@ class _LibraryState extends State<Library> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text("Select Storage"),
+                                  Text(
+                                    "Select Storage",
+                                    style: AntiiQTheme.of(context)
+                                        .textStyles
+                                        .onBackgroundText,
+                                  ),
                                   IconButton(
                                     onPressed: () {
                                       clearDirectoryList();
                                     },
-                                    icon: const Icon(
+                                    icon: Icon(
                                       RemixIcon.close_circle,
+                                      color: AntiiQTheme.of(context).colorScheme.onBackground,
                                     ),
                                   ),
                                 ],

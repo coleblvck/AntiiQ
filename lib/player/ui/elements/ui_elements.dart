@@ -201,6 +201,18 @@ class TextStyles {
     fontSize: FontSizes().defaultFontSize,
     fontWeight: FontWeight.bold,
   );
+
+  final TextStyle onBackgroundLargeHeader = TextStyle(
+    color: currentColorScheme.onBackground,
+    fontFamily: FontFamilies().defaultFont,
+    fontSize: FontSizes().largeHeader,
+  );
+
+  final TextStyle onSurfaceLargeHeader = TextStyle(
+    color: currentColorScheme.onSurface,
+    fontFamily: FontFamilies().defaultFont,
+    fontSize: FontSizes().largeHeader,
+  );
 }
 
 class FontFamilies {
@@ -209,7 +221,7 @@ class FontFamilies {
 
 class FontSizes {
   double defaultFontSize = 15;
-  double headerTitleSize = 20;
+  double largeHeader = 30;
 }
 
 class CustomProgressIndicator extends StatelessWidget {
