@@ -35,7 +35,7 @@ class ArtistItem extends StatelessWidget {
         showArtist(context, artist);
       },
       child: CustomCard(
-        theme: CardThemes().songsItemTheme,
+        theme: AntiiQTheme.of(context).cardThemes.background,
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Row(
@@ -112,7 +112,8 @@ showArtist(context, Artist artist) {
                             Text(
                               "Artist",
                               style: TextStyle(
-                                color: AntiiQTheme.of(context).colorScheme.primary,
+                                color:
+                                    AntiiQTheme.of(context).colorScheme.primary,
                                 fontSize: 20,
                               ),
                             ),
@@ -121,13 +122,16 @@ showArtist(context, Artist artist) {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 20,
-                                color: AntiiQTheme.of(context).colorScheme.primary,
+                                color:
+                                    AntiiQTheme.of(context).colorScheme.primary,
                               ),
                               velocity: defaultTextScrollvelocity,
                               delayBefore: delayBeforeScroll,
                             ),
                             Card(
-                              color: AntiiQTheme.of(context).colorScheme.background,
+                              color: AntiiQTheme.of(context)
+                                  .colorScheme
+                                  .background,
                               surfaceTintColor: Colors.transparent,
                               margin: const EdgeInsets.symmetric(vertical: 5),
                               child: Padding(
@@ -135,8 +139,9 @@ showArtist(context, Artist artist) {
                                 child: Text(
                                   "Length: ${totalDuration(artist.artistTracks!)}",
                                   style: TextStyle(
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.primary,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
                                   ),
                                 ),
                               ),
@@ -165,7 +170,8 @@ showArtist(context, Artist artist) {
                             thisTrack.trackData!.trackName!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onSurface,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -174,7 +180,8 @@ showArtist(context, Artist artist) {
                             thisTrack.mediaItem!.artist!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onSurface,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -191,19 +198,18 @@ showArtist(context, Artist artist) {
               );
             }),
             CustomCard(
-              theme: CardThemes().bottomSheetListHeaderTheme,
+              theme: AntiiQTheme.of(context).cardThemes.background,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: TextScroll(
                         artist.artistName!,
                         textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onBackground,
-                        ),
+                        style:
+                            AntiiQTheme.of(context).textStyles.onBackgroundText,
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,
                       ),
@@ -213,7 +219,10 @@ showArtist(context, Artist artist) {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    icon: const Icon(RemixIcon.arrow_down_double),
+                    icon: Icon(
+                      RemixIcon.arrow_down_double,
+                      color: AntiiQTheme.of(context).colorScheme.onBackground,
+                    ),
                   ),
                 ],
               ),

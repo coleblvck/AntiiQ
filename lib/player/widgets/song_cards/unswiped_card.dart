@@ -47,7 +47,7 @@ class UnswipedCard extends StatelessWidget {
               }
             },
             child: CustomCard(
-              theme: CardThemes().songsItemTheme,
+              theme: AntiiQTheme.of(context).cardThemes.background,
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Row(
@@ -76,6 +76,8 @@ class UnswipedCard extends StatelessWidget {
                         ? SizedBox(
                             width: 40,
                             child: Checkbox(
+                              checkColor: AntiiQTheme.of(context).colorScheme.primary,
+                              fillColor: WidgetStatePropertyAll(AntiiQTheme.of(context).colorScheme.surface),
                               value: selectionSituation.contains(track),
                               onChanged: (value) {
                                 globalSelectOrDeselect(track);

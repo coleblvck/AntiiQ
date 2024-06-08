@@ -22,7 +22,7 @@ class SwipedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      theme: CardThemes().songsItemSwipedTheme,
+      theme: AntiiQTheme.of(context).cardThemes.primary,
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Column(
@@ -72,7 +72,7 @@ class SwipedCard extends StatelessWidget {
             ),
             Expanded(
               child: CustomCard(
-                theme: CardThemes().songsItemTheme,
+                theme: AntiiQTheme.of(context).cardThemes.background,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5.0),
                   child: Align(

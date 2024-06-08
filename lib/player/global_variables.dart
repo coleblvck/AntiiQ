@@ -9,6 +9,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
 
 //On Audio Query
@@ -93,10 +94,10 @@ String loadingMessage = "Loading Library";
 String placeholderAssetImage = "assets/placeholder.png";
 String logoImage = "assets/AntiiQ.png";
 
-RoundedRectangleBorder bottomSheetShape = const RoundedRectangleBorder(
+RoundedRectangleBorder bottomSheetShape = RoundedRectangleBorder(
   borderRadius: BorderRadius.only(
-    topLeft: Radius.circular(10),
-    topRight: Radius.circular(10),
+    topLeft: Radius.circular(generalRadius),
+    topRight: Radius.circular(generalRadius),
   ),
 );
 

@@ -24,7 +24,7 @@ class Dashboard extends StatelessWidget {
               i.value["function"]();
             },
             child: CustomCard(
-              theme: CardThemes().dashboardItemTheme,
+              theme: AntiiQTheme.of(context).cardThemes.background,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

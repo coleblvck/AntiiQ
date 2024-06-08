@@ -44,7 +44,7 @@ class GenreItem extends StatelessWidget {
               ),
               fit: BoxFit.cover,
             ),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(generalRadius),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -54,20 +54,24 @@ class GenreItem extends StatelessWidget {
               Row(
                 children: [
                   CustomCard(
-                    theme: CardThemes().smallCardOnArtTheme,
+                    theme: AntiiQTheme.of(context).cardThemes.background,
                     child: IconButton(
                       onPressed: () {
                         doThingsWithAudioSheet(context, genre.genreTracks!);
                       },
-                      icon: const Icon(RemixIcon.menu_4),
+                      icon: Icon(
+                        RemixIcon.menu_4,
+                        color: AntiiQTheme.of(context).colorScheme.secondary,
+                      ),
                     ),
                   ),
                 ],
               ),
               CustomCard(
-                theme: CardThemes().smallCardOnArtTheme,
+                theme: AntiiQTheme.of(context).cardThemes.background,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -116,7 +120,8 @@ showGenre(context, Genre genre) {
                             Text(
                               "Genre",
                               style: TextStyle(
-                                color: AntiiQTheme.of(context).colorScheme.primary,
+                                color:
+                                    AntiiQTheme.of(context).colorScheme.primary,
                                 fontSize: 20,
                               ),
                             ),
@@ -125,13 +130,16 @@ showGenre(context, Genre genre) {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 20,
-                                color: AntiiQTheme.of(context).colorScheme.primary,
+                                color:
+                                    AntiiQTheme.of(context).colorScheme.primary,
                               ),
                               velocity: defaultTextScrollvelocity,
                               delayBefore: delayBeforeScroll,
                             ),
                             Card(
-                              color: AntiiQTheme.of(context).colorScheme.background,
+                              color: AntiiQTheme.of(context)
+                                  .colorScheme
+                                  .background,
                               surfaceTintColor: Colors.transparent,
                               margin: const EdgeInsets.symmetric(vertical: 5),
                               child: Padding(
@@ -139,8 +147,9 @@ showGenre(context, Genre genre) {
                                 child: Text(
                                   "Length: ${totalDuration(genre.genreTracks!)}",
                                   style: TextStyle(
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.primary,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
                                   ),
                                 ),
                               ),
@@ -169,7 +178,8 @@ showGenre(context, Genre genre) {
                             thisTrack.trackData!.trackName!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onSurface,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -178,7 +188,8 @@ showGenre(context, Genre genre) {
                             thisTrack.mediaItem!.artist!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onSurface,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -195,19 +206,18 @@ showGenre(context, Genre genre) {
               );
             }),
             CustomCard(
-              theme: CardThemes().bottomSheetListHeaderTheme,
+              theme: AntiiQTheme.of(context).cardThemes.background,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: TextScroll(
                         genre.genreName!,
                         textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onBackground,
-                        ),
+                        style:
+                            AntiiQTheme.of(context).textStyles.onBackgroundText,
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,
                       ),
@@ -217,7 +227,10 @@ showGenre(context, Genre genre) {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    icon: const Icon(RemixIcon.arrow_down_double),
+                    icon: Icon(
+                      RemixIcon.arrow_down_double,
+                      color: AntiiQTheme.of(context).colorScheme.onBackground,
+                    ),
                   ),
                 ],
               ),

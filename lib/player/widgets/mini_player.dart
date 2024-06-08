@@ -22,7 +22,7 @@ class MiniPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      theme: CardThemes().miniPlayerCardTheme,
+      theme: AntiiQTheme.of(context).cardThemes.background,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: StreamBuilder<MediaItem?>(
@@ -55,7 +55,7 @@ class MiniPlayer extends StatelessWidget {
                     boxController.openBox();
                   },
                   child: CustomCard(
-                    theme: CardThemes().miniPlayerCardTheme,
+                    theme: AntiiQTheme.of(context).cardThemes.background,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [

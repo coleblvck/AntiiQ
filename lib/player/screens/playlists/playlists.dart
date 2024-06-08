@@ -36,7 +36,8 @@ class _PlaylistsState extends State<Playlists> {
       isScrollControlled: true,
       backgroundColor: AntiiQTheme.of(context).colorScheme.background,
       showDragHandle: true,
-      barrierColor: AntiiQTheme.of(context).colorScheme.background.withAlpha(200),
+      barrierColor:
+          AntiiQTheme.of(context).colorScheme.background.withAlpha(200),
       shape: bottomSheetShape,
       context: context,
       builder: (context) => StatefulBuilder(
@@ -76,11 +77,21 @@ class _PlaylistsState extends State<Playlists> {
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: TextField(
+                          style: AntiiQTheme.of(context)
+                              .textStyles
+                              .onBackgroundText,
+                          cursorColor:
+                              AntiiQTheme.of(context).colorScheme.primary,
                           controller: playlistTitleController,
-                          decoration: const InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 10.0),
-                              hintText: "Playlist Title"),
+                          decoration: InputDecoration(
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            border: InputBorder.none,
+                            hintText: "Playlist Title",
+                            hintStyle: AntiiQTheme.of(context)
+                                .textStyles
+                                .onBackgroundText,
+                          ),
                         ),
                       ),
                     ),
@@ -88,22 +99,26 @@ class _PlaylistsState extends State<Playlists> {
                       onPressed: () async {
                         await getArt();
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         RemixIcon.image,
+                        color:
+                        AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
                     IconButton(
                       onPressed: () {
                         playlistCreate();
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         RemixIcon.check,
+                        color:
+                        AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
                   ],
                 ),
                 CustomCard(
-                  theme: CardThemes().searchBoxTheme,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Row(
@@ -113,10 +128,21 @@ class _PlaylistsState extends State<Playlists> {
                             onChanged: (term) {
                               search(term);
                             },
+                            style: AntiiQTheme.of(context)
+                                .textStyles
+                                .onSurfaceText,
+                            autofocus: false,
+                            cursorColor:
+                                AntiiQTheme.of(context).colorScheme.primary,
                             controller: playlistSearchController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: "Start Typing to Search...",
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              hintText: "Start Typing to Add Music...",
+                              hintStyle: AntiiQTheme.of(context)
+                                  .textStyles
+                                  .onSurfaceText,
                             ),
                           ),
                         ),
@@ -125,8 +151,10 @@ class _PlaylistsState extends State<Playlists> {
                             playlistSearchController.clear();
                             search("");
                           },
-                          icon: const Icon(
+                          icon: Icon(
                             RemixIcon.close,
+                            color:
+                                AntiiQTheme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ],
@@ -135,7 +163,10 @@ class _PlaylistsState extends State<Playlists> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: Text("${selectedTracks.length} Selected Songs"),
+                  child: Text(
+                    "${selectedTracks.length} Selected Songs",
+                    style: AntiiQTheme.of(context).textStyles.onBackgroundText,
+                  ),
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -147,7 +178,8 @@ class _PlaylistsState extends State<Playlists> {
                         onTap: () {
                           selectOrDeselect(thisTrack);
                         },
-                        child: Card(
+                        child: CustomCard(
+                          theme: AntiiQTheme.of(context).cardThemes.surface,
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Row(
@@ -168,10 +200,12 @@ class _PlaylistsState extends State<Playlists> {
                                       children: [
                                         TextScroll(
                                           thisTrack.trackData!.trackName!,
+                                          style: AntiiQTheme.of(context).textStyles.onSurfaceText,
                                         ),
                                         TextScroll(
                                           thisTrack
                                               .trackData!.trackArtistNames!,
+                                          style: AntiiQTheme.of(context).textStyles.onSurfaceText,
                                         ),
                                       ],
                                     ),
@@ -182,6 +216,8 @@ class _PlaylistsState extends State<Playlists> {
                                   child: Checkbox(
                                     value: (selectedTracks.contains(thisTrack)),
                                     onChanged: null,
+                                    checkColor: AntiiQTheme.of(context).colorScheme.primary,
+                                    fillColor: WidgetStatePropertyAll(AntiiQTheme.of(context).colorScheme.surface),
                                   ),
                                 )
                               ],

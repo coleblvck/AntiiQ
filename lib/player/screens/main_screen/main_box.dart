@@ -47,26 +47,27 @@ class _MainBoxState extends State<MainBox> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
-          title: const Text('Exit?'),
-          content: const Text(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(generalRadius)),
+          title: Text(
+            'Exit?',
+            style: AntiiQTheme.of(context).textStyles.onSurfaceText,
+          ),
+          content: Text(
             'Are you sure',
+            style: AntiiQTheme.of(context).textStyles.onSurfaceText,
           ),
           actions: <Widget>[
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: TextStyles().onSurfaceText,
-              ),
+            CustomButton(
+              style: AntiiQTheme.of(context).buttonStyles.style1,
               child: const Text('Stay'),
-              onPressed: () {
+              function: () {
                 Navigator.pop(context, false);
               },
             ),
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: TextStyles().onSurfaceText,
-              ),
+            CustomButton(
+              style: AntiiQTheme.of(context).buttonStyles.style2,
               child: const Text('Exit'),
-              onPressed: () {
+              function: () {
                 Navigator.pop(context, true);
               },
             ),
@@ -98,7 +99,7 @@ class _MainBoxState extends State<MainBox> {
               backgroundColor: AntiiQTheme.of(context).colorScheme.background,
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(generalRadius),
               ),
               elevation: 5,
               child: Padding(
@@ -106,7 +107,11 @@ class _MainBoxState extends State<MainBox> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(message),
+                    Text(
+                      message,
+                      style:
+                          AntiiQTheme.of(context).textStyles.onBackgroundText,
+                    ),
                     const SizedBox(
                       height: 15,
                     ),
@@ -119,7 +124,11 @@ class _MainBoxState extends State<MainBox> {
                     const SizedBox(
                       height: 15,
                     ),
-                    Text("Processing Files $loadProgress of $loadTotal"),
+                    Text(
+                      "Processing Files $loadProgress of $loadTotal",
+                      style:
+                          AntiiQTheme.of(context).textStyles.onBackgroundText,
+                    ),
                   ],
                 ),
               ),
@@ -234,9 +243,9 @@ class _MainBoxState extends State<MainBox> {
             controller: boxController,
             minHeight: minHeightBox,
             maxHeight: maxHeightBox,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(7),
-              topRight: Radius.circular(7),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(generalRadius),
+              topRight: Radius.circular(generalRadius),
             ),
             draggableIconColor: AntiiQTheme.of(context).colorScheme.onSurface,
             color: AntiiQTheme.of(context).colorScheme.surface,
@@ -263,7 +272,7 @@ class _MainBoxState extends State<MainBox> {
             shadowColor: Colors.black,
             surfaceTintColor: Colors.transparent,
             child: CustomCard(
-              theme: CardThemes().bottomNavBarTheme,
+              theme: AntiiQTheme.of(context).cardThemes.background,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

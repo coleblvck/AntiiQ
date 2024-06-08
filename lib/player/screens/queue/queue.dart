@@ -18,10 +18,10 @@ showQueue(context) {
     backgroundColor: AntiiQTheme.of(context).colorScheme.background,
     showDragHandle: true,
     barrierColor: AntiiQTheme.of(context).colorScheme.background.withAlpha(200),
-    shape: const RoundedRectangleBorder(
+    shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(10),
-        topRight: Radius.circular(10),
+        topLeft: Radius.circular(generalRadius),
+        topRight: Radius.circular(generalRadius),
       ),
     ),
     context: context,
@@ -64,7 +64,7 @@ class QueueBottomHeader extends StatelessWidget {
     return SizedBox(
       height: 60,
       child: CustomCard(
-        theme: CardThemes().nowPlayingTopCardTheme,
+        theme: AntiiQTheme.of(context).cardThemes.background,
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 10),
           child: Row(
@@ -108,7 +108,7 @@ class QueueCard extends StatelessWidget {
           List<MediaItem>? thisQueue = snapshot.data;
           thisQueue ??= activeQueue;
           return CustomCard(
-            theme: CardThemes().nowPlayingMainCardTheme,
+            theme: AntiiQTheme.of(context).cardThemes.background,
             child: ListView.builder(
                 controller: ScrollController(),
                 itemCount: thisQueue.length,

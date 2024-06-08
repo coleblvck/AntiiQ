@@ -56,12 +56,17 @@ class Antiiq extends StatelessWidget {
         builder: (context, snapshot) {
           return AntiiQTheme(
             colorScheme: snapshot.data ?? getColorScheme(),
-            cardTheme: CardThemes().defaultTheme,
-            textStyle: TextStyles().onBackgroundText,
-            child: const MaterialApp(
+            child: MaterialApp(
               title: 'AntiiQ',
+              theme: ThemeData(
+                textSelectionTheme: TextSelectionThemeData(
+                  cursorColor: currentColorScheme.primary,
+                  selectionColor: currentColorScheme.primary,
+                  selectionHandleColor: currentColorScheme.primary,
+                ),
+              ),
               debugShowCheckedModeBanner: false,
-              home: MainBox(),
+              home: const MainBox(),
             ),
           );
         });

@@ -76,7 +76,7 @@ class NowPlayingBottomHeader extends StatelessWidget {
     return SizedBox(
       height: 60,
       child: CustomCard(
-        theme: CardThemes().nowPlayingTopCardTheme,
+        theme: AntiiQTheme.of(context).cardThemes.background,
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 10),
           child: Row(
@@ -118,7 +118,7 @@ class NowPlayingFullCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      theme: CardThemes().nowPlayingMainCardTheme,
+      theme: AntiiQTheme.of(context).cardThemes.background,
       child: StreamBuilder(
         stream: currentPlaying(),
         builder: (context, snapshot) {
@@ -131,7 +131,7 @@ class NowPlayingFullCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(generalRadius),
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: GestureDetector(
@@ -165,7 +165,7 @@ class NowPlayingFullCard extends StatelessWidget {
                             ),
                           ),
                           child: CustomCard(
-                            theme: CardThemes().nowPlayingArtOverlayTheme,
+                            theme: AntiiQTheme.of(context).cardThemes.backgroundOverlay,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -175,8 +175,7 @@ class NowPlayingFullCard extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     CustomCard(
-                                      theme: CardThemes()
-                                          .nowPlayingRepeatShuffleTheme,
+                                      theme: AntiiQTheme.of(context).cardThemes.surfaceOverlay,
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         mainAxisAlignment:
@@ -461,7 +460,7 @@ class TrackDurationDisplayWidget extends StatelessWidget {
         return displayDuration
             ? Center(
                 child: CustomCard(
-                  theme: CardThemes().surfaceColor,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: StreamBuilder<Duration>(
                     stream: currentPosition(),
                     builder: (context, data) {

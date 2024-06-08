@@ -25,8 +25,8 @@ Future<Directory?> pickFolder(String path, context) async {
       ),
       backgroundColor: AntiiQTheme.of(context).colorScheme.background,
       fileList: FilesystemPickerFileListThemeData(
-        fileTextStyle: AntiiQTheme.of(context).textStyle,
-        folderTextStyle: AntiiQTheme.of(context).textStyle,
+        fileTextStyle: AntiiQTheme.of(context).textStyles.onBackgroundText,
+        folderTextStyle: AntiiQTheme.of(context).textStyles.onBackgroundText,
       ),
       pickerAction: FilesystemPickerActionThemeData(
         backgroundColor: AntiiQTheme.of(context).colorScheme.primary,

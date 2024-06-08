@@ -35,6 +35,7 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
     enableDrag: true,
     showDragHandle: true,
     shape: bottomSheetShape,
+    backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
     context: context,
     builder: (context) {
       return Padding(
@@ -58,37 +59,55 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
                     ),
                   ),
                   CustomCard(
-                    theme: CardThemes().bgColor,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: TextField(
-                              controller: playlistTitleController,
-                              decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                                  hintText: "Playlist Title"),
+                    theme: AntiiQTheme.of(context).cardThemes.background,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: TextField(
+                                style: AntiiQTheme.of(context)
+                                    .textStyles
+                                    .onBackgroundText,
+                                cursorColor:
+                                AntiiQTheme.of(context).colorScheme.primary,
+                                controller: playlistTitleController,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  border: InputBorder.none,
+                                  hintText: "Playlist Title",
+                                  hintStyle: AntiiQTheme.of(context)
+                                      .textStyles
+                                      .onBackgroundText,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            await getArt();
-                          },
-                          icon: const Icon(
-                            RemixIcon.image,
+                          IconButton(
+                            onPressed: () async {
+                              await getArt();
+                            },
+                            icon: Icon(
+                              RemixIcon.image,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.primary,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            playlistCreate();
-                          },
-                          icon: const Icon(
-                            RemixIcon.check,
+                          IconButton(
+                            onPressed: () {
+                              playlistCreate();
+                            },
+                            icon: Icon(
+                              RemixIcon.check,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.primary,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -118,7 +137,7 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
                       }
                     },
                     child: CustomCard(
-                      theme: CardThemes().songsItemTheme,
+                      theme: AntiiQTheme.of(context).cardThemes.background,
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Row(
@@ -132,12 +151,20 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
                                 padding: const EdgeInsets.all(10.0),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    TextScroll(thisPlaylist.playlistName!),
                                     TextScroll(
-                                        "${thisPlaylist.playlistTracks!.length} ${(thisPlaylist.playlistTracks!.length > 1) ? "Songs" : "song"}"),
+                                      thisPlaylist.playlistName!,
+                                      style: AntiiQTheme.of(context)
+                                          .textStyles
+                                          .onBackgroundText,
+                                    ),
+                                    TextScroll(
+                                      "${thisPlaylist.playlistTracks!.length} ${(thisPlaylist.playlistTracks!.length > 1) ? "Songs" : "song"}",
+                                      style: AntiiQTheme.of(context)
+                                          .textStyles
+                                          .onBackgroundText,
+                                    ),
                                   ],
                                 ),
                               ),

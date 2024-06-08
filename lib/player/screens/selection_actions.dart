@@ -34,7 +34,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
     enableDrag: true,
     shape: bottomSheetShape,
     context: context,
-    backgroundColor: AntiiQTheme.of(context).colorScheme.background,
+    backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
     builder: (context) {
       return SingleChildScrollView(
         child: Padding(
@@ -154,8 +154,9 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                     "Favourite:",
                                     style: TextStyle(
                                       fontSize: 18,
-                                      color:
-                                          AntiiQTheme.of(context).colorScheme.primary,
+                                      color: AntiiQTheme.of(context)
+                                          .colorScheme
+                                          .primary,
                                     ),
                                   ),
                                   IconButton(
@@ -177,11 +178,9 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                           builder: (context, snapshot) {
                             final List<Track> selectionSituation =
                                 snapshot.data ?? globalSelection;
-                            return Card(
-                              margin: EdgeInsets.zero,
-                              color: AntiiQTheme.of(context).colorScheme.background,
-                              shadowColor: Colors.black,
-                              surfaceTintColor: Colors.transparent,
+                            return CustomCard(
+                              theme:
+                                  AntiiQTheme.of(context).cardThemes.background,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0),
@@ -228,22 +227,26 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                           Text(
                             "Selection",
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.primary,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.primary,
                               fontSize: 20,
                               decoration: TextDecoration.underline,
                               decorationColor:
                                   AntiiQTheme.of(context).colorScheme.primary,
                             ),
                           ),
-                          Text("Selected Tracks: ${globalSelection.length}"),
+                          Text(
+                            "Selected Tracks: ${globalSelection.length}",
+                            style: AntiiQTheme.of(context)
+                                .textStyles
+                                .onSurfaceText,
+                          ),
                         ],
                       ),
                     )
                   : Container(),
-              Card(
-                color: AntiiQTheme.of(context).colorScheme.background,
-                surfaceTintColor: Colors.transparent,
-                margin: const EdgeInsets.symmetric(vertical: 5),
+              CustomCard(
+                theme: AntiiQTheme.of(context).cardThemes.background,
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(

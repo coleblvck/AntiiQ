@@ -1,4 +1,5 @@
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/audio_preferences.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 
@@ -19,6 +20,7 @@ class BoxKeys {
   String globalSelection = "globalSelection";
   String favourites = "favourites";
   String showTrackDuration = "showTrackDuration";
+  String generalRadius = "generalRadius";
 }
 
 changeTheme(String theme) async {
@@ -36,6 +38,11 @@ setMinimumTrackLength(int length) async {
   await antiiqStore.put(BoxKeys().minimumTrackLength, length);
 }
 
+setGeneralRadius(double radius) async {
+  generalRadius = radius;
+  await antiiqStore.put(BoxKeys().generalRadius, radius);
+}
+
 setPreviousButtonAction(bool restart) async {
   previousRestart = restart;
   await antiiqStore.put(BoxKeys().previousRestart, restart);
@@ -46,6 +53,7 @@ initializeUserSettings() async {
   await themeInit();
   await getUserLibraryDirectories();
   await getMinimumTrackLength();
+  await getGeneralRadius();
   await getPreviousButtonAction();
   await getSwipeGestures();
   await initInteractiveSeekBarSwitch();
@@ -73,6 +81,10 @@ getUserLibraryDirectories() async {
 getMinimumTrackLength() async {
   minimumTrackLength =
       await antiiqStore.get(BoxKeys().minimumTrackLength, defaultValue: 45);
+}
+
+getGeneralRadius() async {
+  generalRadius = await antiiqStore.get(BoxKeys().generalRadius, defaultValue: 10.0);
 }
 
 getPreviousButtonAction() async {

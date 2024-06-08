@@ -51,7 +51,7 @@ class PlaylistSong extends StatelessWidget {
                         .toList());
               },
               child: CustomCard(
-                theme: CardThemes().albumSongsItemTheme,
+                theme: AntiiQTheme.of(context).cardThemes.surface,
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Row(

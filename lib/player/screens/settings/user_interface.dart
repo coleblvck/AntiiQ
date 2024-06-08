@@ -1,5 +1,6 @@
 import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
@@ -63,27 +64,16 @@ class _UserInterfaceState extends State<UserInterface> {
                 const SizedBox(
                   height: 20,
                 ),
-                CustomCard(
-                  theme: CardThemes().surfaceColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text(
-                      "Colours",
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onSurface,
-                        fontSize: 30,
-                      ),
-                      textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    "You will need to restart the application for these settings to apply properly.",
+                    style: TextStyle(
+                      color: AntiiQTheme.of(context).colorScheme.onBackground,
+                      fontSize: 15,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                Text(
-                  "You will need to restart application for colours to apply properly.",
-                  style: TextStyle(
-                    color: AntiiQTheme.of(context).colorScheme.onBackground,
-                    fontSize: 15,
-                  ),
-                  textAlign: TextAlign.center,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -96,14 +86,26 @@ class _UserInterfaceState extends State<UserInterface> {
                   ),
                 ),
                 CustomCard(
-                  theme: CardThemes().settingsItemTheme.copyWith(
-                        color: AntiiQTheme.of(context).colorScheme.surface,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      "Colours",
+                      style: TextStyle(
+                        color: AntiiQTheme.of(context).colorScheme.onSurface,
+                        fontSize: 30,
                       ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Column(
                     children: [
                       for (String theme in customThemes.keys)
                         CustomCard(
-                          theme: CardThemes().settingsItemTheme.copyWith(
+                          theme: AntiiQTheme.of(context).cardThemes.background.copyWith(
                                 color: customThemes[theme]!.background,
                               ),
                           child: Padding(
@@ -174,6 +176,77 @@ class _UserInterfaceState extends State<UserInterface> {
                           ),
                         ),
                     ],
+                  ),
+                ),
+                CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          "Roundness: $generalRadius",
+                          style:
+                          AntiiQTheme.of(context).textStyles.onSurfaceText,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          height: 20,
+                          child: FlutterSlider(
+                              selectByTap: true,
+                              tooltip: FlutterSliderTooltip(
+                                disabled: true,
+                              ),
+                              handlerHeight: 20,
+                              handlerWidth: 5,
+                              step: const FlutterSliderStep(
+                                  step: 5, isPercentRange: false),
+                              values: [generalRadius],
+                              min: 0,
+                              max: 35,
+                              handler: FlutterSliderHandler(
+                                decoration: BoxDecoration(
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(),
+                              ),
+                              foregroundDecoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(1)),
+                              trackBar: FlutterSliderTrackBar(
+                                inactiveTrackBar: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .primary,
+                                  border: Border.all(
+                                    width: 3,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                  ),
+                                ),
+                                activeTrackBar: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .secondary,
+                                ),
+                              ),
+                              onDragging: (handlerIndex, lowerValue,
+                                  upperValue) =>
+                              {
+                                setState(() {
+                                  setGeneralRadius(lowerValue);
+                                })
+                              }),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

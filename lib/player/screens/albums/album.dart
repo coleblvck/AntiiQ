@@ -47,7 +47,7 @@ class AlbumItem extends StatelessWidget {
                 ),
                 fit: BoxFit.cover,
               ),
-              borderRadius: BorderRadius.circular(10)),
+              borderRadius: BorderRadius.circular(generalRadius)),
           padding: EdgeInsets.zero,
           margin: EdgeInsets.zero,
           child: Column(
@@ -58,20 +58,24 @@ class AlbumItem extends StatelessWidget {
               Row(
                 children: [
                   CustomCard(
-                    theme: CardThemes().smallCardOnArtTheme,
+                    theme: AntiiQTheme.of(context).cardThemes.background,
                     child: IconButton(
                       onPressed: () {
                         doThingsWithAudioSheet(context, album.albumTracks!);
                       },
-                      icon: const Icon(RemixIcon.menu_4),
+                      icon: Icon(
+                        RemixIcon.menu_4,
+                        color: AntiiQTheme.of(context).colorScheme.onBackground,
+                      ),
                     ),
                   ),
                 ],
               ),
               CustomCard(
-                theme: CardThemes().smallCardOnArtTheme,
+                theme: AntiiQTheme.of(context).cardThemes.background,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -126,7 +130,8 @@ showAlbum(context, Album album) {
                             Text(
                               "Album",
                               style: TextStyle(
-                                color: AntiiQTheme.of(context).colorScheme.primary,
+                                color:
+                                    AntiiQTheme.of(context).colorScheme.primary,
                                 fontSize: 20,
                               ),
                             ),
@@ -135,7 +140,8 @@ showAlbum(context, Album album) {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 20,
-                                color: AntiiQTheme.of(context).colorScheme.primary,
+                                color:
+                                    AntiiQTheme.of(context).colorScheme.primary,
                               ),
                               velocity: defaultTextScrollvelocity,
                               delayBefore: delayBeforeScroll,
@@ -144,8 +150,9 @@ showAlbum(context, Album album) {
                               album.albumArtistName!,
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                color:
-                                    AntiiQTheme.of(context).colorScheme.onBackground,
+                                color: AntiiQTheme.of(context)
+                                    .colorScheme
+                                    .onBackground,
                               ),
                               velocity: defaultTextScrollvelocity,
                               delayBefore: delayBeforeScroll,
@@ -161,7 +168,9 @@ showAlbum(context, Album album) {
                                   )
                                 : Container(),
                             Card(
-                              color: AntiiQTheme.of(context).colorScheme.background,
+                              color: AntiiQTheme.of(context)
+                                  .colorScheme
+                                  .background,
                               surfaceTintColor: Colors.transparent,
                               margin: const EdgeInsets.symmetric(vertical: 5),
                               child: Padding(
@@ -169,8 +178,9 @@ showAlbum(context, Album album) {
                                 child: Text(
                                   "Length: ${totalDuration(album.albumTracks!)}",
                                   style: TextStyle(
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.primary,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
                                   ),
                                 ),
                               ),
@@ -199,7 +209,8 @@ showAlbum(context, Album album) {
                             thisTrack.trackData!.trackName!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onSurface,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -208,7 +219,8 @@ showAlbum(context, Album album) {
                             thisTrack.mediaItem!.artist!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onSurface,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -225,19 +237,18 @@ showAlbum(context, Album album) {
               );
             }),
             CustomCard(
-              theme: CardThemes().bottomSheetListHeaderTheme,
+              theme: AntiiQTheme.of(context).cardThemes.background,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: TextScroll(
                         album.albumName!,
                         textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onBackground,
-                        ),
+                        style:
+                            AntiiQTheme.of(context).textStyles.onBackgroundText,
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,
                       ),
@@ -247,7 +258,10 @@ showAlbum(context, Album album) {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    icon: const Icon(RemixIcon.arrow_down_double),
+                    icon: Icon(
+                      RemixIcon.arrow_down_double,
+                      color: AntiiQTheme.of(context).colorScheme.onBackground,
+                    ),
                   ),
                 ],
               ),

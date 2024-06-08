@@ -200,7 +200,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                     ? Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: CustomCard(
-                          theme: CardThemes().surfaceColor,
+                          theme: AntiiQTheme.of(context).cardThemes.surface,
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 10.0),

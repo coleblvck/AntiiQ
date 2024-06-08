@@ -71,7 +71,7 @@ class _BehaviourState extends State<Behaviour> {
                   height: 20,
                 ),
                 CustomCard(
-                  theme: CardThemes().surfaceColor,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
@@ -79,7 +79,8 @@ class _BehaviourState extends State<Behaviour> {
                       children: [
                         Text(
                           "Enable/Disable Swipe Gestures on the Now Playing Screen and Mini Player:",
-                          style: AntiiQTheme.of(context).textStyle,
+                          style:
+                              AntiiQTheme.of(context).textStyles.onSurfaceText,
                         ),
                         Switch(
                           activeTrackColor:
@@ -98,15 +99,22 @@ class _BehaviourState extends State<Behaviour> {
                   ),
                 ),
                 CustomCard(
-                  theme: CardThemes().surfaceColor,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                            "Previous Button restarts current Track first:"),
+                        Text(
+                          "Previous Button restarts current Track first:",
+                          style:
+                              AntiiQTheme.of(context).textStyles.onSurfaceText,
+                        ),
                         Switch(
+                          activeTrackColor:
+                              AntiiQTheme.of(context).colorScheme.primary,
+                          activeColor:
+                              AntiiQTheme.of(context).colorScheme.onPrimary,
                           value: previousRestart,
                           onChanged: (value) {
                             setState(() {
@@ -119,14 +127,22 @@ class _BehaviourState extends State<Behaviour> {
                   ),
                 ),
                 CustomCard(
-                  theme: CardThemes().surfaceColor,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Interactive Seekbar in Mini Player:"),
+                        Text(
+                          "Interactive Seekbar in Mini Player:",
+                          style:
+                              AntiiQTheme.of(context).textStyles.onSurfaceText,
+                        ),
                         Switch(
+                          activeTrackColor:
+                              AntiiQTheme.of(context).colorScheme.primary,
+                          activeColor:
+                              AntiiQTheme.of(context).colorScheme.onPrimary,
                           value: interactiveMiniPlayerSeekbar,
                           onChanged: (value) {
                             setState(() {
@@ -139,14 +155,22 @@ class _BehaviourState extends State<Behaviour> {
                   ),
                 ),
                 CustomCard(
-                  theme: CardThemes().surfaceColor,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Show playing Track Duration:"),
+                        Text(
+                          "Show playing Track Duration:",
+                          style:
+                              AntiiQTheme.of(context).textStyles.onSurfaceText,
+                        ),
                         Switch(
+                          activeTrackColor:
+                              AntiiQTheme.of(context).colorScheme.primary,
+                          activeColor:
+                              AntiiQTheme.of(context).colorScheme.onPrimary,
                           value: showTrackDuration,
                           onChanged: (value) {
                             setState(() {

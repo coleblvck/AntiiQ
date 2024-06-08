@@ -32,7 +32,7 @@ class QueueSongItem extends StatelessWidget {
           playTrack(index, "queue");
         },
         child: CustomCard(
-          theme: CardThemes().songsItemTheme,
+          theme: AntiiQTheme.of(context).cardThemes.background,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Row(

@@ -59,7 +59,7 @@ class _SearchState extends State<Search> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           CustomCard(
-            theme: CardThemes().searchBoxTheme,
+            theme: AntiiQTheme.of(context).cardThemes.surface,
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Row(
@@ -70,8 +70,9 @@ class _SearchState extends State<Search> {
                         search(term);
                       },
                       textAlignVertical: TextAlignVertical.center,
-                      style: TextStyles().onSurfaceText,
+                      style: AntiiQTheme.of(context).textStyles.onSurfaceText,
                       autofocus: false,
+                      cursorColor: AntiiQTheme.of(context).colorScheme.primary,
                       controller: searchController,
                       decoration: InputDecoration(
                         prefixIcon: Icon(
@@ -81,7 +82,7 @@ class _SearchState extends State<Search> {
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                         hintText: "Start Typing to Search...",
-                        hintStyle: TextStyles().onSurfaceText,
+                        hintStyle: AntiiQTheme.of(context).textStyles.onSurfaceText,
                       ),
                     ),
                   ),
@@ -176,7 +177,7 @@ class _SearchState extends State<Search> {
                           showAlbum(context, thisAlbum);
                         },
                         child: CustomCard(
-                            theme: CardThemes().surfaceColor,
+                            theme: AntiiQTheme.of(context).cardThemes.surface,
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Row(
@@ -249,7 +250,7 @@ class _SearchState extends State<Search> {
                           showArtist(context, thisArtist);
                         },
                         child: CustomCard(
-                            theme: CardThemes().primaryColor,
+                            theme: AntiiQTheme.of(context).cardThemes.primary,
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Row(

@@ -66,7 +66,7 @@ class About extends StatelessWidget {
                   height: 20,
                 ),
                 CustomCard(
-                  theme: CardThemes().surfaceColor,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
@@ -83,7 +83,7 @@ class About extends StatelessWidget {
                           ),
                         ),
                         CustomCard(
-                          theme: CardThemes().bgColor,
+                          theme: AntiiQTheme.of(context).cardThemes.background,
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Column(
@@ -142,7 +142,7 @@ class About extends StatelessWidget {
                   ),
                 ),
                 CustomCard(
-                  theme: CardThemes().primaryColor,
+                  theme: AntiiQTheme.of(context).cardThemes.primary,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
@@ -169,7 +169,7 @@ class About extends StatelessWidget {
                           ),
                         ),
                         CustomCard(
-                          theme: CardThemes().surfaceColor,
+                          theme: AntiiQTheme.of(context).cardThemes.surface,
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Column(
@@ -235,7 +235,7 @@ class About extends StatelessWidget {
                   ),
                 ),
                 CustomCard(
-                  theme: CardThemes().surfaceColor,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: CustomButton(

@@ -71,6 +71,10 @@ class _EqualizerState extends State<Equalizer> {
                             builder: (context, snapshot) {
                               final bool enabled = snapshot.data ?? false;
                               return Switch(
+                                activeTrackColor:
+                                AntiiQTheme.of(context).colorScheme.primary,
+                                activeColor:
+                                AntiiQTheme.of(context).colorScheme.onPrimary,
                                 value: enabled,
                                 onChanged: (value) {
                                   loudnessEnhancer.setEnabled(value);
@@ -145,7 +149,7 @@ class _EqualizerState extends State<Equalizer> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: CustomButton(
-                  style: ButtonStyles().style3,
+                  style: AntiiQTheme.of(context).buttonStyles.style3,
                   function: () {
                     audioPlayer.setSpeed(1.0);
                   },
@@ -179,14 +183,14 @@ class _EqualizerState extends State<Equalizer> {
                               color: speed == 1.0
                                   ? AntiiQTheme.of(context).colorScheme.primary
                                   : Colors.white,
-                              borderRadius: BorderRadius.circular(5)),
+                              borderRadius: BorderRadius.circular(generalRadius/2)),
                           child: Container(),
                         ),
                         foregroundDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(1)),
+                            borderRadius: BorderRadius.circular(generalRadius)),
                         trackBar: FlutterSliderTrackBar(
                           inactiveTrackBar: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(generalRadius),
                             color: AntiiQTheme.of(context).colorScheme.secondary,
                             border: Border.all(
                               width: 3,
@@ -194,7 +198,7 @@ class _EqualizerState extends State<Equalizer> {
                             ),
                           ),
                           activeTrackBar: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(generalRadius),
                             color: AntiiQTheme.of(context).colorScheme.primary,
                           ),
                         ),
@@ -226,6 +230,10 @@ class _EqualizerState extends State<Equalizer> {
                     ),
                   ),
                   Switch(
+                    activeTrackColor:
+                    AntiiQTheme.of(context).colorScheme.primary,
+                    activeColor:
+                    AntiiQTheme.of(context).colorScheme.onPrimary,
                     value: enabled,
                     onChanged: (value) {
                       setEqualizerEnabled(value);
@@ -269,14 +277,14 @@ class _EqualizerState extends State<Equalizer> {
                             handler: FlutterSliderHandler(
                               decoration: BoxDecoration(
                                   color: AntiiQTheme.of(context).colorScheme.primary,
-                                  borderRadius: BorderRadius.circular(5)),
+                                  borderRadius: BorderRadius.circular(generalRadius/2)),
                               child: Container(),
                             ),
                             foregroundDecoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(1)),
+                                borderRadius: BorderRadius.circular(generalRadius)),
                             trackBar: FlutterSliderTrackBar(
                               inactiveTrackBar: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(generalRadius),
                                 color: AntiiQTheme.of(context).colorScheme.primary,
                                 border: Border.all(
                                   width: 3,
@@ -284,7 +292,7 @@ class _EqualizerState extends State<Equalizer> {
                                 ),
                               ),
                               activeTrackBar: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(generalRadius),
                                 color: AntiiQTheme.of(context).colorScheme.secondary,
                               ),
                             ),

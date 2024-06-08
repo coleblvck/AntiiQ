@@ -13,8 +13,8 @@ class CustomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: theme.elevation ?? 5,
-      shape: theme.shape ?? AntiiQTheme.of(context).cardTheme.shape,
-      color: theme.color ?? AntiiQTheme.of(context).cardTheme.color,
+      shape: theme.shape ?? AntiiQTheme.of(context).cardThemes.background.shape,
+      color: theme.color ?? AntiiQTheme.of(context).cardThemes.background.color,
       shadowColor: Colors.black,
       surfaceTintColor: theme.surfaceTintColor ?? Colors.transparent,
       child: child,
@@ -23,120 +23,44 @@ class CustomCard extends StatelessWidget {
 }
 
 class CardThemes {
-  final defaultTheme = CardTheme(
+  final primary = CardTheme(
+    shape: CardShapes().antiiqCardShape1,
+    elevation: generalCardElevation,
+    color: currentColorScheme.primary,
+    surfaceTintColor: Colors.transparent,
+  );
+  final background = CardTheme(
     shape: CardShapes().antiiqCardShape1,
     elevation: generalCardElevation,
     color: currentColorScheme.background,
+    surfaceTintColor: Colors.transparent,
   );
-
-  final bottomNavBarTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-  );
-  final miniPlayerCardTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-  );
-  final nowPlayingTopCardTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-  );
-  final nowPlayingMainCardTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-  );
-  final nowPlayingArtOverlayTheme = CardTheme(
+  final backgroundOverlay = CardTheme(
     shape: CardShapes().antiiqCardShape1,
     elevation: generalCardElevation,
     color: currentColorScheme.background.withAlpha(80),
+    surfaceTintColor: Colors.transparent,
   );
-  final nowPlayingRepeatShuffleTheme = CardTheme(
+  final surface = CardTheme(
+    shape: CardShapes().antiiqCardShape1,
+    elevation: generalCardElevation,
+    color: currentColorScheme.surface,
+    surfaceTintColor: Colors.transparent,
+  );
+  final surfaceOverlay = CardTheme(
     shape: CardShapes().antiiqCardShape1,
     elevation: generalCardElevation,
     color: currentColorScheme.surface.withAlpha(200),
-  );
-  final dashboardItemTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-  );
-  final listHeaderTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-  );
-  final songsItemTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-  );
-  final albumSongsItemTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.surface,
-  );
-  final songsItemSwipedTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.primary,
-  );
-  final smallCardOnArtTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-  );
-  final bottomSheetListHeaderTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-  );
-  final settingsItemTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-    surfaceTintColor: currentColorScheme.surface,
-  );
-  final genreGridItemTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.primary,
-  );
-  final searchBoxTheme = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.surface,
-  );
-  final bgColor = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.background,
-  );
-
-  final surfaceColor = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.surface,
-  );
-
-  final primaryColor = CardTheme(
-    shape: CardShapes().antiiqCardShape1,
-    elevation: generalCardElevation,
-    color: currentColorScheme.primary,
+    surfaceTintColor: Colors.transparent,
   );
 }
 
 const double generalCardElevation = 5;
+late double generalRadius;
 
 class CardShapes {
   var antiiqCardShape1 =
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(10));
-
-  var antiiqCardShape2 =
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(10));
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(generalRadius));
 }
 
 class CustomButton extends StatelessWidget {
@@ -161,49 +85,64 @@ class CustomButton extends StatelessWidget {
   }
 }
 
-class SwitchThemes {
-  SwitchThemeData defaultTheme = SwitchThemeData();
+class AntiiQSwitch extends StatelessWidget {
+  final Widget child;
+  final ButtonStyle style;
+  final Function function;
+  const AntiiQSwitch({
+    Key? key,
+    required this.child,
+    required this.style,
+    required this.function,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        function();
+      },
+      style: style,
+      child: child,
+    );
+  }
 }
 
 class ButtonStyles {
-  ButtonStyle style1 = ButtonStyle(
+  final ButtonStyle style1 = ButtonStyle(
     backgroundColor: WidgetStatePropertyAll(currentColorScheme.background),
     foregroundColor: WidgetStatePropertyAll(currentColorScheme.primary),
     surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
     elevation: const WidgetStatePropertyAll(5),
-    padding:
-        const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 5)),
+    padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 10)),
     shape: WidgetStatePropertyAll(
       RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(generalRadius),
       ),
     ),
     textStyle: WidgetStatePropertyAll(TextStyles().onPrimaryText),
   );
-  ButtonStyle style2 = ButtonStyle(
+  final ButtonStyle style2 = ButtonStyle(
     backgroundColor: WidgetStatePropertyAll(currentColorScheme.primary),
     foregroundColor: WidgetStatePropertyAll(currentColorScheme.background),
     surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
     elevation: const WidgetStatePropertyAll(5),
-    padding:
-        const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 5)),
+    padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 10)),
     shape: WidgetStatePropertyAll(
       RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(generalRadius),
       ),
     ),
     textStyle: WidgetStatePropertyAll(TextStyles().onBackgroundText),
   );
-  ButtonStyle style3 = ButtonStyle(
+  final ButtonStyle style3 = ButtonStyle(
     backgroundColor: WidgetStatePropertyAll(currentColorScheme.secondary),
     foregroundColor: WidgetStatePropertyAll(currentColorScheme.onSecondary),
     surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
     elevation: const WidgetStatePropertyAll(5),
-    padding:
-        const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 5)),
+    padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 10)),
     shape: WidgetStatePropertyAll(
       RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(generalRadius),
       ),
     ),
     textStyle: WidgetStatePropertyAll(TextStyles().onBackgroundText),
@@ -211,52 +150,52 @@ class ButtonStyles {
 }
 
 class TextStyles {
-  TextStyle onPrimaryText = TextStyle(
+  final TextStyle onPrimaryText = TextStyle(
     color: currentColorScheme.onPrimary,
     fontFamily: FontFamilies().defaultFont,
     fontSize: FontSizes().defaultFontSize,
   );
 
-  TextStyle onSecondaryText = TextStyle(
+  final TextStyle onSecondaryText = TextStyle(
     color: currentColorScheme.onSecondary,
     fontFamily: FontFamilies().defaultFont,
     fontSize: FontSizes().defaultFontSize,
   );
 
-  TextStyle onBackgroundText = TextStyle(
+  final TextStyle onBackgroundText = TextStyle(
     color: currentColorScheme.onBackground,
     fontFamily: FontFamilies().defaultFont,
     fontSize: FontSizes().defaultFontSize,
   );
 
-  TextStyle onSurfaceText = TextStyle(
+  final TextStyle onSurfaceText = TextStyle(
     color: currentColorScheme.onSurface,
     fontFamily: FontFamilies().defaultFont,
     fontSize: FontSizes().defaultFontSize,
   );
 
-  TextStyle onPrimaryTextBold = TextStyle(
+  final TextStyle onPrimaryTextBold = TextStyle(
     color: currentColorScheme.onPrimary,
     fontFamily: FontFamilies().defaultFont,
     fontSize: FontSizes().defaultFontSize,
     fontWeight: FontWeight.bold,
   );
 
-  TextStyle onSecondaryTextBold = TextStyle(
+  final TextStyle onSecondaryTextBold = TextStyle(
     color: currentColorScheme.onSecondary,
     fontFamily: FontFamilies().defaultFont,
     fontSize: FontSizes().defaultFontSize,
     fontWeight: FontWeight.bold,
   );
 
-  TextStyle onBackgroundTextBold = TextStyle(
+  final TextStyle onBackgroundTextBold = TextStyle(
     color: currentColorScheme.onBackground,
     fontFamily: FontFamilies().defaultFont,
     fontSize: FontSizes().defaultFontSize,
     fontWeight: FontWeight.bold,
   );
 
-  TextStyle onSurfaceTextBold = TextStyle(
+  final TextStyle onSurfaceTextBold = TextStyle(
     color: currentColorScheme.onSurface,
     fontFamily: FontFamilies().defaultFont,
     fontSize: FontSizes().defaultFontSize,
@@ -332,19 +271,17 @@ class CustomAppBar extends AppBar {
         );
 }
 
-
 class AntiiQTheme extends InheritedWidget {
-  const AntiiQTheme({
+  AntiiQTheme({
     super.key,
     required super.child,
     required this.colorScheme,
-    required this.cardTheme,
-    required this.textStyle,
-});
+  });
 
   final AntiiQColorScheme colorScheme;
-  final CardTheme cardTheme;
-  final TextStyle textStyle;
+  final CardThemes cardThemes = CardThemes();
+  final TextStyles textStyles = TextStyles();
+  final ButtonStyles buttonStyles = ButtonStyles();
 
   static AntiiQTheme? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<AntiiQTheme>();

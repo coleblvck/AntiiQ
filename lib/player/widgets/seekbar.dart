@@ -61,14 +61,14 @@ class SeekBar extends StatelessWidget {
         handler: FlutterSliderHandler(
           decoration: BoxDecoration(
               color: AntiiQTheme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(5)),
+              borderRadius: BorderRadius.circular(generalRadius/2)),
           child: Container(),
         ),
         foregroundDecoration:
-            BoxDecoration(borderRadius: BorderRadius.circular(1)),
+            BoxDecoration(borderRadius: BorderRadius.circular(generalRadius)),
         trackBar: FlutterSliderTrackBar(
           inactiveTrackBar: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(generalRadius),
             color: AntiiQTheme.of(context).colorScheme.primary,
             border: Border.all(
               width: 3,
@@ -76,7 +76,7 @@ class SeekBar extends StatelessWidget {
             ),
           ),
           activeTrackBar: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(generalRadius),
             color: AntiiQTheme.of(context).colorScheme.secondary,
           ),
         ),

@@ -56,7 +56,7 @@ class Settings extends StatelessWidget {
                     );
                   },
                   child: CustomCard(
-                    theme: CardThemes().settingsItemTheme,
+                    theme: AntiiQTheme.of(context).cardThemes.background,
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: SizedBox(
@@ -95,7 +95,7 @@ class Settings extends StatelessWidget {
                     );
                   },
                   child: CustomCard(
-                    theme: CardThemes().surfaceColor,
+                    theme: AntiiQTheme.of(context).cardThemes.surface,
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: SizedBox(
@@ -134,7 +134,7 @@ class Settings extends StatelessWidget {
                     );
                   },
                   child: CustomCard(
-                    theme: CardThemes().settingsItemTheme,
+                    theme: AntiiQTheme.of(context).cardThemes.background,
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: SizedBox(
@@ -173,7 +173,7 @@ class Settings extends StatelessWidget {
                     );
                   },
                   child: CustomCard(
-                    theme: CardThemes().surfaceColor,
+                    theme: AntiiQTheme.of(context).cardThemes.surface,
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: SizedBox(
@@ -212,7 +212,7 @@ class Settings extends StatelessWidget {
                     );
                   },
                   child: CustomCard(
-                    theme: CardThemes().primaryColor,
+                    theme: AntiiQTheme.of(context).cardThemes.primary,
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: SizedBox(

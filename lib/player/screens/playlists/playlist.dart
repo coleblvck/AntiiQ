@@ -33,7 +33,7 @@ class PlaylistItem extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(generalRadius),
             image: DecorationImage(
               image: FileImage(
                 File.fromUri(
@@ -47,15 +47,23 @@ class PlaylistItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               CustomCard(
-                theme: CardThemes().smallCardOnArtTheme,
+                theme: AntiiQTheme.of(context).cardThemes.background,
                 child: Padding(
-                  padding: const EdgeInsets.all(5.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextScroll(thisPlaylist.playlistName!),
                       TextScroll(
-                          "${thisPlaylist.playlistTracks!.length} ${(thisPlaylist.playlistTracks!.length > 1) ? "Songs" : "song"}"),
+                        thisPlaylist.playlistName!,
+                        style:
+                            AntiiQTheme.of(context).textStyles.onBackgroundText,
+                      ),
+                      TextScroll(
+                        "${thisPlaylist.playlistTracks!.length} ${(thisPlaylist.playlistTracks!.length > 1) ? "Songs" : "song"}",
+                        style:
+                            AntiiQTheme.of(context).textStyles.onBackgroundText,
+                      ),
                     ],
                   ),
                 ),
@@ -107,13 +115,16 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 25,
-                                color: AntiiQTheme.of(context).colorScheme.primary,
+                                color:
+                                    AntiiQTheme.of(context).colorScheme.primary,
                               ),
                               velocity: defaultTextScrollvelocity,
                               delayBefore: delayBeforeScroll,
                             ),
                             Card(
-                              color: AntiiQTheme.of(context).colorScheme.background,
+                              color: AntiiQTheme.of(context)
+                                  .colorScheme
+                                  .background,
                               surfaceTintColor: Colors.transparent,
                               margin: const EdgeInsets.symmetric(vertical: 5),
                               child: Padding(
@@ -121,8 +132,9 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                                 child: Text(
                                   "Length: ${totalDuration(playlist.playlistTracks!)}",
                                   style: TextStyle(
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.primary,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
                                   ),
                                 ),
                               ),
@@ -165,7 +177,8 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                             thisTrack.trackData!.trackName!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onSurface,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -174,7 +187,8 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                             thisTrack.mediaItem!.artist!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onSurface,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onSurface,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -190,19 +204,19 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                 ),
               ),
               CustomCard(
-                theme: CardThemes().bottomSheetListHeaderTheme,
+                theme: AntiiQTheme.of(context).cardThemes.background,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
                         child: TextScroll(
                           playlist.playlistName!,
                           textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: AntiiQTheme.of(context).colorScheme.onBackground,
-                          ),
+                          style: AntiiQTheme.of(context)
+                              .textStyles
+                              .onBackgroundText,
                           velocity: defaultTextScrollvelocity,
                           delayBefore: delayBeforeScroll,
                         ),
@@ -213,7 +227,10 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                         showPlaylistEditDialog(
                             context, mainPageStateSet, setState, playlist);
                       },
-                      icon: const Icon(RemixIcon.edit),
+                      icon: Icon(
+                        RemixIcon.edit,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
+                      ),
                     ),
                     IconButton(
                       onPressed: () async {
@@ -223,13 +240,19 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                           Navigator.of(context).pop();
                         }
                       },
-                      icon: const Icon(RemixIcon.delete_bin_2),
+                      icon: const Icon(
+                        RemixIcon.delete_bin_2,
+                        color: Colors.red,
+                      ),
                     ),
                     IconButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      icon: const Icon(RemixIcon.arrow_down_double),
+                      icon: Icon(
+                        RemixIcon.arrow_down_double,
+                        color: AntiiQTheme.of(context).colorScheme.onBackground,
+                      ),
                     ),
                   ],
                 ),

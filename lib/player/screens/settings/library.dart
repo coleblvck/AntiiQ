@@ -128,7 +128,7 @@ class _LibraryState extends State<Library> {
                   child: const Text("!Full Re-Scan!"),
                 ),
                 /*CustomCard(
-                  theme: CardThemes().surfaceColor,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
@@ -204,14 +204,17 @@ class _LibraryState extends State<Library> {
                   ),
                 ),*/
                 CustomCard(
-                  theme: CardThemes().surfaceColor,
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                            "Minimum Track Length: $minimumTrackLength seconds"),
+                          "Minimum Track Length: $minimumTrackLength seconds",
+                          style:
+                              AntiiQTheme.of(context).textStyles.onSurfaceText,
+                        ),
                         const SizedBox(
                           height: 10,
                         ),
@@ -231,8 +234,9 @@ class _LibraryState extends State<Library> {
                               max: 120,
                               handler: FlutterSliderHandler(
                                 decoration: BoxDecoration(
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.primary,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Container(),
                               ),
@@ -241,17 +245,21 @@ class _LibraryState extends State<Library> {
                               trackBar: FlutterSliderTrackBar(
                                 inactiveTrackBar: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
-                                  color: AntiiQTheme.of(context).colorScheme.primary,
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .primary,
                                   border: Border.all(
                                     width: 3,
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.primary,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
                                   ),
                                 ),
                                 activeTrackBar: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color:
-                                      AntiiQTheme.of(context).colorScheme.secondary,
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .secondary,
                                 ),
                               ),
                               onDragging: (handlerIndex, lowerValue,
@@ -277,10 +285,7 @@ class _LibraryState extends State<Library> {
                   ),
                 ),
                 CustomCard(
-                  theme: CardThemes().settingsItemTheme.copyWith(
-                        surfaceTintColor: Colors.transparent,
-                        elevation: 0,
-                      ),
+                  theme: AntiiQTheme.of(context).cardThemes.background,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -289,7 +294,9 @@ class _LibraryState extends State<Library> {
                         child: Text(
                           "Note: Adding directories here, excludes all other directories from being scanned.",
                           style: TextStyle(
-                            color: AntiiQTheme.of(context).colorScheme.onBackground,
+                            color: AntiiQTheme.of(context)
+                                .colorScheme
+                                .onBackground,
                           ),
                         ),
                       ),
@@ -336,9 +343,7 @@ class _LibraryState extends State<Library> {
                           : Container(),
                       for (String directory in specificPathsToQuery)
                         CustomCard(
-                          theme: CardThemes().settingsItemTheme.copyWith(
-                                color: AntiiQTheme.of(context).colorScheme.surface,
-                              ),
+                          theme: AntiiQTheme.of(context).cardThemes.surface,
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Column(
