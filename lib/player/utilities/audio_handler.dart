@@ -65,6 +65,8 @@ class AntiiqAudioHandler extends BaseAudioHandler
       (state) {
         switch (state) {
           case ProcessingState.completed:
+            audioPlayer.stop();
+            audioPlayer.seek(Duration.zero);
             break;
           case ProcessingState.ready:
             skipState = null;

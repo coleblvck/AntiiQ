@@ -1,5 +1,7 @@
 //Audio Service
 import 'dart:io';
+import 'package:just_audio/just_audio.dart';
+import 'package:path/path.dart';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audiotags/audiotags.dart';
@@ -122,15 +124,23 @@ shuffleTracks(List<Track> list) async {
 playFromIntentLink(String link) async {
   File file = await toFile(link);
   Tag? tag = await AudioTags.read(file.path);
+  AudioPlayer thisAudioLoader = AudioPlayer(
+    handleInterruptions: false,
+    androidApplyAudioAttributes: false,
+    handleAudioSessionActivation: false,
+  );
   final songItem = MediaItem(
       id: link,
-      title: tag?.title ?? "Unknown",
+      title: tag?.title ?? basename(file.path),
       artist: tag?.trackArtist ?? "Unknown Artist",
       album: tag?.album ?? "Unknown Album",
       artUri: defaultArtUri,
-      duration: Duration(seconds:  tag?.duration ?? 1),
+      duration: tag?.duration != null
+          ? Duration(seconds: tag!.duration!)
+          : await thisAudioLoader.setUrl(link),
       extras: {
         "id": "no-id",
       });
+  thisAudioLoader.dispose();
   playOnlyThis(songItem);
 }

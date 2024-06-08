@@ -54,6 +54,7 @@ dependencies:
   receive_intent: ^0.2.5
   uri_to_file: ^1.0.0
   audiotags: ^1.4.0
+  path: any
 
 dev_dependencies:
   flutter_test:
