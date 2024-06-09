@@ -135,3 +135,7 @@ StreamController<AntiiQColorScheme> themeStream = StreamController.broadcast();
 late bool previousRestart;
 
 late bool swipeGestures;
+
+enum QuitType {dialog, doubleTap}
+
+late QuitType currentQuitType;

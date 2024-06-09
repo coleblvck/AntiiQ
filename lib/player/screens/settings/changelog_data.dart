@@ -14,6 +14,18 @@ class Version {
 
 List<Version> versions = [
   const Version(
+    version: "1.3.2",
+    title: "Melomaniac",
+    date: "09-JUN-2024",
+    changes: [
+      "- Scan for folder image if embedded art is not present",
+      "- Setting for back button exit mode",
+      "- No need to restart app on theme apply (Experimental)",
+      "- New themes (because... it was within reach...)",
+      "- A more consistent UI",
+    ],
+  ),
+  const Version(
     version: "1.3.0",
     title: "Melomaniac",
     date: "09-JUN-2024",

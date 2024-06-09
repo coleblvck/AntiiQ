@@ -67,31 +67,6 @@ class _UserInterfaceState extends State<UserInterface> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    "You will need to restart the application for these settings to apply properly.",
-                    style: TextStyle(
-                      color: AntiiQTheme.of(context).colorScheme.onBackground,
-                      fontSize: 15,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: CustomButton(
-                    style: ButtonStyles().style2,
-                    function: () {
-                      Restart.restartApp();
-                    },
-                    child: const Text("Restart App"),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
                 child: CustomCard(
                   theme: AntiiQTheme.of(context).cardThemes.background,
                   child: Padding(
@@ -196,6 +171,31 @@ class _UserInterfaceState extends State<UserInterface> {
                       style: AntiiQTheme.of(context).textStyles.onBackgroundLargeHeader,
                       textAlign: TextAlign.center,
                     ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    "You will need to restart the application for this setting to apply properly.",
+                    style: TextStyle(
+                      color: AntiiQTheme.of(context).colorScheme.onBackground,
+                      fontSize: 15,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: CustomButton(
+                    style: ButtonStyles().style2,
+                    function: () {
+                      Restart.restartApp();
+                    },
+                    child: const Text("Restart App"),
                   ),
                 ),
               ),

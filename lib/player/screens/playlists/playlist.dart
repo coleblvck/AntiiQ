@@ -286,6 +286,7 @@ showPlaylistEditDialog(
   showModalBottomSheet(
     isScrollControlled: true,
     context: context,
+    backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
     builder: (context) {
       return SizedBox(
         height: 220 + MediaQuery.of(context).viewInsets.bottom,
@@ -298,20 +299,33 @@ showPlaylistEditDialog(
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: TextField(
+                    style: AntiiQTheme.of(context).textStyles.onSurfaceText,
+                    decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: AntiiQTheme.of(context).colorScheme.primary),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: AntiiQTheme.of(context).colorScheme.primary),
+                      ),
+                    ),
                     controller: titleController,
                   ),
                 ),
                 CustomButton(
-                  style: ButtonStyles().style2,
+                  style: AntiiQTheme.of(context).buttonStyles.style2,
                   function: () async {
                     await selectArt();
                   },
                   child: const Text("Select Image"),
                 ),
-                const Text(
-                    "Note: Changes to art may not reflect until restart."),
+                Text(
+                  "Note: Changes to art may not reflect until restart.",
+                  style: AntiiQTheme.of(context).textStyles.onSurfaceText,
+                ),
                 CustomButton(
-                  style: ButtonStyles().style3,
+                  style: AntiiQTheme.of(context).buttonStyles.style3,
                   function: () async {
                     await playlistUpdate();
                   },

@@ -1,0 +1,5 @@
+- Scan for folder image if embedded art is not present
+- Setting for back button exit mode
+- No need to restart app on theme apply (Experimental)
+- New themes (because... it was within reach...)
+- A more consistent UI

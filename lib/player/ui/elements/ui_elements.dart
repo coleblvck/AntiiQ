@@ -23,6 +23,12 @@ class CustomCard extends StatelessWidget {
 }
 
 class CardThemes {
+  final transparent = CardTheme(
+    shape: CardShapes().antiiqCardShape1,
+    elevation: generalCardElevation,
+    color: Colors.transparent,
+    surfaceTintColor: Colors.transparent,
+  );
   final primary = CardTheme(
     shape: CardShapes().antiiqCardShape1,
     elevation: generalCardElevation,

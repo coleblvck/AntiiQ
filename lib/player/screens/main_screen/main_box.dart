@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_sliding_box/flutter_sliding_box.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 
@@ -29,6 +31,7 @@ class _MainBoxState extends State<MainBox> {
   final TextEditingController textEditingController = TextEditingController();
 
   late Timer libraryLoadTimer;
+  DateTime? currentBackPressTime;
   @override
   void initState() {
     super.initState();
@@ -41,13 +44,31 @@ class _MainBoxState extends State<MainBox> {
     );
   }
 
+  Future<bool> doubleTapPop() {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      Fluttertoast.showToast(
+        msg: "Tap back again to quit",
+        backgroundColor: currentColorScheme.surface,
+        textColor: currentColorScheme.primary,
+        gravity: ToastGravity.BOTTOM,
+      );
+      return Future.value(false);
+    } else {
+      return Future.value(true);
+    }
+  }
+
   Future<bool?> showPopDialog() {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(generalRadius)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(generalRadius)),
           title: Text(
             'Exit:',
             style: AntiiQTheme.of(context).textStyles.onSurfaceLargeHeader,
@@ -183,7 +204,9 @@ class _MainBoxState extends State<MainBox> {
           if (mainPageController.page != 0) {
             mainPageController.jumpToPage(0);
           } else {
-            final bool shouldPop = await showPopDialog() ?? false;
+            final bool shouldPop = currentQuitType == QuitType.dialog
+                ? await showPopDialog() ?? false
+                : await doubleTapPop();
             if (context.mounted && shouldPop) {
               audioHandler.stop();
               SystemNavigator.pop();

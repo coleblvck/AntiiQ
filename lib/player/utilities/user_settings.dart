@@ -21,12 +21,14 @@ class BoxKeys {
   String favourites = "favourites";
   String showTrackDuration = "showTrackDuration";
   String generalRadius = "generalRadius";
+  String quitType = "quitType";
 }
 
 changeTheme(String theme) async {
   currentTheme = theme;
   await antiiqStore.put(BoxKeys().userTheme, theme);
   themeStream.add(getColorScheme());
+  currentColorScheme = getColorScheme();
 }
 
 updateDirectories() async {
@@ -58,6 +60,7 @@ initializeUserSettings() async {
   await getSwipeGestures();
   await initInteractiveSeekBarSwitch();
   await initTrackDurationShowSwitch();
+  await initQuitType();
 }
 
 initializeAudioPreferences() async {
@@ -84,7 +87,8 @@ getMinimumTrackLength() async {
 }
 
 getGeneralRadius() async {
-  generalRadius = await antiiqStore.get(BoxKeys().generalRadius, defaultValue: 10.0);
+  generalRadius =
+      await antiiqStore.get(BoxKeys().generalRadius, defaultValue: 10.0);
 }
 
 getPreviousButtonAction() async {
@@ -122,4 +126,19 @@ trackDurationShowSwitch(bool value) async {
   showTrackDuration = value;
   trackDurationDisplayStream.add(value);
   await antiiqStore.put(BoxKeys().showTrackDuration, value);
+}
+
+setQuitType(String quitTypeString) async {
+  quitTypeString == "dialog"
+      ? currentQuitType = QuitType.dialog
+      : currentQuitType = QuitType.doubleTap;
+  await antiiqStore.put(BoxKeys().quitType, quitTypeString);
+}
+
+initQuitType() async {
+  String quitTypeString =
+      await antiiqStore.get(BoxKeys().quitType, defaultValue: "dialog");
+  quitTypeString == "dialog"
+      ? currentQuitType = QuitType.dialog
+      : currentQuitType = QuitType.doubleTap;
 }

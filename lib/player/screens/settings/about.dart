@@ -111,24 +111,27 @@ class About extends StatelessWidget {
                                       onPressed: () {
                                         openLink(emailUri);
                                       },
-                                      icon: const Icon(
+                                      icon: Icon(
                                         RemixIcon.mail,
+                                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                                       ),
                                     ),
                                     IconButton(
                                       onPressed: () {
                                         openLink(githubUri);
                                       },
-                                      icon: const Icon(
+                                      icon: Icon(
                                         RemixIcon.github,
+                                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                                       ),
                                     ),
                                     IconButton(
                                       onPressed: () {
                                         openLink(twitterUri);
                                       },
-                                      icon: const Icon(
+                                      icon: Icon(
                                         RemixIcon.twitter_x,
+                                        color: AntiiQTheme.of(context).colorScheme.onBackground,
                                       ),
                                     ),
                                   ],

@@ -182,6 +182,106 @@ class _BehaviourState extends State<Behaviour> {
                     ),
                   ),
                 ),
+                Divider(
+                  color: AntiiQTheme.of(context).colorScheme.primary,
+                ),
+                CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.primary,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Back button exit behaviour:",
+                            style: AntiiQTheme.of(context)
+                                .textStyles
+                                .onPrimaryText,
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color:
+                                AntiiQTheme.of(context).colorScheme.background,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (currentQuitType != QuitType.dialog) {
+                                      setQuitType("dialog");
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Card(
+                                    color: currentQuitType == QuitType.dialog
+                                        ? AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .surface
+                                        : Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    surfaceTintColor: Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Dialog",
+                                          style: TextStyle(
+                                            color: AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (currentQuitType != QuitType.doubleTap) {
+                                      setQuitType("doubleTap");
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Card(
+                                    color: currentQuitType == QuitType.doubleTap
+                                        ? AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .surface
+                                        : Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    surfaceTintColor: Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Double Tap",
+                                          style: TextStyle(
+                                            color: AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
