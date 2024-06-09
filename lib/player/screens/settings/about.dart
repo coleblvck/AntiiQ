@@ -241,9 +241,9 @@ class About extends StatelessWidget {
                     child: CustomButton(
                       style: ButtonStyles().style1,
                       function: () {
-                        showLicenses(context);
+                        null;
                       },
-                      child: const Text("Licenses"),
+                      child: const Text("Licenses (unavailable)"),
                     ),
                   ),
                 ),

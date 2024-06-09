@@ -1,0 +1,7 @@
+- Fixed music playback from File Manager accumulating very large cache storage usage
+- (Fix) Make audio stop after queue end
+- Fixed keyboard pop-up bug when going from search screen to now playing, to options and back
+- Important bug fixes
+- A more consistent UI
+- New option for Tweaking general App roundness(radius) in settings
+- General improvements to playback from File Manager

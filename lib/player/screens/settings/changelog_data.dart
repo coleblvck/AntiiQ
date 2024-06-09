@@ -14,9 +14,23 @@ class Version {
 
 List<Version> versions = [
   const Version(
+    version: "1.3.0",
+    title: "Melomaniac",
+    date: "09-JUN-2024",
+    changes: [
+      "- Fixed music playback from File Manager accumulating very large cache storage usage",
+      "- (Fix) Make audio stop after queue end",
+      "- Fixed keyboard pop-up bug when going from search screen to now playing, to options and back",
+      "- Other important bug fixes",
+      "- A more consistent UI",
+      "- New option for Tweaking general App roundness(radius) in settings",
+      "- General improvements to playback from File Manager",
+    ],
+  ),
+  const Version(
     version: "1.2.0",
     title: "Melomaniac",
-    date: "5-JUN-2024",
+    date: "05-JUN-2024",
     changes: [
       "- Important bug fixes",
       "- Added an option to show/hide currently playing track duration",
@@ -49,7 +63,7 @@ List<Version> versions = [
     date: "21-OCT-2023",
     changes: [
       "- Important fixes to bugs and errors with selection list",
-      "- Temporarilty removed auto-runtime scan due to some glitches",
+      "- Temporarily removed auto-runtime scan due to some glitches",
     ],
   ),
   const Version(

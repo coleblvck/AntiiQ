@@ -102,7 +102,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     onSecondary: Color.fromARGB(255, 255, 255, 255),
     background: Color.fromARGB(255, 0, 0, 0),
     onBackground: Color.fromARGB(255, 255, 255, 255),
-    surface: Color.fromARGB(255, 80, 72, 56),
+    surface: Color.fromARGB(255, 38, 27, 5),
     onSurface: Color.fromARGB(255, 230, 230, 230),
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
@@ -120,19 +120,6 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
-  ),
-  "Paper": const AntiiQColorScheme(
-    primary: Colors.black,
-    onPrimary: Colors.white,
-    secondary: Color.fromARGB(255, 61, 61, 61),
-    onSecondary: Color.fromARGB(255, 255, 255, 255),
-    background: Colors.white,
-    onBackground: Colors.black,
-    surface: Color.fromARGB(255, 204, 204, 204),
-    onSurface: Color.fromARGB(255, 0, 0, 0),
-    error: Color.fromARGB(199, 248, 0, 0),
-    onError: Color.fromARGB(57, 0, 0, 0),
-    brightness: Brightness.light,
   ),
 };
 

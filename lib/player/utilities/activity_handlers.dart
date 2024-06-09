@@ -122,25 +122,37 @@ shuffleTracks(List<Track> list) async {
 }
 
 playFromIntentLink(String link) async {
-  File file = await toFile(link);
-  Tag? tag = await AudioTags.read(file.path);
+  File? file;
   AudioPlayer thisAudioLoader = AudioPlayer(
     handleInterruptions: false,
     androidApplyAudioAttributes: false,
     handleAudioSessionActivation: false,
   );
-  final songItem = MediaItem(
-      id: link,
-      title: tag?.title ?? basename(file.path),
-      artist: tag?.trackArtist ?? "Unknown Artist",
-      album: tag?.album ?? "Unknown Album",
-      artUri: defaultArtUri,
-      duration: tag?.duration != null
-          ? Duration(seconds: tag!.duration!)
-          : await thisAudioLoader.setUrl(link),
-      extras: {
-        "id": "no-id",
-      });
+  try {
+    file = await toFile(link);
+    Tag? tag = await AudioTags.read(file.path);
+    final songItem = MediaItem(
+        id: link,
+        title: tag?.title ?? basename(file.path),
+        artist: tag?.trackArtist ?? "Unknown Artist",
+        album: tag?.album ?? "Unknown Album",
+        artUri: defaultArtUri,
+        duration: tag?.duration != null
+            ? Duration(seconds: tag!.duration!)
+            : await thisAudioLoader.setUrl(link),
+        extras: {
+          "id": "no-id",
+        });
+    playOnlyThis(songItem);
+  } on UnsupportedError catch (e) {
+    null;
+  } on IOException catch (e) {
+    null;
+  } catch (e) {
+    null;
+  }
+  if (file != null) {
+    file.delete();
+  }
   thisAudioLoader.dispose();
-  playOnlyThis(songItem);
 }
