@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:mime/mime.dart';
 
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
@@ -67,11 +68,11 @@ Future<Uint8List?> getAlbumArtBytes(id) async {
   return artwork;
 }
 
-Future<Uri> getAlbumArt(id) async {
+Future<Uri> getAlbumArt(id, pathOfSong) async {
   final artFilePath = "${antiiqDirectory.path}/coverarts/albums/$id.jpeg";
   if (!dataIsInitialized) {
     Uint8List? art = await getAlbumArtBytes(id);
-    art ??= await defaultArt();
+    art ??= await getDirectoryArt(pathOfSong) ?? await defaultArt();
 
     File artFile = await File(artFilePath).create(recursive: true);
 
@@ -103,3 +104,22 @@ Map<int, Uri> albumArtsList = {};
 
 //ToDo
 setTempArt(Uint8List picture) {}
+
+List<FileSystemEntity> getAllDirectoryFiles(Directory dir) {
+  return dir.listSync(recursive: false, followLinks: false);
+}
+
+Future<Uint8List?> getDirectoryArt(String pathOfSong) async {
+  Directory dir = File(pathOfSong).parent;
+  Uint8List? artToReturn;
+  List<FileSystemEntity> allDirFiles = getAllDirectoryFiles(dir);
+  for (FileSystemEntity dirFile in allDirFiles) {
+    if (dirFile is File) {
+      if (lookupMimeType(dirFile.path) != null && lookupMimeType(dirFile.path)!.contains("image")) {
+        artToReturn = await dirFile.readAsBytes();
+        break;
+      }
+    }
+  }
+  return artToReturn;
+}
