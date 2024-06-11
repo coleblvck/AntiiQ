@@ -231,7 +231,7 @@ getAllAlbumArts(List<SongModel> songs) async {
   for (SongModel song in songs) {
     libraryLoadProgress = songs.indexOf(song);
     if (!albumArtsList.keys.contains(song.albumId)) {
-      albumArtsList[song.albumId!] = await getAlbumArt(song.albumId, song.data);
+      albumArtsList[song.albumId!] = await getAlbumArt(song.albumId);
     }
   }
 }

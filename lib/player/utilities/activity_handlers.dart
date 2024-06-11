@@ -144,10 +144,6 @@ playFromIntentLink(String link) async {
           "id": "no-id",
         });
     playOnlyThis(songItem);
-  } on UnsupportedError catch (e) {
-    null;
-  } on IOException catch (e) {
-    null;
   } catch (e) {
     null;
   }

@@ -41,7 +41,7 @@ class _LibraryState extends State<Library> {
 
   directoryAdd(String path) async {
     Directory? newPath = await pickFolder(path, context);
-    if (newPath != null) {
+    if (newPath != null && !specificPathsToQuery.contains(newPath.path)) {
       specificPathsToQuery.add(newPath.path);
       await updateDirectories();
       setState(() {});
@@ -326,7 +326,9 @@ class _LibraryState extends State<Library> {
                                     },
                                     icon: Icon(
                                       RemixIcon.close_circle,
-                                      color: AntiiQTheme.of(context).colorScheme.onBackground,
+                                      color: AntiiQTheme.of(context)
+                                          .colorScheme
+                                          .onBackground,
                                     ),
                                   ),
                                 ],
@@ -342,9 +344,14 @@ class _LibraryState extends State<Library> {
                           child: Text(path),
                         ),
                       specificPathsToQuery.isNotEmpty
-                          ? const Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Text("Paths"),
+                          ? Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                "Directories to scan:",
+                                style: AntiiQTheme.of(context)
+                                    .textStyles
+                                    .onBackgroundText,
+                              ),
                             )
                           : Container(),
                       for (String directory in specificPathsToQuery)

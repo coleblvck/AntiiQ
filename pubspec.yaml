@@ -55,7 +55,6 @@ dependencies:
   uri_to_file: ^1.0.0
   audiotags: ^1.4.0
   path: any
-  mime: ^1.0.5
   fluttertoast: ^8.2.6
 
 dev_dependencies:
