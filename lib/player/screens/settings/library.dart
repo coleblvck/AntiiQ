@@ -71,11 +71,11 @@ class _LibraryState extends State<Library> {
         appBar: AppBar(
           toolbarHeight: 75,
           backgroundColor: AntiiQTheme.of(context).colorScheme.background,
-          elevation: 2,
+          elevation: settingsPageAppBarElevation,
           surfaceTintColor: Colors.transparent,
           shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
-            iconSize: 50,
+            iconSize: settingsPageAppBarIconButtonSize,
             color: AntiiQTheme.of(context).colorScheme.onBackground,
             onPressed: () {
               Navigator.of(context).pop();
@@ -85,10 +85,11 @@ class _LibraryState extends State<Library> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
-              child: Icon(
-                RemixIcon.folder,
-                color: AntiiQTheme.of(context).colorScheme.onBackground,
-                size: 30,
+              child: Text(
+                "Library",
+                style: AntiiQTheme.of(context)
+                    .textStyles
+                    .onBackgroundLargeHeader,
               ),
             ),
           ],
@@ -100,16 +101,6 @@ class _LibraryState extends State<Library> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    "Library",
-                    style: AntiiQTheme.of(context)
-                        .textStyles
-                        .onBackgroundLargeHeader,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
                 const SizedBox(
                   height: 20,
                 ),

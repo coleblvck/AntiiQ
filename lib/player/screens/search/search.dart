@@ -102,6 +102,7 @@ class _SearchState extends State<Search> {
           ),
           Expanded(
             child: CustomScrollView(
+              controller: ScrollController(),
               slivers: [
                 searchResults.isNotEmpty
                     ? SliverToBoxAdapter(

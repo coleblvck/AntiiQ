@@ -37,10 +37,12 @@ class Dashboard extends StatelessWidget {
                         color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
-                    Text(
-                      i.value["title"] as String,
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.primary,
+                    Expanded(
+                      child: Text(
+                        i.value["title"] as String,
+                        style: AntiiQTheme.of(context).textStyles.primaryText.copyWith(
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                   ],

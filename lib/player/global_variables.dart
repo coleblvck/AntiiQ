@@ -139,3 +139,11 @@ late bool swipeGestures;
 enum QuitType {dialog, doubleTap}
 
 late QuitType currentQuitType;
+
+double settingsPageAppBarElevation = 1.0;
+double settingsPageAppBarIconButtonSize = 45.0;
+
+enum StatusBarMode {defaultMode, immersiveMode}
+late StatusBarMode currentStatusBarMode;
+
+enum ColorSchemeType {antiiq, custom, dynamic}

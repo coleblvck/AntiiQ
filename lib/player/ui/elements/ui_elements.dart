@@ -65,8 +65,8 @@ const double generalCardElevation = 5;
 late double generalRadius;
 
 class CardShapes {
-  var antiiqCardShape1 =
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(generalRadius));
+  var antiiqCardShape1 = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(generalRadius));
 }
 
 class CustomButton extends StatelessWidget {
@@ -156,6 +156,12 @@ class ButtonStyles {
 }
 
 class TextStyles {
+  final TextStyle primaryText = TextStyle(
+    color: currentColorScheme.primary,
+    fontFamily: FontFamilies().defaultFont,
+    fontSize: FontSizes().defaultFontSize,
+  );
+
   final TextStyle onPrimaryText = TextStyle(
     color: currentColorScheme.onPrimary,
     fontFamily: FontFamilies().defaultFont,
@@ -212,6 +218,7 @@ class TextStyles {
     color: currentColorScheme.onBackground,
     fontFamily: FontFamilies().defaultFont,
     fontSize: FontSizes().largeHeader,
+    overflow: TextOverflow.ellipsis,
   );
 
   final TextStyle onSurfaceLargeHeader = TextStyle(

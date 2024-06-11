@@ -1,3 +1,4 @@
+import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/utilities/file_handling/backup_and_restore.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
@@ -108,11 +109,11 @@ class _BackupRestoreState extends State<BackupRestore> {
         appBar: AppBar(
           toolbarHeight: 75,
           backgroundColor: AntiiQTheme.of(context).colorScheme.background,
-          elevation: 2,
+          elevation: settingsPageAppBarElevation,
           surfaceTintColor: Colors.transparent,
           shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
-            iconSize: 50,
+            iconSize: settingsPageAppBarIconButtonSize,
             color: AntiiQTheme.of(context).colorScheme.onBackground,
             onPressed: () {
               Navigator.of(context).pop();
@@ -122,10 +123,11 @@ class _BackupRestoreState extends State<BackupRestore> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
-              child: Icon(
-                RemixIcon.save_3,
-                color: AntiiQTheme.of(context).colorScheme.onBackground,
-                size: 30,
+              child: Text(
+                "Backup",
+                style: AntiiQTheme.of(context)
+                    .textStyles
+                    .onBackgroundLargeHeader,
               ),
             ),
           ],
@@ -137,15 +139,8 @@ class _BackupRestoreState extends State<BackupRestore> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    "Backup/Restore",
-                    style: AntiiQTheme.of(context)
-                        .textStyles
-                        .onBackgroundLargeHeader,
-                    textAlign: TextAlign.center,
-                  ),
+                const SizedBox(
+                  height: 20,
                 ),
                 backupRestorePath == ""
                     ? Padding(
@@ -203,9 +198,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                           ],
                         ),
                       )
-                    : Container(),
-                backupRestorePath != ""
-                    ? Padding(
+                    : Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: CustomCard(
                           theme: AntiiQTheme.of(context).cardThemes.surface,
@@ -242,8 +235,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                             ),
                           ),
                         ),
-                      )
-                    : Container(),
+                      ),
               ],
             ),
           ),

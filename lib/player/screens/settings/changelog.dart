@@ -15,11 +15,11 @@ class Changelog extends StatelessWidget {
         appBar: AppBar(
           toolbarHeight: 75,
           backgroundColor: AntiiQTheme.of(context).colorScheme.background,
-          elevation: 2,
+          elevation: settingsPageAppBarElevation,
           surfaceTintColor: Colors.transparent,
           shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
-            iconSize: 50,
+            iconSize: settingsPageAppBarIconButtonSize,
             color: AntiiQTheme.of(context).colorScheme.primary,
             onPressed: () {
               Navigator.of(context).pop();

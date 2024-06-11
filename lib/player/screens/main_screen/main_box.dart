@@ -185,12 +185,13 @@ class _MainBoxState extends State<MainBox> {
       ),
     );
     //
-    double bottomNavigationBarHeight = 50;
+    double bottomNavigationBarHeight = 60;
     double appBarHeight = 50;
-    double minHeightBox = 45 + bottomNavigationBarHeight;
+    double minHeightBox = 50 + bottomNavigationBarHeight;
+    double viewInsetsHeight = MediaQuery.of(context).viewPadding.top + MediaQuery.of(context).viewPadding.bottom;
     double maxHeightBox = MediaQuery.of(context).size.height -
         appBarHeight -
-        35 -
+        viewInsetsHeight -
         bottomNavigationBarHeight;
 
     //
@@ -281,8 +282,11 @@ class _MainBoxState extends State<MainBox> {
               body:
                   !hasPermissions ? noAccessToLibraryWidget() : mainBackdrop(),
             ),
+            onBoxOpen: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
             body: NowPlaying(
-              pageHeight: maxHeightBox - bottomNavigationBarHeight + 50,
+              pageHeight: maxHeightBox,
               boxController: boxController,
             ),
             collapsedBody: MiniPlayer(boxController: boxController),
@@ -291,8 +295,6 @@ class _MainBoxState extends State<MainBox> {
             padding: EdgeInsets.zero,
             height: bottomNavigationBarHeight,
             color: AntiiQTheme.of(context).colorScheme.surface,
-            elevation: 10,
-            shadowColor: Colors.black,
             surfaceTintColor: Colors.transparent,
             child: CustomCard(
               theme: AntiiQTheme.of(context).cardThemes.background,

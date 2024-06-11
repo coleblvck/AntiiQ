@@ -165,7 +165,9 @@ class NowPlayingFullCard extends StatelessWidget {
                             ),
                           ),
                           child: CustomCard(
-                            theme: AntiiQTheme.of(context).cardThemes.backgroundOverlay,
+                            theme: AntiiQTheme.of(context)
+                                .cardThemes
+                                .backgroundOverlay,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -175,7 +177,9 @@ class NowPlayingFullCard extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     CustomCard(
-                                      theme: AntiiQTheme.of(context).cardThemes.surfaceOverlay,
+                                      theme: AntiiQTheme.of(context)
+                                          .cardThemes
+                                          .surfaceOverlay,
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         mainAxisAlignment:
@@ -408,27 +412,24 @@ class NowPlayingFullCard extends StatelessWidget {
                     TextScroll(
                       currentTrack.title,
                       textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground,
-                      ),
+                      style:
+                          AntiiQTheme.of(context).textStyles.onBackgroundText,
                       velocity: defaultTextScrollvelocity,
                       delayBefore: delayBeforeScroll,
                     ),
                     TextScroll(
                       currentTrack.artist!,
                       textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground,
-                      ),
+                      style:
+                          AntiiQTheme.of(context).textStyles.onBackgroundText,
                       velocity: defaultTextScrollvelocity,
                       delayBefore: delayBeforeScroll,
                     ),
                     TextScroll(
                       currentTrack.album!,
                       textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground,
-                      ),
+                      style:
+                          AntiiQTheme.of(context).textStyles.onBackgroundText,
                       velocity: defaultTextScrollvelocity,
                       delayBefore: delayBeforeScroll,
                     ),

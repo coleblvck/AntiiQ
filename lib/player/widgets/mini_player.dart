@@ -35,6 +35,7 @@ class MiniPlayer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onHorizontalDragEnd: (details) {
                     if (swipeGestures) {
                       if (details.primaryVelocity! > 100) {
@@ -48,90 +49,77 @@ class MiniPlayer extends StatelessWidget {
                     if (swipeGestures) {
                       if (details.primaryVelocity! < -200) {
                         boxController.openBox();
-                        FocusManager.instance.primaryFocus?.unfocus();
                       }
                     }
                   },
                   onTap: () {
                     boxController.openBox();
-                    FocusManager.instance.primaryFocus?.unfocus();
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomCard(
-                      theme: AntiiQTheme.of(context).cardThemes.background,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5.0),
-                            child: SizedBox(
-                              height: 40,
-                              child: getUriImage(currentTrack.artUri!),
-                            ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5.0),
+                          child: SizedBox(
+                            height: 45,
+                            child: getUriImage(currentTrack.artUri!),
                           ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextScroll(
-                                  currentTrack.title,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    color: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .onBackground,
-                                  ),
-                                  velocity: defaultTextScrollvelocity,
-                                  delayBefore: delayBeforeScroll,
-                                ),
-                                TextScroll(
-                                  currentTrack.artist as String,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    color: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .onBackground,
-                                  ),
-                                  velocity: defaultTextScrollvelocity,
-                                  delayBefore: delayBeforeScroll,
-                                ),
-                              ],
-                            ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextScroll(
+                                currentTrack.title,
+                                textAlign: TextAlign.left,
+                                style: AntiiQTheme.of(context).textStyles.onBackgroundText,
+                                velocity: defaultTextScrollvelocity,
+                                delayBefore: delayBeforeScroll,
+                              ),
+                              TextScroll(
+                                currentTrack.artist as String,
+                                textAlign: TextAlign.left,
+                                style: AntiiQTheme.of(context).textStyles.onBackgroundText,
+                                velocity: defaultTextScrollvelocity,
+                                delayBefore: delayBeforeScroll,
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 5.0,
-                            ),
-                            child: StreamBuilder<PlaybackState>(
-                                stream: currentPlaybackState(),
-                                builder: (context, state) {
-                                  bool? playState = state.data?.playing;
-                                  playState ??= false;
-                                  return GestureDetector(
-                                    onTap: () {
-                                      playState! ? pause() : resume();
-                                    },
-                                    child: playState
-                                        ? Icon(
-                                            RemixIcon.pause,
-                                            size: 40,
-                                            color: AntiiQTheme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                          )
-                                        : Icon(
-                                            RemixIcon.play,
-                                            size: 40,
-                                            color: AntiiQTheme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                          ),
-                                  );
-                                }),
-                          )
-                        ],
-                      ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 5.0,
+                          ),
+                          child: StreamBuilder<PlaybackState>(
+                              stream: currentPlaybackState(),
+                              builder: (context, state) {
+                                bool? playState = state.data?.playing;
+                                playState ??= false;
+                                return GestureDetector(
+                                  onTap: () {
+                                    playState! ? pause() : resume();
+                                  },
+                                  child: playState
+                                      ? Icon(
+                                          RemixIcon.pause,
+                                          size: 40,
+                                          color: AntiiQTheme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        )
+                                      : Icon(
+                                          RemixIcon.play,
+                                          size: 40,
+                                          color: AntiiQTheme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
+                                );
+                              }),
+                        )
+                      ],
                     ),
                   ),
                 ),

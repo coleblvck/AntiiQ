@@ -28,11 +28,11 @@ class _BehaviourState extends State<Behaviour> {
         appBar: AppBar(
           toolbarHeight: 75,
           backgroundColor: AntiiQTheme.of(context).colorScheme.background,
-          elevation: 2,
+          elevation: settingsPageAppBarElevation,
           surfaceTintColor: Colors.transparent,
           shadowColor: AntiiQTheme.of(context).colorScheme.onBackground,
           leading: IconButton(
-            iconSize: 50,
+            iconSize: settingsPageAppBarIconButtonSize,
             color: AntiiQTheme.of(context).colorScheme.primary,
             onPressed: () {
               Navigator.of(context).pop();
@@ -42,10 +42,14 @@ class _BehaviourState extends State<Behaviour> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
-              child: Icon(
-                RemixIcon.play,
-                color: AntiiQTheme.of(context).colorScheme.primary,
-                size: 30,
+              child: Text(
+                "Behaviour",
+                style: AntiiQTheme.of(context)
+                    .textStyles
+                    .onBackgroundLargeHeader
+                    .copyWith(
+                  color: AntiiQTheme.of(context).colorScheme.primary,
+                ),
               ),
             ),
           ],
@@ -57,16 +61,6 @@ class _BehaviourState extends State<Behaviour> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    "Behaviour",
-                    style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.primary,
-                        fontSize: 30),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
                 const SizedBox(
                   height: 20,
                 ),

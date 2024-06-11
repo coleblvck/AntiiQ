@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/audio_preferences.dart';
@@ -22,6 +24,7 @@ class BoxKeys {
   String showTrackDuration = "showTrackDuration";
   String generalRadius = "generalRadius";
   String quitType = "quitType";
+  String statusBarMode = "statusBarMode";
 }
 
 changeTheme(String theme) async {
@@ -50,6 +53,21 @@ setPreviousButtonAction(bool restart) async {
   await antiiqStore.put(BoxKeys().previousRestart, restart);
 }
 
+setStatusBarMode(String mode) async {
+  mode == "immersive"
+      ? currentStatusBarMode = StatusBarMode.immersiveMode
+      : currentStatusBarMode = StatusBarMode.defaultMode;
+  updateStatusBarMode();
+  await antiiqStore.put(BoxKeys().statusBarMode, mode);
+}
+
+updateStatusBarMode() {
+  currentStatusBarMode == StatusBarMode.immersiveMode
+      ? SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky)
+      : SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: SystemUiOverlay.values);
+}
+
 //Initializations
 initializeUserSettings() async {
   await themeInit();
@@ -61,6 +79,7 @@ initializeUserSettings() async {
   await initInteractiveSeekBarSwitch();
   await initTrackDurationShowSwitch();
   await initQuitType();
+  await getStatusBarMode();
 }
 
 initializeAudioPreferences() async {
@@ -141,4 +160,13 @@ initQuitType() async {
   quitTypeString == "dialog"
       ? currentQuitType = QuitType.dialog
       : currentQuitType = QuitType.doubleTap;
+}
+
+getStatusBarMode() async {
+  String mode =
+      await antiiqStore.get(BoxKeys().statusBarMode, defaultValue: "default");
+  mode == "immersive"
+      ? currentStatusBarMode = StatusBarMode.immersiveMode
+      : currentStatusBarMode = StatusBarMode.defaultMode;
+  updateStatusBarMode();
 }
