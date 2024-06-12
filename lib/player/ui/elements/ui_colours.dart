@@ -15,6 +15,7 @@ class AntiiQColorScheme {
     required this.surface,
     required this.onSurface,
     required this.brightness,
+    required this.colorSchemeType,
   });
   final Color primary;
   final Color onPrimary;
@@ -27,6 +28,7 @@ class AntiiQColorScheme {
   final Color surface;
   final Color onSurface;
   final Brightness brightness;
+  final ColorSchemeType colorSchemeType;
 }
 
 Map<String, AntiiQColorScheme> customThemes = {
@@ -42,6 +44,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Paragraph": const AntiiQColorScheme(
     primary: Color.fromARGB(255, 255, 193, 7),
@@ -55,6 +58,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Chaos": const AntiiQColorScheme(
     primary: Colors.deepOrange,
@@ -68,6 +72,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Candy": const AntiiQColorScheme(
     primary: Colors.yellow,
@@ -81,6 +86,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Ambush": const AntiiQColorScheme(
     primary: Color.fromARGB(255, 228, 141, 44),
@@ -94,6 +100,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Just Brown": const AntiiQColorScheme(
     primary: Colors.brown,
@@ -107,6 +114,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Greenish Brown": const AntiiQColorScheme(
     primary: Colors.brown,
@@ -120,6 +128,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Milky Grey": const AntiiQColorScheme(
     primary: Color.fromARGB(255, 230, 223, 170),
@@ -133,6 +142,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Abstract": const AntiiQColorScheme(
     primary: Color.fromARGB(255, 241, 229, 185),
@@ -146,6 +156,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Olive": const AntiiQColorScheme(
     primary: Color.fromARGB(255, 230, 223, 170),
@@ -159,6 +170,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Olive Black": const AntiiQColorScheme(
     primary: Color.fromARGB(255, 230, 223, 170),
@@ -172,6 +184,7 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
   "Olive Blacker": const AntiiQColorScheme(
     primary: Color.fromARGB(255, 230, 223, 170),
@@ -185,13 +198,16 @@ Map<String, AntiiQColorScheme> customThemes = {
     error: Color.fromARGB(199, 248, 0, 0),
     onError: Color.fromARGB(57, 0, 0, 0),
     brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
   ),
 };
 
 AntiiQColorScheme currentColorScheme = getColorScheme();
 
 AntiiQColorScheme getColorScheme() {
-  return customThemes[currentTheme]!;
+  return currentColorSchemeType == ColorSchemeType.antiiq
+      ? customThemes[currentTheme]!
+      : customColorScheme!;
 }
 
 var backgroundClipArts = {
@@ -201,3 +217,5 @@ var backgroundClipArts = {
   "chaos": "assets/bg_cliparts/default.png",
   "paragraph": "assets/bg_cliparts/default.png",
 };
+
+AntiiQColorScheme? customColorScheme;

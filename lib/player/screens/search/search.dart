@@ -29,21 +29,28 @@ class _SearchState extends State<Search> {
     albumResults = [];
     artistResults = [];
     if (term != "") {
+      String normalizedTerm = term.toLowerCase();
       for (Track track in currentTrackListSort) {
         if (track.trackData!.trackName!
-            .toLowerCase()
-            .contains(term.toLowerCase())) {
+                .toLowerCase()
+                .contains(normalizedTerm) ||
+            track.trackData!.trackArtistNames!
+                .toLowerCase()
+                .contains(normalizedTerm) ||
+            track.trackData!.albumName!
+                .toLowerCase()
+                .contains(normalizedTerm)) {
           searchResults.add(track);
         }
       }
       for (Album album in currentAlbumListSort) {
-        if (album.albumName!.toLowerCase().contains(term.toLowerCase())) {
+        if (album.albumName!.toLowerCase().contains(normalizedTerm)) {
           albumResults.add(album);
         }
       }
 
       for (Artist artist in currentArtistListSort) {
-        if (artist.artistName!.toLowerCase().contains(term.toLowerCase())) {
+        if (artist.artistName!.toLowerCase().contains(normalizedTerm)) {
           artistResults.add(artist);
         }
       }
@@ -80,9 +87,11 @@ class _SearchState extends State<Search> {
                           color: AntiiQTheme.of(context).colorScheme.primary,
                         ),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 10),
                         hintText: "Start Typing to Search...",
-                        hintStyle: AntiiQTheme.of(context).textStyles.onSurfaceText,
+                        hintStyle:
+                            AntiiQTheme.of(context).textStyles.onSurfaceText,
                       ),
                     ),
                   ),

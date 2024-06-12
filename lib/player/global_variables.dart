@@ -147,3 +147,7 @@ enum StatusBarMode {defaultMode, immersiveMode}
 late StatusBarMode currentStatusBarMode;
 
 enum ColorSchemeType {antiiq, custom, dynamic}
+late ColorSchemeType currentColorSchemeType;
+
+Color generalErrorColor = const Color.fromARGB(199, 248, 0, 0);
+Color generalOnErrorColor = const Color.fromARGB(57, 0, 0, 0);

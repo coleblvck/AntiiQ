@@ -68,7 +68,8 @@ class _MainBoxState extends State<MainBox> {
         return AlertDialog(
           backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(generalRadius)),
+            borderRadius: BorderRadius.circular(generalRadius),
+          ),
           title: Text(
             'Exit:',
             style: AntiiQTheme.of(context).textStyles.onSurfaceLargeHeader,
@@ -188,7 +189,8 @@ class _MainBoxState extends State<MainBox> {
     double bottomNavigationBarHeight = 60;
     double appBarHeight = 50;
     double minHeightBox = 50 + bottomNavigationBarHeight;
-    double viewInsetsHeight = MediaQuery.of(context).viewPadding.top + MediaQuery.of(context).viewPadding.bottom;
+    double viewInsetsHeight = MediaQuery.of(context).viewPadding.top +
+        MediaQuery.of(context).viewPadding.bottom;
     double maxHeightBox = MediaQuery.of(context).size.height -
         appBarHeight -
         viewInsetsHeight -

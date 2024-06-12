@@ -14,6 +14,17 @@ class Version {
 
 List<Version> versions = [
   const Version(
+    version: "1.4.0",
+    title: "Melomaniac",
+    date: "12-JUN-2024",
+    changes: [
+      "- A more consistent & cleaner UI",
+      "- Improved Search results including tracks from artist and album searches",
+      "- Immersive mode toggle in settings",
+      "- Custom Colour Theming",
+    ],
+  ),
+  const Version(
     version: "1.3.2",
     title: "Melomaniac",
     date: "09-JUN-2024",

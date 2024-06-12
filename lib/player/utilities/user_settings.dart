@@ -25,13 +25,40 @@ class BoxKeys {
   String generalRadius = "generalRadius";
   String quitType = "quitType";
   String statusBarMode = "statusBarMode";
+  String colorSchemeType = "colorSchemeType";
+  String customColorList = "customColorScheme";
 }
 
 changeTheme(String theme) async {
   currentTheme = theme;
+  currentColorSchemeType = ColorSchemeType.antiiq;
   await antiiqStore.put(BoxKeys().userTheme, theme);
+  await antiiqStore.put(BoxKeys().colorSchemeType, "antiiq");
   themeStream.add(getColorScheme());
   currentColorScheme = getColorScheme();
+  updateStatusBarColors();
+}
+
+setCustomTheme(AntiiQColorScheme themeToSet) async {
+  customColorScheme = themeToSet;
+  currentColorSchemeType = ColorSchemeType.custom;
+  themeStream.add(getColorScheme());
+  currentColorScheme = getColorScheme();
+  updateStatusBarColors();
+  int brightnessInt = themeToSet.brightness == Brightness.dark ? 0 : 1;
+  List<int> colorIntegers = [
+    themeToSet.primary.value,
+    themeToSet.onPrimary.value,
+    themeToSet.secondary.value,
+    themeToSet.onSecondary.value,
+    themeToSet.surface.value,
+    themeToSet.onSurface.value,
+    themeToSet.background.value,
+    themeToSet.onBackground.value,
+    brightnessInt,
+  ];
+  await antiiqStore.put(BoxKeys().customColorList, colorIntegers);
+  await antiiqStore.put(BoxKeys().colorSchemeType, "custom");
 }
 
 updateDirectories() async {
@@ -68,6 +95,17 @@ updateStatusBarMode() {
           overlays: SystemUiOverlay.values);
 }
 
+updateStatusBarColors() {
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: currentColorScheme.background,
+      statusBarIconBrightness: currentColorScheme.brightness == Brightness.dark
+          ? Brightness.light
+          : Brightness.dark,
+    ),
+  );
+}
+
 //Initializations
 initializeUserSettings() async {
   await themeInit();
@@ -90,9 +128,22 @@ initializeAudioPreferences() async {
 }
 
 themeInit() async {
-  currentTheme =
-      await antiiqStore.get(BoxKeys().userTheme, defaultValue: "AntiiQ");
+  String schemeType =
+      await antiiqStore.get(BoxKeys().colorSchemeType, defaultValue: "antiiq");
+  List<int> customColorList =
+      await antiiqStore.get(BoxKeys().customColorList, defaultValue: <int>[]);
+  if (customColorList.isNotEmpty) {
+    getColorSchemeFromList(customColorList);
+  }
+  if (schemeType == "antiiq") {
+    currentColorSchemeType = ColorSchemeType.antiiq;
+    currentTheme =
+        await antiiqStore.get(BoxKeys().userTheme, defaultValue: "AntiiQ");
+  } else if (schemeType == "custom") {
+    currentColorSchemeType = ColorSchemeType.custom;
+  }
   themeStream.add(getColorScheme());
+  updateStatusBarColors();
 }
 
 getUserLibraryDirectories() async {
@@ -169,4 +220,22 @@ getStatusBarMode() async {
       ? currentStatusBarMode = StatusBarMode.immersiveMode
       : currentStatusBarMode = StatusBarMode.defaultMode;
   updateStatusBarMode();
+}
+
+getColorSchemeFromList(List<int> colorList) {
+  AntiiQColorScheme schemeToLoad = AntiiQColorScheme(
+    primary: Color(colorList[0]),
+    onPrimary: Color(colorList[1]),
+    secondary: Color(colorList[2]),
+    onSecondary: Color(colorList[3]),
+    surface: Color(colorList[4]),
+    onSurface: Color(colorList[5]),
+    background: Color(colorList[6]),
+    onBackground: Color(colorList[7]),
+    error: generalErrorColor,
+    onError: generalOnErrorColor,
+    brightness: colorList[8] == 0 ? Brightness.dark : Brightness.light,
+    colorSchemeType: ColorSchemeType.custom,
+  );
+  customColorScheme = schemeToLoad;
 }

@@ -23,14 +23,6 @@ void main() async {
       DeviceOrientation.portraitUp,
     ],
   );
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      statusBarColor: currentColorScheme.background,
-      statusBarIconBrightness: currentColorScheme.brightness == Brightness.dark
-          ? Brightness.light
-          : Brightness.dark,
-    ),
-  );
 
   audioHandler = await AudioService.init(
       builder: () => AntiiqAudioHandler(),

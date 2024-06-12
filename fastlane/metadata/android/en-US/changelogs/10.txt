@@ -1,0 +1,4 @@
+- A more consistent & cleaner UI
+- Improved Search results including tracks from artist and album searches
+- Immersive mode toggle in settings
+- Custom Colour Theming

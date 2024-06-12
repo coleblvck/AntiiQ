@@ -1,6 +1,7 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
@@ -81,6 +82,29 @@ class _UserInterfaceState extends State<UserInterface> {
                 ),
                 delegate: SliverChildListDelegate(
                   [
+                    CustomCard(
+                        theme: AntiiQTheme.of(context).cardThemes.primary,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Custom",
+                              style: AntiiQTheme.of(context)
+                                  .textStyles
+                                  .onPrimaryText
+                                  .copyWith(fontSize: 20),
+                            ),
+                            CustomButton(
+                              style:
+                                  AntiiQTheme.of(context).buttonStyles.style3,
+                              function: () {
+                                customColorEditSheet(context);
+                              },
+                              child: const Icon(RemixIcon.magic),
+                            ),
+                          ],
+                        )),
                     for (String theme in customThemes.keys)
                       CustomCard(
                         theme: AntiiQTheme.of(context)
@@ -399,4 +423,331 @@ class _UserInterfaceState extends State<UserInterface> {
       ),
     );
   }
+}
+
+customColorEditSheet(context) {
+  showModalBottomSheet(
+    enableDrag: true,
+    shape: bottomSheetShape,
+    context: context,
+    backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
+    builder: (context) {
+      AntiiQColorScheme schemeToEdit = customColorScheme ?? currentColorScheme;
+      Color primaryColor = schemeToEdit.primary;
+      Color secondaryColor = schemeToEdit.secondary;
+      Color surfaceColor = schemeToEdit.surface;
+      Color backgroundColor = schemeToEdit.background;
+      Color onPrimaryColor = schemeToEdit.onPrimary;
+      Color onSecondaryColor = schemeToEdit.onSecondary;
+      Color onSurfaceColor = schemeToEdit.onSurface;
+      Color onBackgroundColor = schemeToEdit.onBackground;
+      Brightness brightness = schemeToEdit.brightness;
+      return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+        setScheme() {
+          AntiiQColorScheme newCustomScheme = AntiiQColorScheme(
+            primary: primaryColor,
+            onPrimary: onPrimaryColor,
+            secondary: secondaryColor,
+            onSecondary: onSecondaryColor,
+            background: backgroundColor,
+            onBackground: onBackgroundColor,
+            error: generalErrorColor,
+            onError: generalOnErrorColor,
+            surface: surfaceColor,
+            onSurface: onSurfaceColor,
+            brightness: brightness,
+            colorSchemeType: ColorSchemeType.custom,
+          );
+          setCustomTheme(newCustomScheme);
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        }
+
+        updateEditedColor(String name, Color value) {
+          Color contrastColor =
+              value.computeLuminance() >= 0.5 ? Colors.black : Colors.white;
+          setState(() {
+            name == "primary"
+                ? {
+                    primaryColor = value,
+                    onPrimaryColor = contrastColor,
+                  }
+                : name == "secondary"
+                    ? {
+                        secondaryColor = value,
+                        onSecondaryColor = contrastColor,
+                      }
+                    : name == "surface"
+                        ? {
+                            surfaceColor = value,
+                            onSurfaceColor = contrastColor,
+                          }
+                        : name == "background"
+                            ? {
+                                backgroundColor = value,
+                                onBackgroundColor = contrastColor,
+                                brightness = contrastColor == Colors.white
+                                    ? Brightness.dark
+                                    : Brightness.light,
+                              }
+                            : null;
+          });
+        }
+
+        showColorPickDialog(String name, Color pickerColor) {
+          return showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(generalRadius),
+                ),
+                backgroundColor: AntiiQTheme.of(context).colorScheme.primary,
+                content: SizedBox(
+                  height: MediaQuery.of(context).size.height -
+                      (MediaQuery.of(context).viewPadding.top +
+                          MediaQuery.of(context).viewPadding.bottom) -
+                      150,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: ColorPicker(
+                            enableShadesSelection: true,
+                            enableTonalPalette: false,
+                            height: 30,
+                            width: 30,
+                            showColorCode: true,
+                            colorCodeReadOnly: true,
+                            colorCodeHasColor: true,
+                            color: pickerColor,
+                            padding: EdgeInsets.zero,
+                            copyPasteBehavior:
+                                const ColorPickerCopyPasteBehavior(
+                              copyButton: true,
+                              pasteButton: true,
+                            ),
+                            pickersEnabled: const <ColorPickerType, bool>{
+                              ColorPickerType.wheel: true,
+                              ColorPickerType.primary: false,
+                              ColorPickerType.accent: false,
+                            },
+                            onColorChanged: (color) {
+                              updateEditedColor(name, color);
+                            },
+                          ),
+                        ),
+                      ),
+                      CustomButton(
+                        style: AntiiQTheme.of(context).buttonStyles.style1,
+                        child: const Center(
+                          child: Icon(RemixIcon.arrow_down_double),
+                        ),
+                        function: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+                child: CustomCard(
+              theme: AntiiQTheme.of(context).cardThemes.background,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    //One color
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Primary:",
+                              style: AntiiQTheme.of(context)
+                                  .textStyles
+                                  .onBackgroundText,
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                showColorPickDialog("primary", primaryColor);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius:
+                                      BorderRadius.circular(generalRadius),
+                                ),
+                                constraints: const BoxConstraints.expand(),
+                                child: Center(
+                                  child: Text(
+                                    primaryColor.hex,
+                                    style: AntiiQTheme.of(context)
+                                        .textStyles
+                                        .onBackgroundText
+                                        .copyWith(color: onPrimaryColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Secondary:",
+                              style: AntiiQTheme.of(context)
+                                  .textStyles
+                                  .onBackgroundText,
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                showColorPickDialog(
+                                    "secondary", secondaryColor);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: secondaryColor,
+                                  borderRadius:
+                                      BorderRadius.circular(generalRadius),
+                                ),
+                                constraints: const BoxConstraints.expand(),
+                                child: Center(
+                                  child: Text(
+                                    secondaryColor.hex,
+                                    style: AntiiQTheme.of(context)
+                                        .textStyles
+                                        .onBackgroundText
+                                        .copyWith(color: onSecondaryColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Surface:",
+                              style: AntiiQTheme.of(context)
+                                  .textStyles
+                                  .onBackgroundText,
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                showColorPickDialog("surface", surfaceColor);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: surfaceColor,
+                                  borderRadius:
+                                      BorderRadius.circular(generalRadius),
+                                ),
+                                constraints: const BoxConstraints.expand(),
+                                child: Center(
+                                  child: Text(
+                                    surfaceColor.hex,
+                                    style: AntiiQTheme.of(context)
+                                        .textStyles
+                                        .onBackgroundText
+                                        .copyWith(color: onSurfaceColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Background:",
+                              style: AntiiQTheme.of(context)
+                                  .textStyles
+                                  .onBackgroundText,
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                showColorPickDialog(
+                                    "background", backgroundColor);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: backgroundColor,
+                                  borderRadius:
+                                      BorderRadius.circular(generalRadius),
+                                ),
+                                constraints: const BoxConstraints.expand(),
+                                child: Center(
+                                  child: Text(
+                                    backgroundColor.hex,
+                                    style: AntiiQTheme.of(context)
+                                        .textStyles
+                                        .onBackgroundText
+                                        .copyWith(color: onBackgroundColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: CustomButton(
+                style: AntiiQTheme.of(context).buttonStyles.style2,
+                function: () {
+                  setScheme();
+                },
+                child: const Text("Apply"),
+              ),
+            ),
+          ],
+        );
+      });
+    },
+  );
 }
