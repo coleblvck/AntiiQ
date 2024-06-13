@@ -1,4 +1,5 @@
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/utilities/platform.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
@@ -75,6 +76,38 @@ class _UserInterfaceState extends State<UserInterface> {
                   ),
                 ),
               ),
+              droidVersion >= 12
+                  ? SliverToBoxAdapter(
+                      child: CustomCard(
+                        theme: AntiiQTheme.of(context).cardThemes.secondary,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Dynamic Theme",
+                                style: AntiiQTheme.of(context)
+                                    .textStyles
+                                    .onSecondaryText.copyWith(fontSize: 20),
+                              ),
+                              Switch(
+                                  activeTrackColor:
+                                  AntiiQTheme.of(context).colorScheme.primary,
+                                  activeColor:
+                                  AntiiQTheme.of(context).colorScheme.onPrimary,
+                                  value: dynamicThemeEnabled,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      switchDynamicTheme(value);
+                                    });
+                                  }),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(),
               SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,

@@ -58,6 +58,8 @@ dependencies:
   fluttertoast: ^8.2.6
   mime: ^1.0.5
   flex_color_picker: ^3.5.0
+  dynamic_color: ^1.7.0
+  device_info_plus: ^10.1.0
 
 dev_dependencies:
   flutter_test:

@@ -35,6 +35,12 @@ class CardThemes {
     color: currentColorScheme.primary,
     surfaceTintColor: Colors.transparent,
   );
+  final secondary = CardTheme(
+    shape: CardShapes().antiiqCardShape1,
+    elevation: generalCardElevation,
+    color: currentColorScheme.secondary,
+    surfaceTintColor: Colors.transparent,
+  );
   final background = CardTheme(
     shape: CardShapes().antiiqCardShape1,
     elevation: generalCardElevation,

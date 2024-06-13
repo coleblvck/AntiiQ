@@ -1,3 +1,5 @@
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:antiiq/player/global_variables.dart';
@@ -27,6 +29,7 @@ class BoxKeys {
   String statusBarMode = "statusBarMode";
   String colorSchemeType = "colorSchemeType";
   String customColorList = "customColorScheme";
+  String dynamicThemeEnabled = "dynamicThemeEnabled";
 }
 
 changeTheme(String theme) async {
@@ -34,17 +37,13 @@ changeTheme(String theme) async {
   currentColorSchemeType = ColorSchemeType.antiiq;
   await antiiqStore.put(BoxKeys().userTheme, theme);
   await antiiqStore.put(BoxKeys().colorSchemeType, "antiiq");
-  themeStream.add(getColorScheme());
-  currentColorScheme = getColorScheme();
-  updateStatusBarColors();
+  updateThemeStream();
 }
 
 setCustomTheme(AntiiQColorScheme themeToSet) async {
   customColorScheme = themeToSet;
   currentColorSchemeType = ColorSchemeType.custom;
-  themeStream.add(getColorScheme());
-  currentColorScheme = getColorScheme();
-  updateStatusBarColors();
+  updateThemeStream();
   int brightnessInt = themeToSet.brightness == Brightness.dark ? 0 : 1;
   List<int> colorIntegers = [
     themeToSet.primary.value,
@@ -59,6 +58,12 @@ setCustomTheme(AntiiQColorScheme themeToSet) async {
   ];
   await antiiqStore.put(BoxKeys().customColorList, colorIntegers);
   await antiiqStore.put(BoxKeys().colorSchemeType, "custom");
+}
+
+switchDynamicTheme(bool value) async {
+  dynamicThemeEnabled = value;
+  await antiiqStore.put(BoxKeys().dynamicThemeEnabled, value);
+  updateThemeStream();
 }
 
 updateDirectories() async {
@@ -130,20 +135,24 @@ initializeAudioPreferences() async {
 themeInit() async {
   String schemeType =
       await antiiqStore.get(BoxKeys().colorSchemeType, defaultValue: "antiiq");
+  currentTheme =
+      await antiiqStore.get(BoxKeys().userTheme, defaultValue: "AntiiQ");
   List<int> customColorList =
       await antiiqStore.get(BoxKeys().customColorList, defaultValue: <int>[]);
   if (customColorList.isNotEmpty) {
     getColorSchemeFromList(customColorList);
   }
+
+  dynamicThemeEnabled =
+      await antiiqStore.get(BoxKeys().dynamicThemeEnabled, defaultValue: false);
   if (schemeType == "antiiq") {
     currentColorSchemeType = ColorSchemeType.antiiq;
-    currentTheme =
-        await antiiqStore.get(BoxKeys().userTheme, defaultValue: "AntiiQ");
   } else if (schemeType == "custom") {
     currentColorSchemeType = ColorSchemeType.custom;
   }
-  themeStream.add(getColorScheme());
-  updateStatusBarColors();
+  if (!dynamicThemeEnabled) {
+    updateThemeStream();
+  }
 }
 
 getUserLibraryDirectories() async {
@@ -238,4 +247,27 @@ getColorSchemeFromList(List<int> colorList) {
     colorSchemeType: ColorSchemeType.custom,
   );
   customColorScheme = schemeToLoad;
+}
+
+updateDynamicTheme(ColorScheme dynamicColors, Brightness brightness) {
+  dynamicColorScheme = AntiiQColorScheme(
+    primary: dynamicColors.primary,
+    onPrimary: dynamicColors.onPrimary,
+    secondary: dynamicColors.tertiary,
+    onSecondary: dynamicColors.onTertiary,
+    surface: dynamicColors.secondaryContainer,
+    onSurface: dynamicColors.onSecondaryContainer,
+    background: dynamicColors.surface,
+    onBackground: dynamicColors.onSurface,
+    error: generalErrorColor,
+    onError: generalOnErrorColor,
+    brightness: brightness,
+    colorSchemeType: ColorSchemeType.dynamic,
+  );
+}
+
+updateThemeStream() {
+  themeStream.add(getColorScheme());
+  currentColorScheme = getColorScheme();
+  updateStatusBarColors();
 }

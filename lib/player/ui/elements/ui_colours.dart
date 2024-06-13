@@ -205,9 +205,11 @@ Map<String, AntiiQColorScheme> customThemes = {
 AntiiQColorScheme currentColorScheme = getColorScheme();
 
 AntiiQColorScheme getColorScheme() {
-  return currentColorSchemeType == ColorSchemeType.antiiq
-      ? customThemes[currentTheme]!
-      : customColorScheme!;
+  return !dynamicThemeEnabled
+      ? currentColorSchemeType == ColorSchemeType.antiiq
+          ? customThemes[currentTheme]!
+          : customColorScheme!
+      : dynamicColorScheme ?? customThemes[currentTheme]!;
 }
 
 var backgroundClipArts = {

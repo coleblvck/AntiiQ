@@ -1,7 +1,11 @@
 //Flutter Packages
+import 'dart:ui';
+
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/intent.dart';
+import 'package:antiiq/player/utilities/platform.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -33,6 +37,7 @@ void main() async {
         androidNotificationOngoing: false,
         androidStopForegroundOnPause: false,
       ));
+  await getDeviceInfo();
   await initializeAudioPreferences();
   // Remove this from here or invoke optional popup.
   await initReceiveIntent();
@@ -46,7 +51,17 @@ class Antiiq extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<AntiiQColorScheme>(
+    return DynamicColorBuilder(
+        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+      Brightness currentSystemBrightness =
+          PlatformDispatcher.instance.platformBrightness;
+      darkDynamic != null && currentSystemBrightness == Brightness.dark
+          ? updateDynamicTheme(darkDynamic, Brightness.dark)
+          : lightDynamic != null && currentSystemBrightness == Brightness.light
+              ? updateDynamicTheme(lightDynamic, Brightness.light)
+              : null;
+      dynamicThemeEnabled ? updateThemeStream() : null;
+      return StreamBuilder<AntiiQColorScheme>(
         stream: themeStream.stream,
         builder: (context, snapshot) {
           return AntiiQTheme(
@@ -64,6 +79,8 @@ class Antiiq extends StatelessWidget {
               home: const MainBox(),
             ),
           );
-        });
+        },
+      );
+    });
   }
 }
