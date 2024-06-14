@@ -202,7 +202,9 @@ class _UserInterfaceState extends State<UserInterface> {
                         ),
                       ),
                     )
-                  : Container(),
+                  : SliverToBoxAdapter(
+                      child: Container(),
+                    ),
               SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,

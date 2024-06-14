@@ -171,7 +171,7 @@ showArtist(context, Artist artist) {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color:
-                                  AntiiQTheme.of(context).colorScheme.onSurface,
+                                  AntiiQTheme.of(context).colorScheme.onBackground,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -181,7 +181,7 @@ showArtist(context, Artist artist) {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color:
-                                  AntiiQTheme.of(context).colorScheme.onSurface,
+                                  AntiiQTheme.of(context).colorScheme.onBackground,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,

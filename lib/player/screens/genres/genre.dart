@@ -179,7 +179,7 @@ showGenre(context, Genre genre) {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color:
-                                  AntiiQTheme.of(context).colorScheme.onSurface,
+                                  AntiiQTheme.of(context).colorScheme.onBackground,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -189,7 +189,7 @@ showGenre(context, Genre genre) {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color:
-                                  AntiiQTheme.of(context).colorScheme.onSurface,
+                                  AntiiQTheme.of(context).colorScheme.onBackground,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,

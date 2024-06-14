@@ -210,7 +210,7 @@ showAlbum(context, Album album) {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color:
-                                  AntiiQTheme.of(context).colorScheme.onSurface,
+                                  AntiiQTheme.of(context).colorScheme.onBackground,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -220,7 +220,7 @@ showAlbum(context, Album album) {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color:
-                                  AntiiQTheme.of(context).colorScheme.onSurface,
+                                  AntiiQTheme.of(context).colorScheme.onBackground,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,

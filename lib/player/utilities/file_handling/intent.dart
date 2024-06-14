@@ -10,7 +10,6 @@ Future<void> initReceiveInitialIntent() async {
     if (receivedIntent?.data != null) {
       playFromIntentLink(receivedIntent!.data!);
     }
-
   } on PlatformException {
     null;
   }
@@ -20,6 +19,8 @@ late StreamSubscription intentSub;
 Future<void> initReceiveIntent() async {
   await initReceiveInitialIntent();
   intentSub = ReceiveIntent.receivedIntentStream.listen((Intent? intent) {
-    playFromIntentLink(intent!.data!);
+    if (intent?.data != null) {
+      playFromIntentLink(intent!.data!);
+    }
   });
 }

@@ -273,20 +273,35 @@ updateDynamicTheme(Brightness brightness) async {
   if (corePalette != null) {
     ColorScheme dynamicColors =
         corePalette.toColorScheme(brightness: brightness);
-    dynamicColorScheme = AntiiQColorScheme(
-      primary: dynamicColors.primary,
-      onPrimary: dynamicColors.onPrimary,
-      secondary: dynamicColors.tertiary,
-      onSecondary: dynamicColors.onTertiary,
-      surface: dynamicColors.secondaryContainer,
-      onSurface: dynamicColors.onSecondaryContainer,
-      background: dynamicColors.surface,
-      onBackground: dynamicColors.onSurface,
-      error: generalErrorColor,
-      onError: generalOnErrorColor,
-      brightness: brightness,
-      colorSchemeType: ColorSchemeType.dynamic,
-    );
+    brightness == Brightness.dark
+        ? dynamicColorScheme = AntiiQColorScheme(
+            primary: dynamicColors.primary,
+            onPrimary: dynamicColors.onPrimary,
+            secondary: dynamicColors.tertiary,
+            onSecondary: dynamicColors.onTertiary,
+            surface: dynamicColors.secondaryContainer,
+            onSurface: dynamicColors.onSecondaryContainer,
+            background: dynamicColors.surface,
+            onBackground: dynamicColors.onSurface,
+            error: generalErrorColor,
+            onError: generalOnErrorColor,
+            brightness: brightness,
+            colorSchemeType: ColorSchemeType.dynamic,
+          )
+        : dynamicColorScheme = AntiiQColorScheme(
+            primary: dynamicColors.primary,
+            onPrimary: dynamicColors.onPrimary,
+            secondary: dynamicColors.tertiary,
+            onSecondary: dynamicColors.onTertiary,
+            surface: dynamicColors.surface,
+            onSurface: dynamicColors.onSurface,
+            background: dynamicColors.secondaryContainer,
+            onBackground: dynamicColors.onSecondaryContainer,
+            error: generalErrorColor,
+            onError: generalOnErrorColor,
+            brightness: brightness,
+            colorSchemeType: ColorSchemeType.dynamic,
+          );
   }
 }
 
