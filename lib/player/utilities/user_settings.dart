@@ -1,3 +1,4 @@
+import 'package:antiiq/player/utilities/platform.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,9 +31,13 @@ class BoxKeys {
   String colorSchemeType = "colorSchemeType";
   String customColorList = "customColorScheme";
   String dynamicThemeEnabled = "dynamicThemeEnabled";
+  String dynamicColorBrightness = "dynamicColorBrightness";
 }
 
 changeTheme(String theme) async {
+  if (dynamicThemeEnabled) {
+    dynamicThemeEnabled = false;
+  }
   currentTheme = theme;
   currentColorSchemeType = ColorSchemeType.antiiq;
   await antiiqStore.put(BoxKeys().userTheme, theme);
@@ -41,6 +46,9 @@ changeTheme(String theme) async {
 }
 
 setCustomTheme(AntiiQColorScheme themeToSet) async {
+  if (dynamicThemeEnabled) {
+    dynamicThemeEnabled = false;
+  }
   customColorScheme = themeToSet;
   currentColorSchemeType = ColorSchemeType.custom;
   updateThemeStream();
@@ -63,6 +71,9 @@ setCustomTheme(AntiiQColorScheme themeToSet) async {
 switchDynamicTheme(bool value) async {
   dynamicThemeEnabled = value;
   await antiiqStore.put(BoxKeys().dynamicThemeEnabled, value);
+  if (value) {
+    await updateDynamicTheme(dynamicColorBrightness);
+  }
   updateThemeStream();
 }
 
@@ -143,16 +154,24 @@ themeInit() async {
     getColorSchemeFromList(customColorList);
   }
 
+  await getDynamicColorBrightness();
+
+  if (droidVersion >= 12) {
+    await updateDynamicTheme(dynamicColorBrightness);
+  }
+
   dynamicThemeEnabled =
       await antiiqStore.get(BoxKeys().dynamicThemeEnabled, defaultValue: false);
+
+  if (droidVersion < 12) {
+    dynamicThemeEnabled = false;
+  }
   if (schemeType == "antiiq") {
     currentColorSchemeType = ColorSchemeType.antiiq;
   } else if (schemeType == "custom") {
     currentColorSchemeType = ColorSchemeType.custom;
   }
-  if (!dynamicThemeEnabled) {
-    updateThemeStream();
-  }
+  updateThemeStream();
 }
 
 getUserLibraryDirectories() async {
@@ -249,25 +268,53 @@ getColorSchemeFromList(List<int> colorList) {
   customColorScheme = schemeToLoad;
 }
 
-updateDynamicTheme(ColorScheme dynamicColors, Brightness brightness) {
-  dynamicColorScheme = AntiiQColorScheme(
-    primary: dynamicColors.primary,
-    onPrimary: dynamicColors.onPrimary,
-    secondary: dynamicColors.tertiary,
-    onSecondary: dynamicColors.onTertiary,
-    surface: dynamicColors.secondaryContainer,
-    onSurface: dynamicColors.onSecondaryContainer,
-    background: dynamicColors.surface,
-    onBackground: dynamicColors.onSurface,
-    error: generalErrorColor,
-    onError: generalOnErrorColor,
-    brightness: brightness,
-    colorSchemeType: ColorSchemeType.dynamic,
-  );
+updateDynamicTheme(Brightness brightness) async {
+  final corePalette = await DynamicColorPlugin.getCorePalette();
+  if (corePalette != null) {
+    ColorScheme dynamicColors =
+        corePalette.toColorScheme(brightness: brightness);
+    dynamicColorScheme = AntiiQColorScheme(
+      primary: dynamicColors.primary,
+      onPrimary: dynamicColors.onPrimary,
+      secondary: dynamicColors.tertiary,
+      onSecondary: dynamicColors.onTertiary,
+      surface: dynamicColors.secondaryContainer,
+      onSurface: dynamicColors.onSecondaryContainer,
+      background: dynamicColors.surface,
+      onBackground: dynamicColors.onSurface,
+      error: generalErrorColor,
+      onError: generalOnErrorColor,
+      brightness: brightness,
+      colorSchemeType: ColorSchemeType.dynamic,
+    );
+  }
 }
 
 updateThemeStream() {
   themeStream.add(getColorScheme());
   currentColorScheme = getColorScheme();
   updateStatusBarColors();
+}
+
+getDynamicColorBrightness() async {
+  String brightness = await antiiqStore.get(BoxKeys().dynamicColorBrightness,
+      defaultValue: "dark");
+  if (brightness == "light") {
+    dynamicColorBrightness = Brightness.light;
+  } else {
+    dynamicColorBrightness = Brightness.dark;
+  }
+}
+
+changeDynamicColorBrightness(String brightness) async {
+  if (brightness == "light") {
+    dynamicColorBrightness = Brightness.light;
+  } else {
+    dynamicColorBrightness = Brightness.dark;
+  }
+  await antiiqStore.put(BoxKeys().dynamicColorBrightness, brightness);
+  if (dynamicThemeEnabled) {
+    await updateDynamicTheme(dynamicColorBrightness);
+    updateThemeStream();
+  }
 }

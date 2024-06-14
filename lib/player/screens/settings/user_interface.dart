@@ -82,26 +82,121 @@ class _UserInterfaceState extends State<UserInterface> {
                         theme: AntiiQTheme.of(context).cardThemes.secondary,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          child: Column(
                             children: [
-                              Text(
-                                "Dynamic Theme",
-                                style: AntiiQTheme.of(context)
-                                    .textStyles
-                                    .onSecondaryText.copyWith(fontSize: 20),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Dynamic Theme",
+                                    style: AntiiQTheme.of(context)
+                                        .textStyles
+                                        .onSecondaryText
+                                        .copyWith(fontSize: 20),
+                                  ),
+                                  Switch(
+                                    activeTrackColor: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                    activeColor: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .onPrimary,
+                                    value: dynamicThemeEnabled,
+                                    onChanged: (value) {
+                                      setState(
+                                        () {
+                                          switchDynamicTheme(value);
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
-                              Switch(
-                                  activeTrackColor:
-                                  AntiiQTheme.of(context).colorScheme.primary,
-                                  activeColor:
-                                  AntiiQTheme.of(context).colorScheme.onPrimary,
-                                  value: dynamicThemeEnabled,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      switchDynamicTheme(value);
-                                    });
-                                  }),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .surface,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (dynamicColorBrightness !=
+                                              Brightness.dark) {
+                                            changeDynamicColorBrightness(
+                                                "dark");
+                                            setState(() {});
+                                          }
+                                        },
+                                        child: Card(
+                                          color: dynamicColorBrightness ==
+                                                  Brightness.dark
+                                              ? AntiiQTheme.of(context)
+                                                  .colorScheme
+                                                  .background
+                                              : Colors.transparent,
+                                          shadowColor: Colors.transparent,
+                                          surfaceTintColor: Colors.transparent,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                "Dark",
+                                                style: TextStyle(
+                                                  color: AntiiQTheme.of(context)
+                                                      .colorScheme
+                                                      .primary,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (dynamicColorBrightness !=
+                                              Brightness.light) {
+                                            changeDynamicColorBrightness(
+                                                "light");
+                                            setState(() {});
+                                          }
+                                        },
+                                        child: Card(
+                                          color: dynamicColorBrightness ==
+                                                  Brightness.light
+                                              ? AntiiQTheme.of(context)
+                                                  .colorScheme
+                                                  .background
+                                              : Colors.transparent,
+                                          shadowColor: Colors.transparent,
+                                          surfaceTintColor: Colors.transparent,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                "Light",
+                                                style: TextStyle(
+                                                  color: AntiiQTheme.of(context)
+                                                      .colorScheme
+                                                      .primary,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -321,7 +416,7 @@ class _UserInterfaceState extends State<UserInterface> {
                               ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),

@@ -154,3 +154,5 @@ Color generalOnErrorColor = const Color.fromARGB(57, 0, 0, 0);
 
 AntiiQColorScheme? dynamicColorScheme;
 late bool dynamicThemeEnabled;
+
+late Brightness dynamicColorBrightness;
