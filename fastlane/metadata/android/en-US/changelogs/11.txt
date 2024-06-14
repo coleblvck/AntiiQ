@@ -1,0 +1,2 @@
+- Important tweaks and fixes
+- Dynamic Colours for Android 12 and above
