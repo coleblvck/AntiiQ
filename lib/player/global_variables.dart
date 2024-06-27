@@ -52,7 +52,6 @@ Velocity defaultTextScrollvelocity =
 Duration delayBeforeScroll = const Duration(seconds: 2);
 
 List<MediaItem> queueToLoad = [];
-List<MediaItem> activeQueue = [];
 
 late Uri defaultArtUri;
 
@@ -72,8 +71,6 @@ Stream<Duration> currentPosition() => AudioService.position.asBroadcastStream();
 Stream<PlaybackState> currentPlaybackState() =>
     audioHandler.playbackState.asBroadcastStream();
 
-Stream<List<MediaItem>> currentQueueStream() =>
-    audioHandler.queue.asBroadcastStream().distinct();
 
 final OnAudioQuery audioQuery = OnAudioQuery();
 // Indicate if application has permission to the library.
@@ -96,10 +93,6 @@ RoundedRectangleBorder bottomSheetShape = RoundedRectangleBorder(
   ),
 );
 
-
-
-//User Settings Related Variables
-List<MediaItem> queueState = [];
 
 late bool interactiveMiniPlayerSeekbar;
 

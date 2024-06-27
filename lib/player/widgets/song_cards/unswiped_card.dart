@@ -8,96 +8,97 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 
-class UnswipedCard extends StatelessWidget {
-  const UnswipedCard({
+class UnSwipedCard extends StatelessWidget {
+  const UnSwipedCard({
     super.key,
     required this.index,
-    required this.selectionList,
     required this.leading,
     required this.title,
     required this.subtitle,
     required this.track,
-    this.albumToPlay,
+    required this.albumToPlay,
   });
 
   final int index;
-  final String selectionList;
   final Widget leading;
   final Widget title;
   final Widget subtitle;
   final Track track;
-  final List<MediaItem>? albumToPlay;
+  final List<MediaItem> albumToPlay;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Track>>(
-        stream: state.music.selection.flow.stream,
-        builder: (context, snapshot) {
-          final List<Track> selectionSituation =
-              snapshot.data ?? state.music.selection.list;
-          return GestureDetector(
-            onTap: () {
-              playTrack(index, selectionList, albumToPlay: albumToPlay);
-            },
-            onLongPress: () {
-              if (selectionSituation.isEmpty) {
-                state.music.selection.selectOrDeselect(track);
-              }
-            },
-            child: CustomCard(
-              theme: AntiiQTheme.of(context).cardThemes.background,
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      height: 80,
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: leading,
+      stream: state.music.selection.flow.stream,
+      builder: (context, snapshot) {
+        final List<Track> selectionSituation =
+            snapshot.data ?? state.music.selection.list;
+        return GestureDetector(
+          onTap: () {
+            playFromList(index, albumToPlay);
+          },
+          onLongPress: () {
+            if (selectionSituation.isEmpty) {
+              state.music.selection.selectOrDeselect(track);
+            }
+          },
+          child: CustomCard(
+            theme: AntiiQTheme.of(context).cardThemes.background,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Row(
+                children: [
+                  SizedBox(
+                    height: 80,
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: leading,
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          title,
+                          subtitle,
+                        ],
                       ),
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            title,
-                            subtitle,
-                          ],
-                        ),
-                      ),
+                  ),
+                  selectionSituation.isNotEmpty
+                      ? SizedBox(
+                          width: 40,
+                          child: Checkbox(
+                            checkColor:
+                                AntiiQTheme.of(context).colorScheme.primary,
+                            fillColor: WidgetStatePropertyAll(
+                                AntiiQTheme.of(context).colorScheme.surface),
+                            value: selectionSituation.contains(track),
+                            onChanged: (value) {
+                              state.music.selection.selectOrDeselect(track);
+                            },
+                          ),
+                        )
+                      : Container(),
+                  SizedBox(
+                    width: 40,
+                    child: IconButton(
+                      color: AntiiQTheme.of(context).colorScheme.primary,
+                      onPressed: () {
+                        openSheetFromTrack(context, track);
+                      },
+                      icon: const Icon(RemixIcon.menu_4),
                     ),
-                    selectionSituation.isNotEmpty
-                        ? SizedBox(
-                            width: 40,
-                            child: Checkbox(
-                              checkColor: AntiiQTheme.of(context).colorScheme.primary,
-                              fillColor: WidgetStatePropertyAll(AntiiQTheme.of(context).colorScheme.surface),
-                              value: selectionSituation.contains(track),
-                              onChanged: (value) {
-                                state.music.selection.selectOrDeselect(track);
-                              },
-                            ),
-                          )
-                        : Container(),
-                    SizedBox(
-                      width: 40,
-                      child: IconButton(
-                        color: AntiiQTheme.of(context).colorScheme.primary,
-                        onPressed: () {
-                          openSheetFromTrack(context, track);
-                        },
-                        icon: const Icon(RemixIcon.menu_4),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

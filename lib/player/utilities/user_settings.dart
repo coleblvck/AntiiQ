@@ -7,30 +7,30 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class BoxKeys {
-  String userTheme = "currentTheme";
-  String includedPaths = "libraryPaths";
-  String minimumTrackLength = "minimumTrackLength";
-  String previousRestart = "previousRestart";
-  String eqEnabledStorage = "equalizerEnabled";
-  String bandFrequencyStorage = "bandFreqs";
-  String loopModeStorage = "loopMode";
-  String shuffleModeStorage = "shuffleMode";
-  String swipeGestures = "swipeGestures";
-  String runtimeAutoScanEnabled = "runtimeAutoScanEnabled";
-  String runtimeAutoScanInterval = "runtimeAutoScanInterval";
-  String interactiveSeekBar = "interactiveSeekBar";
-  String queueState = "queueState";
-  String globalSelection = "globalSelection";
-  String favourites = "favourites";
-  String showTrackDuration = "showTrackDuration";
-  String generalRadius = "generalRadius";
-  String quitType = "quitType";
-  String statusBarMode = "statusBarMode";
-  String colorSchemeType = "colorSchemeType";
-  String customColorList = "customColorScheme";
-  String dynamicThemeEnabled = "dynamicThemeEnabled";
-  String dynamicColorBrightness = "dynamicColorBrightness";
+class MainBoxKeys {
+  static const String userTheme = "currentTheme";
+  static const String includedPaths = "libraryPaths";
+  static const String minimumTrackLength = "minimumTrackLength";
+  static const String previousRestart = "previousRestart";
+  static const String eqEnabledStorage = "equalizerEnabled";
+  static const String bandFrequencyStorage = "bandFreqs";
+  static const String loopModeStorage = "loopMode";
+  static const String shuffleModeStorage = "shuffleMode";
+  static const String swipeGestures = "swipeGestures";
+  static const String runtimeAutoScanEnabled = "runtimeAutoScanEnabled";
+  static const String runtimeAutoScanInterval = "runtimeAutoScanInterval";
+  static const String interactiveSeekBar = "interactiveSeekBar";
+  static const String queueState = "queueState";
+  static const String globalSelection = "globalSelection";
+  static const String favourites = "favourites";
+  static const String showTrackDuration = "showTrackDuration";
+  static const String generalRadius = "generalRadius";
+  static const String quitType = "quitType";
+  static const String statusBarMode = "statusBarMode";
+  static const String colorSchemeType = "colorSchemeType";
+  static const String customColorList = "customColorScheme";
+  static const String dynamicThemeEnabled = "dynamicThemeEnabled";
+  static const String dynamicColorBrightness = "dynamicColorBrightness";
 }
 
 changeTheme(String theme) async {
@@ -39,8 +39,8 @@ changeTheme(String theme) async {
   }
   currentTheme = theme;
   currentColorSchemeType = ColorSchemeType.antiiq;
-  await antiiqStore.put(BoxKeys().userTheme, theme);
-  await antiiqStore.put(BoxKeys().colorSchemeType, "antiiq");
+  await antiiqStore.put(MainBoxKeys.userTheme, theme);
+  await antiiqStore.put(MainBoxKeys.colorSchemeType, "antiiq");
   updateThemeStream();
 }
 
@@ -63,13 +63,13 @@ setCustomTheme(AntiiQColorScheme themeToSet) async {
     themeToSet.onBackground.value,
     brightnessInt,
   ];
-  await antiiqStore.put(BoxKeys().customColorList, colorIntegers);
-  await antiiqStore.put(BoxKeys().colorSchemeType, "custom");
+  await antiiqStore.put(MainBoxKeys.customColorList, colorIntegers);
+  await antiiqStore.put(MainBoxKeys.colorSchemeType, "custom");
 }
 
 switchDynamicTheme(bool value) async {
   dynamicThemeEnabled = value;
-  await antiiqStore.put(BoxKeys().dynamicThemeEnabled, value);
+  await antiiqStore.put(MainBoxKeys.dynamicThemeEnabled, value);
   if (value) {
     await updateDynamicTheme(dynamicColorBrightness);
   }
@@ -77,22 +77,22 @@ switchDynamicTheme(bool value) async {
 }
 
 updateDirectories() async {
-  await antiiqStore.put(BoxKeys().includedPaths, specificPathsToQuery);
+  await antiiqStore.put(MainBoxKeys.includedPaths, specificPathsToQuery);
 }
 
 setMinimumTrackLength(int length) async {
   minimumTrackLength = length;
-  await antiiqStore.put(BoxKeys().minimumTrackLength, length);
+  await antiiqStore.put(MainBoxKeys.minimumTrackLength, length);
 }
 
 setGeneralRadius(double radius) async {
   generalRadius = radius;
-  await antiiqStore.put(BoxKeys().generalRadius, radius);
+  await antiiqStore.put(MainBoxKeys.generalRadius, radius);
 }
 
 setPreviousButtonAction(bool restart) async {
   previousRestart = restart;
-  await antiiqStore.put(BoxKeys().previousRestart, restart);
+  await antiiqStore.put(MainBoxKeys.previousRestart, restart);
 }
 
 setStatusBarMode(String mode) async {
@@ -100,7 +100,7 @@ setStatusBarMode(String mode) async {
       ? currentStatusBarMode = StatusBarMode.immersiveMode
       : currentStatusBarMode = StatusBarMode.defaultMode;
   updateStatusBarMode();
-  await antiiqStore.put(BoxKeys().statusBarMode, mode);
+  await antiiqStore.put(MainBoxKeys.statusBarMode, mode);
 }
 
 updateStatusBarMode() {
@@ -144,11 +144,11 @@ initializeAudioPreferences() async {
 
 themeInit() async {
   String schemeType =
-      await antiiqStore.get(BoxKeys().colorSchemeType, defaultValue: "antiiq");
+      await antiiqStore.get(MainBoxKeys.colorSchemeType, defaultValue: "antiiq");
   currentTheme =
-      await antiiqStore.get(BoxKeys().userTheme, defaultValue: "AntiiQ");
+      await antiiqStore.get(MainBoxKeys.userTheme, defaultValue: "AntiiQ");
   List<int> customColorList =
-      await antiiqStore.get(BoxKeys().customColorList, defaultValue: <int>[]);
+      await antiiqStore.get(MainBoxKeys.customColorList, defaultValue: <int>[]);
   if (customColorList.isNotEmpty) {
     getColorSchemeFromList(customColorList);
   }
@@ -160,7 +160,7 @@ themeInit() async {
   }
 
   dynamicThemeEnabled =
-      await antiiqStore.get(BoxKeys().dynamicThemeEnabled, defaultValue: false);
+      await antiiqStore.get(MainBoxKeys.dynamicThemeEnabled, defaultValue: false);
 
   if (droidVersion < 12) {
     dynamicThemeEnabled = false;
@@ -175,66 +175,66 @@ themeInit() async {
 
 getUserLibraryDirectories() async {
   specificPathsToQuery =
-      await antiiqStore.get(BoxKeys().includedPaths, defaultValue: <String>[]);
+      await antiiqStore.get(MainBoxKeys.includedPaths, defaultValue: <String>[]);
 }
 
 getMinimumTrackLength() async {
   minimumTrackLength =
-      await antiiqStore.get(BoxKeys().minimumTrackLength, defaultValue: 45);
+      await antiiqStore.get(MainBoxKeys.minimumTrackLength, defaultValue: 45);
 }
 
 getGeneralRadius() async {
   generalRadius =
-      await antiiqStore.get(BoxKeys().generalRadius, defaultValue: 10.0);
+      await antiiqStore.get(MainBoxKeys.generalRadius, defaultValue: 10.0);
 }
 
 getPreviousButtonAction() async {
   previousRestart =
-      await antiiqStore.get(BoxKeys().previousRestart, defaultValue: false);
+      await antiiqStore.get(MainBoxKeys.previousRestart, defaultValue: false);
 }
 
 setSwipeGestures(bool enabled) async {
   swipeGestures = enabled;
-  await antiiqStore.put(BoxKeys().swipeGestures, enabled);
+  await antiiqStore.put(MainBoxKeys.swipeGestures, enabled);
 }
 
 getSwipeGestures() async {
   swipeGestures =
-      await antiiqStore.get(BoxKeys().swipeGestures, defaultValue: true);
+      await antiiqStore.get(MainBoxKeys.swipeGestures, defaultValue: true);
 }
 
 initInteractiveSeekBarSwitch() async {
   interactiveMiniPlayerSeekbar =
-      await antiiqStore.get(BoxKeys().interactiveSeekBar, defaultValue: true);
+      await antiiqStore.get(MainBoxKeys.interactiveSeekBar, defaultValue: true);
 }
 
 interactiveSeekBarSwitch(bool value) async {
   interactiveMiniPlayerSeekbar = value;
   interactiveSeekbarStream.add(value);
-  await antiiqStore.put(BoxKeys().interactiveSeekBar, value);
+  await antiiqStore.put(MainBoxKeys.interactiveSeekBar, value);
 }
 
 initTrackDurationShowSwitch() async {
   showTrackDuration =
-      await antiiqStore.get(BoxKeys().showTrackDuration, defaultValue: true);
+      await antiiqStore.get(MainBoxKeys.showTrackDuration, defaultValue: true);
 }
 
 trackDurationShowSwitch(bool value) async {
   showTrackDuration = value;
   trackDurationDisplayStream.add(value);
-  await antiiqStore.put(BoxKeys().showTrackDuration, value);
+  await antiiqStore.put(MainBoxKeys.showTrackDuration, value);
 }
 
 setQuitType(String quitTypeString) async {
   quitTypeString == "dialog"
       ? currentQuitType = QuitType.dialog
       : currentQuitType = QuitType.doubleTap;
-  await antiiqStore.put(BoxKeys().quitType, quitTypeString);
+  await antiiqStore.put(MainBoxKeys.quitType, quitTypeString);
 }
 
 initQuitType() async {
   String quitTypeString =
-      await antiiqStore.get(BoxKeys().quitType, defaultValue: "dialog");
+      await antiiqStore.get(MainBoxKeys.quitType, defaultValue: "dialog");
   quitTypeString == "dialog"
       ? currentQuitType = QuitType.dialog
       : currentQuitType = QuitType.doubleTap;
@@ -242,7 +242,7 @@ initQuitType() async {
 
 getStatusBarMode() async {
   String mode =
-      await antiiqStore.get(BoxKeys().statusBarMode, defaultValue: "default");
+      await antiiqStore.get(MainBoxKeys.statusBarMode, defaultValue: "default");
   mode == "immersive"
       ? currentStatusBarMode = StatusBarMode.immersiveMode
       : currentStatusBarMode = StatusBarMode.defaultMode;
@@ -311,7 +311,7 @@ updateThemeStream() {
 }
 
 getDynamicColorBrightness() async {
-  String brightness = await antiiqStore.get(BoxKeys().dynamicColorBrightness,
+  String brightness = await antiiqStore.get(MainBoxKeys.dynamicColorBrightness,
       defaultValue: "dark");
   if (brightness == "light") {
     dynamicColorBrightness = Brightness.light;
@@ -326,7 +326,7 @@ changeDynamicColorBrightness(String brightness) async {
   } else {
     dynamicColorBrightness = Brightness.dark;
   }
-  await antiiqStore.put(BoxKeys().dynamicColorBrightness, brightness);
+  await antiiqStore.put(MainBoxKeys.dynamicColorBrightness, brightness);
   if (dynamicThemeEnabled) {
     await updateDynamicTheme(dynamicColorBrightness);
     updateThemeStream();

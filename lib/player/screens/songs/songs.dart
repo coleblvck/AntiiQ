@@ -13,6 +13,7 @@ import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:text_scroll/text_scroll.dart';
 
@@ -58,6 +59,7 @@ class SongsList extends StatelessWidget {
                   itemCount: allStreamTracks.length,
                   itemBuilder: (context, index) {
                     final Track thisTrack = allStreamTracks[index];
+                    final List<MediaItem> allSongItems = allStreamTracks.map((e) => e.mediaItem!).toList();
                     return SongItem(
                       title: TextScroll(
                         thisTrack.trackData!.trackName!,
@@ -80,6 +82,7 @@ class SongsList extends StatelessWidget {
                       leading: getUriImage(thisTrack.mediaItem!.artUri!),
                       track: thisTrack,
                       index: index,
+                      allSongItems: allSongItems,
                     );
                   },
                 );

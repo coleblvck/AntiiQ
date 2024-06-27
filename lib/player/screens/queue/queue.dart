@@ -1,5 +1,7 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/queue/queue_song.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/state/list_states/queue_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:audio_service/audio_service.dart';
@@ -101,18 +103,18 @@ class QueueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final QueueState queue = state.music.queue;
     return StreamBuilder<List<MediaItem>>(
-        stream: currentQueueStream(),
+        stream: queue.flow.stream,
         builder: (context, snapshot) {
-          List<MediaItem>? thisQueue = snapshot.data;
-          thisQueue ??= activeQueue;
+          List<MediaItem>? thisQueue = snapshot.data ?? queue.state;
           return CustomCard(
             theme: AntiiQTheme.of(context).cardThemes.background,
             child: ListView.builder(
                 controller: ScrollController(),
                 itemCount: thisQueue.length,
                 itemBuilder: (context, index) {
-                  final MediaItem thisTrack = thisQueue![index];
+                  final MediaItem thisTrack = thisQueue[index];
                   return QueueSongItem(
                     title: TextScroll(
                       thisTrack.title,

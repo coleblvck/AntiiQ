@@ -1,51 +1,20 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/list_states/albums_state.dart';
 import 'package:antiiq/player/state/list_states/artists_state.dart';
-import 'package:antiiq/player/state/list_states/favourites_state.dart';
 import 'package:antiiq/player/state/list_states/genres_state.dart';
 import 'package:antiiq/player/state/list_states/tracks_state.dart';
 import 'package:antiiq/player/state/music_state.dart';
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
-import 'package:antiiq/player/utilities/user_settings.dart';
 
 class MusicInit {
   run(MusicState music) async {
-    await _initGlobalSelection(music);
-    await _initFavourites(music);
+    final TracksState tracks = music.tracks;
+    await music.queue.init(tracks);
+    await music.selection.init(tracks);
+    await music.favourites.init(tracks);
     await _initSort(music);
   }
 
-
-  _initGlobalSelection(MusicState music) async {
-    final List<int> selectionIds =
-    await antiiqStore.get(BoxKeys().globalSelection, defaultValue: <int>[]);
-    music.selection.list = [];
-    for (int id in selectionIds) {
-      for (Track track in music.tracks.list) {
-        if (track.trackData!.trackId == id) {
-          music.selection.list.add(track);
-        }
-      }
-    }
-    music.selection.updateFlow();
-  }
-
-  _initFavourites(MusicState music) async {
-    final FavouritesState favourites = music.favourites;
-    final TracksState tracks = music.tracks;
-    final List<int> favouriteIds =
-        await antiiqStore.get(BoxKeys().favourites, defaultValue: <int>[]);
-    favourites.list = [];
-    for (int id in favouriteIds) {
-      for (Track track in tracks.list) {
-        if (track.trackData!.trackId == id) {
-          favourites.list.add(track);
-        }
-      }
-    }
-    favourites.updateFlow();
-  }
 
   _initSort(MusicState music) async {
     final TracksState tracks = music.tracks;

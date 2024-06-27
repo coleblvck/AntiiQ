@@ -21,7 +21,6 @@ class ArtistSong extends StatelessWidget {
   });
 
   final PageController controller = PageController();
-  final String selectionList = "album";
   late final List<MediaItem> albumToPlay =
       artist.artistTracks!.map((e) => e.mediaItem!).toList();
 
@@ -31,7 +30,6 @@ class ArtistSong extends StatelessWidget {
     return SongCard(
       controller: controller,
       index: index,
-      selectionList: selectionList,
       leading: leading,
       title: title,
       subtitle: subtitle,

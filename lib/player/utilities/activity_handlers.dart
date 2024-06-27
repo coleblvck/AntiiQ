@@ -1,9 +1,7 @@
 //Audio Service
 import 'dart:io';
-
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/audio_preferences.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:audio_service/audio_service.dart';
@@ -12,36 +10,13 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:uri_to_file/uri_to_file.dart';
 
-playTrack(int index, String list, {albumToPlay}) async {
-  if (list == "songs") {
-    await playFromSongs(index);
-  }
-  if (list == "queue") {
-    await playFromQueue(index);
-  }
 
-  if (list == "album") {
-    await playFromAlbum(index, albumToPlay);
-  }
-}
-
-playFromSongs(int index) async {
-  await goToAudioService(
-      index, state.music.tracks.list.map((e) => e.mediaItem!).toList());
+playFromList(int index, List<MediaItem> listToPlay) async {
+  await handleList(index, listToPlay);
   await audioHandler.play();
 }
 
-playFromQueue(int index) async {
-  await goToAudioService(index, activeQueue);
-  await audioHandler.play();
-}
-
-playFromAlbum(int index, List<MediaItem> album) async {
-  await goToAudioService(index, album);
-  await audioHandler.play();
-}
-
-Future<void> goToAudioService(
+Future<void> handleList(
     int indexOfSong, List<MediaItem> listToPlay) async {
   queueToLoad =
       listToPlay.sublist(indexOfSong) + listToPlay.sublist(0, indexOfSong);

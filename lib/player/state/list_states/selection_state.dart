@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:antiiq/player/state/list_states/tracks_state.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
+
+import '../music_state.dart';
 
 class SelectionState {
   List<Track> list = [];
@@ -36,10 +39,23 @@ class SelectionState {
     updateFlow();
     await _save();
   }
+  init(TracksState tracks) async {
+    final List<int> selectionIds =
+    await antiiqStore.get(MainBoxKeys.globalSelection, defaultValue: <int>[]);
+    list = [];
+    for (int id in selectionIds) {
+      for (Track track in tracks.list) {
+        if (track.trackData!.trackId == id) {
+          list.add(track);
+        }
+      }
+    }
+    updateFlow();
+  }
 
   _save() async {
     final List<int> selectionIds =
         list.map((track) => track.trackData!.trackId!).toList();
-    await antiiqStore.put(BoxKeys().globalSelection, selectionIds);
+    await antiiqStore.put(MainBoxKeys.globalSelection, selectionIds);
   }
 }

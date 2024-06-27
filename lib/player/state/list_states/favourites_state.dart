@@ -1,14 +1,15 @@
 import 'dart:async';
-
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/list_states/tracks_state.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
+import 'package:antiiq/player/state/music_state.dart';
 
 class FavouritesState {
   List<Track> list = [];
   StreamController<List<Track>> flow = StreamController.broadcast();
 
-  updateFlow () {
+  updateFlow() {
     flow.add(list);
   }
 
@@ -38,11 +39,23 @@ class FavouritesState {
     await _save();
   }
 
-  _save() async {
+  init(TracksState tracks) async {
     final List<int> favouriteIds =
-    list.map((track) => track.trackData!.trackId!).toList();
-    await antiiqStore.put(BoxKeys().favourites, favouriteIds);
+        await antiiqStore.get(MainBoxKeys.favourites, defaultValue: <int>[]);
+    list = [];
+    for (int id in favouriteIds) {
+      for (Track track in tracks.list) {
+        if (track.trackData!.trackId == id) {
+          list.add(track);
+        }
+      }
+    }
+    updateFlow();
   }
 
-
+  _save() async {
+    final List<int> favouriteIds =
+        list.map((track) => track.trackData!.trackId!).toList();
+    await antiiqStore.put(MainBoxKeys.favourites, favouriteIds);
+  }
 }

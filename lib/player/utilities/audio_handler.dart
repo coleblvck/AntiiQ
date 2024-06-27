@@ -6,7 +6,6 @@ import 'package:antiiq/player/global_variables.dart';
 //Audio Handler
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/audio_preferences.dart';
-import 'package:antiiq/player/utilities/queue_state.dart';
 import 'package:audio_service/audio_service.dart';
 //Just Audio
 import 'package:just_audio/just_audio.dart';
@@ -102,11 +101,6 @@ class AntiiqAudioHandler extends BaseAudioHandler
     queue.add(
       antiiqQueue.sublist(getNowPlayingQueueIndex()),
     );
-    activeQueue = antiiqQueue.sublist(getNowPlayingQueueIndex());
-    if (activeQueue.isNotEmpty && activeQueue != queueState) {
-      queueState = activeQueue;
-      await saveQueueState();
-    }
   }
 
   int getNowPlayingQueueIndex() {
@@ -142,11 +136,11 @@ class AntiiqAudioHandler extends BaseAudioHandler
   @override
   Future<void> play() async {
     if (antiiqQueue.isEmpty) {
-      if (queueState.isEmpty) {
+      if (state.music.queue.initialState.isEmpty) {
         await updateQueue(
             state.music.tracks.list.map((e) => e.mediaItem!).toList());
       } else {
-        await updateQueue(queueState);
+        await updateQueue(state.music.queue.initialState);
       }
     }
     audioPlayer.play();

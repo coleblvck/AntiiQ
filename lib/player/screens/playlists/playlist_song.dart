@@ -44,10 +44,10 @@ class PlaylistSong extends StatelessWidget {
             enabled: true,
             child: GestureDetector(
               onTap: () {
-                playTrack(index, "album",
-                    albumToPlay: playlist.playlistTracks!
-                        .map((e) => e.mediaItem!)
-                        .toList());
+                playFromList(
+                  index,
+                  playlist.playlistTracks!.map((e) => e.mediaItem!).toList(),
+                );
               },
               child: CustomCard(
                 theme: AntiiQTheme.of(context).cardThemes.surface,

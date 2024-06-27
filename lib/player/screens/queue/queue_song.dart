@@ -1,5 +1,6 @@
 //Flutter Packages
 //Antiiq Packages
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
 import 'package:audio_service/audio_service.dart';
@@ -28,7 +29,7 @@ class QueueSongItem extends StatelessWidget {
       height: 120,
       child: GestureDetector(
         onTap: () {
-          playTrack(index, "queue");
+          playFromList(index, state.music.queue.state);
         },
         child: CustomCard(
           theme: AntiiQTheme.of(context).cardThemes.background,

@@ -4,26 +4,26 @@ import 'package:just_audio/just_audio.dart';
 
 setEqualizerEnabled(bool value) async {
   audioHandler.equalizer.setEnabled(value);
-  await antiiqStore.put(BoxKeys().eqEnabledStorage, value);
+  await antiiqStore.put(MainBoxKeys.eqEnabledStorage, value);
 }
 
 getEqualizerEnabled() async {
   final bool enabled =
-      await antiiqStore.get(BoxKeys().eqEnabledStorage, defaultValue: false);
+      await antiiqStore.get(MainBoxKeys.eqEnabledStorage, defaultValue: false);
   audioHandler.equalizer.setEnabled(enabled);
 }
 
 saveBandFreqs() async {
   final params = await audioHandler.equalizer.parameters;
   List<double> bandFreqs = params.bands.map((e) => e.gain).toList();
-  await antiiqStore.put(BoxKeys().bandFrequencyStorage, bandFreqs);
+  await antiiqStore.put(MainBoxKeys.bandFrequencyStorage, bandFreqs);
 }
 
 List bandFreqs = [];
 
 getBandFreqs() async {
   bandFreqs =
-      await antiiqStore.get(BoxKeys().bandFrequencyStorage, defaultValue: []);
+      await antiiqStore.get(MainBoxKeys.bandFrequencyStorage, defaultValue: []);
 }
 
 setBands() async {
@@ -41,7 +41,7 @@ bool bandsSet = false;
 
 updateShuffleMode(bool mode) async {
   await audioHandler.audioPlayer.setShuffleModeEnabled(mode);
-  await antiiqStore.put(BoxKeys().shuffleModeStorage, mode);
+  await antiiqStore.put(MainBoxKeys.shuffleModeStorage, mode);
   if (mode) {
     updateLoopMode(LoopMode.all);
   }
@@ -50,23 +50,23 @@ updateShuffleMode(bool mode) async {
 updateLoopMode(LoopMode mode) async {
   await audioHandler.audioPlayer.setLoopMode(mode);
   if (mode == LoopMode.one) {
-    await antiiqStore.put(BoxKeys().loopModeStorage, "one");
+    await antiiqStore.put(MainBoxKeys.loopModeStorage, "one");
   } else if (mode == LoopMode.all) {
-    await antiiqStore.put(BoxKeys().loopModeStorage, "all");
+    await antiiqStore.put(MainBoxKeys.loopModeStorage, "all");
   } else if (mode == LoopMode.off) {
-    await antiiqStore.put(BoxKeys().loopModeStorage, "off");
+    await antiiqStore.put(MainBoxKeys.loopModeStorage, "off");
   }
 }
 
 getAndSetShuffleMode() async {
   bool shuffleMode =
-      await antiiqStore.get(BoxKeys().shuffleModeStorage, defaultValue: false);
+      await antiiqStore.get(MainBoxKeys.shuffleModeStorage, defaultValue: false);
   await audioHandler.audioPlayer.setShuffleModeEnabled(shuffleMode);
 }
 
 getAndSetLoopMode() async {
   String mode =
-      await antiiqStore.get(BoxKeys().loopModeStorage, defaultValue: "off");
+      await antiiqStore.get(MainBoxKeys.loopModeStorage, defaultValue: "off");
   await setLoopMode(mode);
 }
 

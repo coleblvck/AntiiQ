@@ -21,7 +21,6 @@ class GenreSong extends StatelessWidget {
   });
 
   final PageController controller = PageController();
-  final String selectionList = "album";
   late final List<MediaItem> albumToPlay =
       genre.genreTracks!.map((e) => e.mediaItem!).toList();
 
@@ -31,7 +30,6 @@ class GenreSong extends StatelessWidget {
     return SongCard(
       controller: controller,
       index: index,
-      selectionList: selectionList,
       leading: leading,
       title: title,
       subtitle: subtitle,

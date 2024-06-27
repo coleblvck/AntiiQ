@@ -155,7 +155,6 @@ class _SearchState extends State<Search> {
                       ),
                       leading: getUriImage(thisTrack.mediaItem!.artUri),
                       track: thisTrack,
-                      selectionList: "album",
                       albumToPlay:
                           searchResults.map((e) => e.mediaItem!).toList(),
                       index: index,
