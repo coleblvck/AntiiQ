@@ -1,15 +1,12 @@
 //Flutter Packages
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:flutter/material.dart';
-
-//Audio Service
-import 'package:audio_service/audio_service.dart';
-
-//Flutter Xlider
-import 'package:flutter_xlider/flutter_xlider.dart';
-
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
+//Audio Service
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+//Flutter Xlider
+import 'package:flutter_xlider/flutter_xlider.dart';
 
 class SeekBarBuilder extends StatelessWidget {
   const SeekBarBuilder({

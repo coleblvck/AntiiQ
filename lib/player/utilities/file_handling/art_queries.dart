@@ -1,13 +1,11 @@
 //Dart Packages
 import 'dart:io';
 
-import 'package:flutter/services.dart';
-
-import 'package:on_audio_query/on_audio_query.dart';
-import 'package:mime/mime.dart';
-
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
+import 'package:flutter/services.dart';
+import 'package:mime/mime.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 //Cover Art setup
 

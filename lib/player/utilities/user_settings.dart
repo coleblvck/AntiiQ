@@ -1,12 +1,11 @@
+import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/ui/elements/ui_colours.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/utilities/audio_preferences.dart';
 import 'package:antiiq/player/utilities/platform.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/audio_preferences.dart';
-import 'package:antiiq/player/ui/elements/ui_colours.dart';
 
 class BoxKeys {
   String userTheme = "currentTheme";

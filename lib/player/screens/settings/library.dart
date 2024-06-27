@@ -1,14 +1,15 @@
+import 'dart:io';
+
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/utilities/folder_picker.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:text_scroll/text_scroll.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
-import 'package:antiiq/player/utilities/folder_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:restart_app/restart_app.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class Library extends StatefulWidget {
   const Library({

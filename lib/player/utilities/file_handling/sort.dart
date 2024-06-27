@@ -1,5 +1,5 @@
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/file_handling/lists.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 
 enum AntiiqSortType {
@@ -327,35 +327,6 @@ final List<String> genreTrackListSortTypes = [
   "Duration",
 ];
 
-SortArrangement trackSort = const SortArrangement(
-  currentSort: "Track Name",
-  currentDirection: "Ascending",
-);
-SortArrangement albumSort = const SortArrangement(
-  currentSort: "Album Name",
-  currentDirection: "Ascending",
-);
-SortArrangement artistSort = const SortArrangement(
-  currentSort: "Artist Name",
-  currentDirection: "Ascending",
-);
-SortArrangement genreSort = const SortArrangement(
-  currentSort: "Genre Name",
-  currentDirection: "Ascending",
-);
-SortArrangement albumTracksSort = const SortArrangement(
-  currentSort: "Track Number",
-  currentDirection: "Ascending",
-);
-SortArrangement artistTracksSort = const SortArrangement(
-  currentSort: "Track Name",
-  currentDirection: "Ascending",
-);
-SortArrangement genreTracksSort = const SortArrangement(
-  currentSort: "Track Name",
-  currentDirection: "Ascending",
-);
-
 beginSort(
   String sortType,
   String sortDirection, {
@@ -368,178 +339,112 @@ beginSort(
   bool allGenreTracks = false,
 }) async {
   if (allTracks) {
-    trackSort = SortArrangement(
+    state.music.tracks.sort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
     await sortTracks(
       sortDirections[sortDirection]!,
       sortTypes[sortType]!,
-      currentTrackListSort,
+      state.music.tracks.list,
     );
-    allTracksStream.add(currentTrackListSort);
-    await antiiqStore.put(SortBoxKeys().trackSort, [sortType, sortDirection]);
+    state.music.tracks.updateFlow();
+    await antiiqStore.put(SortBoxKeys.trackSort, [sortType, sortDirection]);
   } else if (allAlbums) {
-    albumSort = SortArrangement(
+    state.music.albums.sort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
     await sortAlbums(
       sortDirections[sortDirection]!,
       sortTypes[sortType]!,
-      currentAlbumListSort,
+      state.music.albums.list,
     );
-    allAlbumsStream.add(currentAlbumListSort);
-    await antiiqStore.put(SortBoxKeys().albumSort, [sortType, sortDirection]);
+    state.music.albums.updateFlow();
+    await antiiqStore.put(SortBoxKeys.albumSort, [sortType, sortDirection]);
   } else if (allArtists) {
-    artistSort = SortArrangement(
+    state.music.artists.sort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
     await sortArtists(
       sortDirections[sortDirection]!,
       sortTypes[sortType]!,
-      currentArtistListSort,
+      state.music.artists.list,
     );
-    allArtistsStream.add(currentArtistListSort);
-    await antiiqStore.put(SortBoxKeys().artistSort, [sortType, sortDirection]);
+    state.music.artists.updateFlow();
+    await antiiqStore.put(SortBoxKeys.artistSort, [sortType, sortDirection]);
   } else if (allGenres) {
-    genreSort = SortArrangement(
+    state.music.genres.sort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
     await sortGenres(
       sortDirections[sortDirection]!,
       sortTypes[sortType]!,
-      currentGenreListSort,
+      state.music.genres.list,
     );
-    allGenresStream.add(currentGenreListSort);
-    await antiiqStore.put(SortBoxKeys().genreSort, [sortType, sortDirection]);
+    state.music.genres.updateFlow();
+    await antiiqStore.put(SortBoxKeys.genreSort, [sortType, sortDirection]);
   } else if (allAlbumTracks) {
-    albumTracksSort = SortArrangement(
+    state.music.albums.tracksSort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
 
-    for (Album album in currentAlbumListSort) {
+    for (Album album in state.music.albums.list) {
       await sortTracks(
         sortDirections[sortDirection]!,
         sortTypes[sortType]!,
         album.albumTracks!,
       );
     }
-    allAlbumsStream.add(currentAlbumListSort);
+    state.music.albums.updateFlow();
     await antiiqStore
-        .put(SortBoxKeys().albumTracksSort, [sortType, sortDirection]);
+        .put(SortBoxKeys.albumTracksSort, [sortType, sortDirection]);
   } else if (allArtistTracks) {
-    artistTracksSort = SortArrangement(
+    state.music.artists.tracksSort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
 
-    for (Artist artist in currentArtistListSort) {
+    for (Artist artist in state.music.artists.list) {
       await sortTracks(
         sortDirections[sortDirection]!,
         sortTypes[sortType]!,
         artist.artistTracks!,
       );
     }
-    allArtistsStream.add(currentArtistListSort);
+    state.music.artists.updateFlow();
     await antiiqStore
-        .put(SortBoxKeys().artistTracksSort, [sortType, sortDirection]);
+        .put(SortBoxKeys.artistTracksSort, [sortType, sortDirection]);
   } else if (allGenreTracks) {
-    genreTracksSort = SortArrangement(
+    state.music.genres.tracksSort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
 
-    for (Genre genre in currentGenreListSort) {
+    for (Genre genre in state.music.genres.list) {
       await sortTracks(
         sortDirections[sortDirection]!,
         sortTypes[sortType]!,
         genre.genreTracks!,
       );
     }
-    allGenresStream.add(currentGenreListSort);
+    state.music.genres.updateFlow();
     await antiiqStore
-        .put(SortBoxKeys().genreTracksSort, [sortType, sortDirection]);
+        .put(SortBoxKeys.genreTracksSort, [sortType, sortDirection]);
   }
 }
 
-initSort() async {
-  List<String> savedTrackSort = await antiiqStore.get(
-    SortBoxKeys().trackSort,
-    defaultValue: <String>[
-      trackSort.currentSort,
-      trackSort.currentDirection,
-    ],
-  );
-  await beginSort(savedTrackSort[0], savedTrackSort[1], allTracks: true);
 
-  List<String> savedAlbumSort = await antiiqStore.get(
-    SortBoxKeys().albumSort,
-    defaultValue: <String>[
-      albumSort.currentSort,
-      albumSort.currentDirection,
-    ],
-  );
-  await beginSort(savedAlbumSort[0], savedAlbumSort[1], allAlbums: true);
-
-  List<String> savedArtistSort = await antiiqStore.get(
-    SortBoxKeys().artistSort,
-    defaultValue: <String>[
-      artistSort.currentSort,
-      artistSort.currentDirection,
-    ],
-  );
-  await beginSort(savedArtistSort[0], savedArtistSort[1], allArtists: true);
-
-  List<String> savedGenreSort = await antiiqStore.get(
-    SortBoxKeys().genreSort,
-    defaultValue: <String>[
-      genreSort.currentSort,
-      genreSort.currentDirection,
-    ],
-  );
-  await beginSort(savedGenreSort[0], savedGenreSort[1], allGenres: true);
-
-  List<String> savedAlbumTracksSort = await antiiqStore.get(
-    SortBoxKeys().albumTracksSort,
-    defaultValue: <String>[
-      albumTracksSort.currentSort,
-      albumTracksSort.currentDirection,
-    ],
-  );
-  await beginSort(savedAlbumTracksSort[0], savedAlbumTracksSort[1],
-      allAlbumTracks: true);
-
-  List<String> savedArtistTracksSort = await antiiqStore.get(
-    SortBoxKeys().artistTracksSort,
-    defaultValue: <String>[
-      artistTracksSort.currentSort,
-      artistTracksSort.currentDirection,
-    ],
-  );
-  await beginSort(savedArtistTracksSort[0], savedArtistTracksSort[1],
-      allArtistTracks: true);
-
-  List<String> savedGenreTracksSort = await antiiqStore.get(
-    SortBoxKeys().genreTracksSort,
-    defaultValue: <String>[
-      genreTracksSort.currentSort,
-      genreTracksSort.currentDirection,
-    ],
-  );
-  await beginSort(savedGenreTracksSort[0], savedGenreTracksSort[1],
-      allGenreTracks: true);
-}
 
 class SortBoxKeys {
-  String trackSort = "songSort";
-  String albumSort = "albumSort";
-  String artistSort = "artistSort";
-  String genreSort = "genreSort";
-  String albumTracksSort = "albumSongsSort";
-  String artistTracksSort = "artistSongsSort";
-  String genreTracksSort = "genreSongsSort";
+  static const String trackSort = "songSort";
+  static const String albumSort = "albumSort";
+  static const String artistSort = "artistSort";
+  static const String genreSort = "genreSort";
+  static const String albumTracksSort = "albumSongsSort";
+  static const String artistTracksSort = "artistSongsSort";
+  static const String genreTracksSort = "genreSongsSort";
 }

@@ -1,21 +1,18 @@
 import 'dart:io';
 
-import 'package:antiiq/player/utilities/audio_preferences.dart';
-import 'package:audio_service/audio_service.dart';
-import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
-
-import 'package:text_scroll/text_scroll.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
-
-import 'package:flutter_sliding_box/flutter_sliding_box.dart';
 import 'package:antiiq/player/global_variables.dart';
-
+import 'package:antiiq/player/screens/selection_actions.dart';
 //Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/widgets/seekbar.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
-import 'package:antiiq/player/screens/selection_actions.dart';
+import 'package:antiiq/player/utilities/audio_preferences.dart';
+import 'package:antiiq/player/widgets/seekbar.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_sliding_box/flutter_sliding_box.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class NowPlaying extends StatelessWidget {
   final double pageHeight;

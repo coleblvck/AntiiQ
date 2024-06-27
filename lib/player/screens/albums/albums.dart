@@ -1,21 +1,14 @@
-/*
-
-This Renders the screen for Album songs
-
-*/
-
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:antiiq/player/utilities/file_handling/lists.dart';
-import 'package:antiiq/player/utilities/file_handling/sort.dart';
-import 'package:flutter/material.dart';
-import 'package:text_scroll/text_scroll.dart';
-
+import 'package:antiiq/player/global_variables.dart';
 //Antiiq Packages
 import 'package:antiiq/player/screens/albums/album.dart';
-import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/widgets/list_header.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
+import 'package:antiiq/player/widgets/list_header.dart';
+import 'package:flutter/material.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class AlbumsGrid extends StatelessWidget {
   const AlbumsGrid({
@@ -34,7 +27,7 @@ class AlbumsGrid extends StatelessWidget {
         ),
         ListHeader(
           headerTitle: headerTitle,
-          listToCount: currentAlbumListSort,
+          listToCount: state.music.albums.list,
           listToShuffle: const [],
           sortList: "allAlbums",
           availableSortTypes: albumListSortTypes,
@@ -49,9 +42,9 @@ class AlbumsGrid extends StatelessWidget {
             thickness: 18,
             radius: const Radius.circular(5),
             child: StreamBuilder<List<Album>>(
-              stream: allAlbumsStream.stream,
+              stream: state.music.albums.flow.stream,
               builder: (context, snapshot) {
-                final List<Album> currentAlbumStream = snapshot.data ?? currentAlbumListSort;
+                final List<Album> currentAlbumStream = snapshot.data ?? state.music.albums.list;
                 return GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2),

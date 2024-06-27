@@ -1,7 +1,6 @@
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:flutter/material.dart';
-
 import 'package:antiiq/player/widgets/song_cards/song_card.dart';
+import 'package:flutter/material.dart';
 
 class SongItem extends StatelessWidget {
   final Widget title;

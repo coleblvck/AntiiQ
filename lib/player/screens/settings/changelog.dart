@@ -1,8 +1,8 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/settings/changelog_data.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
 
 class Changelog extends StatelessWidget {
   const Changelog({

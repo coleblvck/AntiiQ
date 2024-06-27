@@ -1,14 +1,11 @@
-import 'package:antiiq/player/utilities/file_handling/favourites.dart';
-import 'package:antiiq/player/utilities/file_handling/global_selection.dart';
-import 'package:antiiq/player/utilities/file_handling/lists.dart';
+import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/utilities/file_handling/art_queries.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:antiiq/player/utilities/file_handling/sort.dart' show initSort;
 import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
 import 'package:antiiq/player/utilities/queue_state.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/file_handling/art_queries.dart';
 
 String tracksStorage = "Tracks";
 
@@ -19,9 +16,7 @@ queryAndSort() async {
   await getGenres();
   await getPlaylistsfromStore();
   await initQueueState();
-  await initGlobalSelection();
-  await initFavourites();
-  await initSort();
+  await state.music.init();
 
   dataIsInitialized = true;
   await antiiqStore.put("dataInit", true);
@@ -46,9 +41,7 @@ getAndSortSongs() async {
       sortedSongs.add(track);
     }
   }
-
-  allTracks[TrackSortTypes().alphabetical] = sortedSongs;
-  currentTrackListSort = sortedSongs;
+  state.music.tracks.list = sortedSongs;
 }
 
 getAlbums() async {
@@ -61,7 +54,7 @@ getAlbums() async {
   for (AlbumModel album in albumSortQuery) {
     albumSortAlbums[album.id] = [];
   }
-  for (Track track in currentTrackListSort) {
+  for (Track track in state.music.tracks.list) {
     albumSortAlbums[track.trackData!.albumId]?.add(track);
   }
   for (List<Track> albumTracks in albumSortAlbums.values) {
@@ -82,8 +75,7 @@ getAlbums() async {
       sortedAlbums.add(thisAlbum);
     }
   }
-  allAlbums[AlbumSortTypes().alphabetical] = sortedAlbums;
-  currentAlbumListSort = sortedAlbums;
+  state.music.albums.list = sortedAlbums;
   //Progress reset
   loadingMessage = "Loading Library";
   libraryLoadTotal = 1;
@@ -100,7 +92,7 @@ getArtists() async {
   for (ArtistModel artist in artistSortQuery) {
     artistSortTracks[artist.id] = [];
   }
-  for (Track track in currentTrackListSort) {
+  for (Track track in state.music.tracks.list) {
     artistSortTracks[track.trackData!.artistId]?.add(track);
   }
   for (List<Track> artistTracks in artistSortTracks.values) {
@@ -117,8 +109,7 @@ getArtists() async {
       sortedArtists.add(thisArtist);
     }
   }
-  allArtists[ArtistSortTypes().alphabetical] = sortedArtists;
-  currentArtistListSort = sortedArtists;
+  state.music.artists.list = sortedArtists;
   //Progress reset
   loadingMessage = "Loading Library";
   libraryLoadTotal = 1;
@@ -136,7 +127,7 @@ getGenres() async {
     genreSortTracks[genre.genre] = [];
   }
   genreSortTracks["Unknown Genre"] = [];
-  for (Track track in currentTrackListSort) {
+  for (Track track in state.music.tracks.list) {
     genreSortTracks[track.trackData!.genre]?.add(track);
   }
   for (List<Track> genreTracks in genreSortTracks.values) {
@@ -151,8 +142,7 @@ getGenres() async {
       sortedGenres.add(thisGenre);
     }
   }
-  allGenres[GenreSortTypes().alphabetical] = sortedGenres;
-  currentGenreListSort = sortedGenres;
+  state.music.genres.list = sortedGenres;
   //Progress reset
   loadingMessage = "Loading Library";
   libraryLoadTotal = 1;

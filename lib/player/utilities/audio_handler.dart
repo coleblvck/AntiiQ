@@ -1,17 +1,15 @@
 //Dart Packages
 import 'dart:async';
 
-//Audio Handler
-import 'package:antiiq/player/utilities/queue_state.dart';
-import 'package:audio_service/audio_service.dart';
-
-//Just Audio
-import 'package:just_audio/just_audio.dart';
-
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/file_handling/lists.dart';
+//Audio Handler
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/audio_preferences.dart';
+import 'package:antiiq/player/utilities/queue_state.dart';
+import 'package:audio_service/audio_service.dart';
+//Just Audio
+import 'package:just_audio/just_audio.dart';
 
 //Audio Handler
 class AntiiqAudioHandler extends BaseAudioHandler
@@ -146,7 +144,7 @@ class AntiiqAudioHandler extends BaseAudioHandler
     if (antiiqQueue.isEmpty) {
       if (queueState.isEmpty) {
         await updateQueue(
-            currentTrackListSort.map((e) => e.mediaItem!).toList());
+            state.music.tracks.list.map((e) => e.mediaItem!).toList());
       } else {
         await updateQueue(queueState);
       }

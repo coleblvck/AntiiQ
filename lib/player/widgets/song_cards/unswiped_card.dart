@@ -1,13 +1,11 @@
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
-import 'package:antiiq/player/utilities/file_handling/global_selection.dart';
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:audio_service/audio_service.dart';
-import 'package:flutter/material.dart';
-
+import 'package:antiiq/player/state/antiiq_state.dart';
 //Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 
 class UnswipedCard extends StatelessWidget {
@@ -33,17 +31,17 @@ class UnswipedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Track>>(
-        stream: globalSelectionStream.stream,
+        stream: state.music.selection.flow.stream,
         builder: (context, snapshot) {
           final List<Track> selectionSituation =
-              snapshot.data ?? globalSelection;
+              snapshot.data ?? state.music.selection.list;
           return GestureDetector(
             onTap: () {
               playTrack(index, selectionList, albumToPlay: albumToPlay);
             },
             onLongPress: () {
               if (selectionSituation.isEmpty) {
-                globalSelectOrDeselect(track);
+                state.music.selection.selectOrDeselect(track);
               }
             },
             child: CustomCard(
@@ -80,7 +78,7 @@ class UnswipedCard extends StatelessWidget {
                               fillColor: WidgetStatePropertyAll(AntiiQTheme.of(context).colorScheme.surface),
                               value: selectionSituation.contains(track),
                               onChanged: (value) {
-                                globalSelectOrDeselect(track);
+                                state.music.selection.selectOrDeselect(track);
                               },
                             ),
                           )

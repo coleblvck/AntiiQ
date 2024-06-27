@@ -1,9 +1,8 @@
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:flutter/material.dart';
-
 //Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:flutter/material.dart';
 
 
 

@@ -1,8 +1,7 @@
 //Icons
-import 'package:remix_icon_icons/remix_icon_icons.dart';
-
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
+import 'package:remix_icon_icons/remix_icon_icons.dart';
 
 dashboardItems(context) => {
       "songs": {

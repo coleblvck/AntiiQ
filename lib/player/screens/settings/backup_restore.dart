@@ -1,11 +1,12 @@
-import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/file_handling/backup_and_restore.dart';
-import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+
+import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/utilities/file_handling/backup_and_restore.dart';
 import 'package:antiiq/player/utilities/folder_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:remix_icon_icons/remix_icon_icons.dart';
 
 class BackupRestore extends StatefulWidget {
   const BackupRestore({

@@ -1,14 +1,13 @@
 //Flutter Packages
 import 'package:antiiq/player/screens/selection_actions.dart';
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
-import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
-
 //Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
 import 'package:antiiq/player/widgets/song_cards/swiped_card.dart';
+import 'package:flutter/material.dart';
+import 'package:remix_icon_icons/remix_icon_icons.dart';
 
 class PlaylistSong extends StatelessWidget {
   final Widget title;

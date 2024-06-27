@@ -6,21 +6,17 @@ Setup Song Library:
 
 */
 
-//Flutter Packages
-import 'package:antiiq/player/utilities/file_handling/query_and_sort.dart';
-import 'package:antiiq/player/utilities/user_settings.dart';
-
-//Path Provider
-import 'package:path_provider/path_provider.dart';
-
-//Hive
-import 'package:hive_flutter/hive_flutter.dart';
-
-import 'package:permission_handler/permission_handler.dart';
-
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/utilities/file_handling/art_queries.dart';
+//Flutter Packages
+import 'package:antiiq/player/utilities/file_handling/query_and_sort.dart';
+import 'package:antiiq/player/utilities/user_settings.dart';
+//Hive
+import 'package:hive_flutter/hive_flutter.dart';
+//Path Provider
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Boxes {
   String mainBox = "antiiqBox";

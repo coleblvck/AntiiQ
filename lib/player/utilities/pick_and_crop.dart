@@ -1,6 +1,6 @@
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 pickAndCrop() async {
   final ImagePicker picker = ImagePicker();

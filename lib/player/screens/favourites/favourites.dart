@@ -4,16 +4,16 @@ This Renders the screen for all songs
 
 */
 
-import 'package:antiiq/player/screens/favourites/favourites_song.dart';
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:flutter/material.dart';
-import 'package:text_scroll/text_scroll.dart';
-
 //Antiiq
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/widgets/list_header.dart';
+import 'package:antiiq/player/screens/favourites/favourites_song.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
+import 'package:antiiq/player/widgets/list_header.dart';
+import 'package:flutter/material.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class FavouritesList extends StatelessWidget {
   const FavouritesList({
@@ -25,9 +25,9 @@ class FavouritesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Track>>(
-        stream: favouritesStream.stream,
+        stream: state.music.favourites.flow.stream,
         builder: (context, snapshot) {
-          final List<Track> favouritesSituation = snapshot.data ?? favourites;
+          final List<Track> favouritesSituation = snapshot.data ?? state.music.favourites.list;
           return Column(
             children: [
               Divider(

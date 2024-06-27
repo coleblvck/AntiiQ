@@ -4,17 +4,16 @@ This Renders the screen for Album songs
 
 */
 
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:antiiq/player/utilities/file_handling/lists.dart';
-import 'package:antiiq/player/utilities/file_handling/sort.dart';
-import 'package:flutter/material.dart';
-import 'package:text_scroll/text_scroll.dart';
-
+import 'package:antiiq/player/global_variables.dart';
 //Antiiq Packages
 import 'package:antiiq/player/screens/genres/genre.dart';
-import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
+import 'package:flutter/material.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class GenresGrid extends StatelessWidget {
   const GenresGrid({
@@ -33,7 +32,7 @@ class GenresGrid extends StatelessWidget {
         ),
         ListHeader(
           headerTitle: headerTitle,
-          listToCount: currentGenreListSort,
+          listToCount: state.music.genres.list,
           listToShuffle: const [],
           sortList: "allGenres",
           availableSortTypes: genreListSortTypes,
@@ -48,10 +47,10 @@ class GenresGrid extends StatelessWidget {
             thickness: 18,
             radius: const Radius.circular(5),
             child: StreamBuilder<List<Genre>>(
-                stream: allGenresStream.stream,
+                stream: state.music.genres.flow.stream,
                 builder: (context, snapshot) {
                   final List<Genre> currentGenreStream =
-                      snapshot.data ?? currentGenreListSort;
+                      snapshot.data ?? state.music.genres.list;
                   return GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(

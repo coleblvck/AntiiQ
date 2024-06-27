@@ -4,18 +4,17 @@ This Renders the screen for all songs
 
 */
 
+import 'package:antiiq/player/global_variables.dart';
+//Antiiq Packages
+import 'package:antiiq/player/screens/songs/song.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
+import 'package:antiiq/player/widgets/image_widgets.dart';
+import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:flutter/material.dart';
 import 'package:text_scroll/text_scroll.dart';
-
-//Antiiq Packages
-import 'package:antiiq/player/screens/songs/song.dart';
-import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/widgets/list_header.dart';
-import 'package:antiiq/player/widgets/image_widgets.dart';
-import 'package:antiiq/player/utilities/file_handling/lists.dart';
 
 class SongsList extends StatelessWidget {
   const SongsList({
@@ -34,8 +33,8 @@ class SongsList extends StatelessWidget {
         ),
         ListHeader(
           headerTitle: headerTitle,
-          listToCount: currentTrackListSort,
-          listToShuffle: currentTrackListSort,
+          listToCount: state.music.tracks.list,
+          listToShuffle: state.music.tracks.list,
           sortList: "allTracks",
           availableSortTypes: trackListSortTypes,
         ),
@@ -49,9 +48,9 @@ class SongsList extends StatelessWidget {
             thickness: 18,
             radius: const Radius.circular(5),
             child: StreamBuilder<List<Track>>(
-              stream: allTracksStream.stream,
+              stream: state.music.tracks.flow.stream,
               builder: (context, snapshot) {
-                final List<Track> allStreamTracks = snapshot.data ?? currentTrackListSort;
+                final List<Track> allStreamTracks = snapshot.data ?? state.music.tracks.list;
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   primary: true,

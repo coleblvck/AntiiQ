@@ -1,9 +1,8 @@
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:flutter/material.dart';
-
 import 'package:antiiq/player/widgets/song_cards/swiped_card.dart';
 import 'package:antiiq/player/widgets/song_cards/unswiped_card.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
 
 
 

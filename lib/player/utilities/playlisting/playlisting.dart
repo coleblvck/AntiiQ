@@ -1,8 +1,9 @@
-import 'package:antiiq/player/utilities/file_handling/lists.dart';
-import 'package:flutter/services.dart';
-import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'dart:io';
+
+import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:flutter/services.dart';
 
 class PlayList {
   int? playlistId;
@@ -99,7 +100,7 @@ getPlaylistsfromStore() async {
 Future<List<Track>> getPlaylistTracks(List<int> ids) async {
   List<Track> playlistTracks = [];
   for (int id in ids) {
-    for (Track track in currentTrackListSort) {
+    for (Track track in state.music.tracks.list) {
       if (track.trackData!.trackId == id) {
         playlistTracks.add(track);
       }

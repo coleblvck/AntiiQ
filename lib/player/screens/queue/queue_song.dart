@@ -1,10 +1,9 @@
 //Flutter Packages
-import 'package:audio_service/audio_service.dart';
-import 'package:flutter/material.dart';
-
 //Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
 
 class QueueSongItem extends StatelessWidget {
   final Widget title;

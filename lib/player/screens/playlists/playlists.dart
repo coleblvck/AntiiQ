@@ -1,14 +1,14 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/playlists/playlist.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/pick_and_crop.dart';
+import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
-import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class Playlists extends StatefulWidget {
@@ -45,7 +45,7 @@ class _PlaylistsState extends State<Playlists> {
           search(term) {
             searchResults = [];
             if (term != "") {
-              for (Track track in currentTrackListSort) {
+              for (Track track in state.music.tracks.list) {
                 if (track.trackData!.trackName!
                     .toLowerCase()
                     .contains(term.toLowerCase())) {

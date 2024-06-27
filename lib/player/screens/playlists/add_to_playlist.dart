@@ -1,13 +1,13 @@
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
-import 'package:flutter/material.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:text_scroll/text_scroll.dart';
-import 'package:antiiq/player/widgets/image_widgets.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
-import 'package:flutter/services.dart';
 import 'package:antiiq/player/utilities/pick_and_crop.dart';
+import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
+import 'package:antiiq/player/widgets/image_widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 addSelectionToPlaylistDialog(context, List<Track> tracks) {
   final TextEditingController playlistTitleController = TextEditingController();

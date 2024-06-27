@@ -1,24 +1,24 @@
 //Flutter Packages
 
+import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/screens/main_screen/main_box.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
+//Antiiq Packages
+import 'package:antiiq/player/utilities/audio_handler.dart';
 import 'package:antiiq/player/utilities/file_handling/intent.dart';
+import 'package:antiiq/player/utilities/initialize.dart';
 import 'package:antiiq/player/utilities/platform.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
+//Audio Service
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-//Audio Service
-import 'package:audio_service/audio_service.dart';
-
-//Antiiq Packages
-import 'package:antiiq/player/utilities/audio_handler.dart';
-import 'package:antiiq/player/ui/elements/ui_colours.dart';
-import 'package:antiiq/player/screens/main_screen/main_box.dart';
-import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/initialize.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  state = AntiiqState();
   await getDeviceInfo();
   await initialLoad();
   await SystemChrome.setPreferredOrientations(

@@ -1,14 +1,14 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/albums/album.dart';
 import 'package:antiiq/player/screens/artists/artist.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:antiiq/player/widgets/song_cards/song_card.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:antiiq/player/utilities/file_handling/lists.dart';
 import 'package:text_scroll/text_scroll.dart';
-import 'package:antiiq/player/widgets/image_widgets.dart';
 
 class Search extends StatefulWidget {
   const Search({
@@ -30,7 +30,7 @@ class _SearchState extends State<Search> {
     artistResults = [];
     if (term != "") {
       String normalizedTerm = term.toLowerCase();
-      for (Track track in currentTrackListSort) {
+      for (Track track in state.music.tracks.list) {
         if (track.trackData!.trackName!
                 .toLowerCase()
                 .contains(normalizedTerm) ||
@@ -43,13 +43,13 @@ class _SearchState extends State<Search> {
           searchResults.add(track);
         }
       }
-      for (Album album in currentAlbumListSort) {
+      for (Album album in state.music.albums.list) {
         if (album.albumName!.toLowerCase().contains(normalizedTerm)) {
           albumResults.add(album);
         }
       }
 
-      for (Artist artist in currentArtistListSort) {
+      for (Artist artist in state.music.artists.list) {
         if (artist.artistName!.toLowerCase().contains(normalizedTerm)) {
           artistResults.add(artist);
         }

@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:text_scroll/text_scroll.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
-import 'package:audio_service/audio_service.dart';
-
+import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/queue/queue_song.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
-import 'package:antiiq/player/global_variables.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 showQueue(context) {
   showModalBottomSheet(

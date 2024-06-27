@@ -1,17 +1,16 @@
 //Audio Service
 import 'dart:io';
-import 'package:just_audio/just_audio.dart';
-import 'package:path/path.dart';
-
-import 'package:audio_service/audio_service.dart';
-import 'package:audiotags/audiotags.dart';
-import 'package:uri_to_file/uri_to_file.dart';
 
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/file_handling/lists.dart';
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/audio_preferences.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:audiotags/audiotags.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:path/path.dart';
+import 'package:uri_to_file/uri_to_file.dart';
 
 playTrack(int index, String list, {albumToPlay}) async {
   if (list == "songs") {
@@ -28,7 +27,7 @@ playTrack(int index, String list, {albumToPlay}) async {
 
 playFromSongs(int index) async {
   await goToAudioService(
-      index, currentTrackListSort.map((e) => e.mediaItem!).toList());
+      index, state.music.tracks.list.map((e) => e.mediaItem!).toList());
   await audioHandler.play();
 }
 

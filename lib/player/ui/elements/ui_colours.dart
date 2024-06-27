@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:antiiq/player/global_variables.dart';
+import 'package:flutter/material.dart';
 
 class AntiiQColorScheme {
   const AntiiQColorScheme({

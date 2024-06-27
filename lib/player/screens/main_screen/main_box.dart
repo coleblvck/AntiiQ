@@ -1,22 +1,19 @@
 import 'dart:async';
 
-import 'package:antiiq/player/ui/elements/ui_colours.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'package:flutter_sliding_box/flutter_sliding_box.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
-import 'package:remix_icon_icons/remix_icon_icons.dart';
-
-import 'package:antiiq/player/screens/main_screen/main_backdrop.dart';
-import 'package:antiiq/player/widgets/mini_player.dart';
-import 'package:antiiq/player/screens/now_playing/now_playing.dart';
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/initialize.dart';
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/screens/main_screen/main_backdrop.dart';
+import 'package:antiiq/player/screens/now_playing/now_playing.dart';
 import 'package:antiiq/player/screens/queue/queue.dart';
 import 'package:antiiq/player/screens/settings/settings.dart';
+import 'package:antiiq/player/ui/elements/ui_colours.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/utilities/initialize.dart';
+import 'package:antiiq/player/widgets/mini_player.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_sliding_box/flutter_sliding_box.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:remix_icon_icons/remix_icon_icons.dart';
 
 class MainBox extends StatefulWidget {
   const MainBox({

@@ -1,12 +1,12 @@
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/ui/elements/ui_colours.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/platform.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
-import 'package:flutter/material.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:restart_app/restart_app.dart';
 
 class UserInterface extends StatefulWidget {

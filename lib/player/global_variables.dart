@@ -10,20 +10,15 @@ import 'dart:io';
 
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:flutter/material.dart';
-
-//On Audio Query
-import 'package:on_audio_query/on_audio_query.dart';
-
-//Audio Service
-import 'package:audio_service/audio_service.dart';
-
-//Hive
-import 'package:hive_flutter/hive_flutter.dart';
-
 //Antiiq Packages
 import 'package:antiiq/player/utilities/audio_handler.dart';
-import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+//Audio Service
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+//Hive
+import 'package:hive_flutter/hive_flutter.dart';
+//On Audio Query
+import 'package:on_audio_query/on_audio_query.dart';
 
 late AntiiqAudioHandler audioHandler;
 PageController mainPageController = PageController();
@@ -101,12 +96,7 @@ RoundedRectangleBorder bottomSheetShape = RoundedRectangleBorder(
   ),
 );
 
-List<Track> globalSelection = [];
-StreamController<List<Track>> globalSelectionStream =
-    StreamController.broadcast();
 
-List<Track> favourites = [];
-StreamController<List<Track>> favouritesStream = StreamController.broadcast();
 
 //User Settings Related Variables
 List<MediaItem> queueState = [];

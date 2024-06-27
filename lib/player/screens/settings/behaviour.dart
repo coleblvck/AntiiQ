@@ -1,8 +1,8 @@
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:restart_app/restart_app.dart';
 
 class Behaviour extends StatefulWidget {

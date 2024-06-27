@@ -1,18 +1,17 @@
 //Flutter Packages
+import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/screens/albums/albums.dart';
 import 'package:antiiq/player/screens/artists/artists.dart';
+//Antiiq Packages
+import 'package:antiiq/player/screens/dashboard/dashboard.dart';
 import 'package:antiiq/player/screens/equalizer/equalizer.dart';
 import 'package:antiiq/player/screens/favourites/favourites.dart';
 import 'package:antiiq/player/screens/genres/genres.dart';
 import 'package:antiiq/player/screens/playlists/playlists.dart';
 import 'package:antiiq/player/screens/search/search.dart';
 import 'package:antiiq/player/screens/selection/selection.dart';
-import 'package:flutter/material.dart';
-
-//Antiiq Packages
-import 'package:antiiq/player/screens/dashboard/dashboard.dart';
 import 'package:antiiq/player/screens/songs/songs.dart';
-import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/screens/albums/albums.dart';
+import 'package:flutter/material.dart';
 
 Widget mainBackdrop() {
   return Padding(
