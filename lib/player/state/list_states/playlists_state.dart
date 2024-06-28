@@ -1,16 +1,16 @@
 import 'dart:io';
 
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/list_states/tracks_state.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:flutter/services.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
 
 class PlaylistsState {
-  List<PlayList> all = [];
+  final PlaylistStore store = PlaylistStore();
+  List<PlayList> list = [];
 
-  createPlaylist(String name, {List<Track> tracks = const [], art}) async {
+  create(String name, {List<Track> tracks = const [], art}) async {
     final int id = DateTime.now().millisecond;
     await PlayListArtUtils.setPlaylistArt(id, art: art);
     PlayList newPlaylist = PlayList(
@@ -19,21 +19,21 @@ class PlaylistsState {
       playlistTracks: tracks,
       playlistArt: PlayListArtUtils.getPlaylistArtPath(id),
     );
-    all.add(newPlaylist);
-    await savePlaylist(id);
+    list.add(newPlaylist);
+    await save(id);
   }
 
-  deletePlaylist(PlayList playlist) async {
+  delete(PlayList playlist) async {
     final int id = playlist.playlistId!;
-    await playlistStore.delete(id);
-    await playlistNameStore.delete(id);
-    all.remove(playlist);
+    await store.dataStore.delete(id);
+    await store.nameStore.delete(id);
+    list.remove(playlist);
     PlayListArtUtils.deletePlaylistArt(id);
   }
 
-  updatePlaylist(int id, {name, art}) async {
+  update(int id, {name, art}) async {
     PlayList thisPlaylist =
-    all.firstWhere((playlist) => playlist.playlistId == id);
+        list.firstWhere((playlist) => playlist.playlistId == id);
 
     if (name != null && name != "") {
       thisPlaylist.playlistName = name;
@@ -42,52 +42,52 @@ class PlaylistsState {
     if (art != null) {
       await PlayListArtUtils.setPlaylistArt(id, art: art);
     }
-    await savePlaylist(id);
+    await save(id);
   }
 
-  addToPlaylist(int id, List<Track> tracks) async {
+  addTracks(int id, List<Track> tracks) async {
     PlayList thisPlaylist =
-    all.firstWhere((playlist) => playlist.playlistId == id);
+        list.firstWhere((playlist) => playlist.playlistId == id);
     thisPlaylist.playlistTracks = thisPlaylist.playlistTracks! + tracks;
-    await savePlaylist(id);
+    await save(id);
   }
 
-  removeFromPlaylist(int id, int index) async {
+  removeTrack(int id, int index) async {
     PlayList thisPlaylist =
-    all.firstWhere((playlist) => playlist.playlistId == id);
+        list.firstWhere((playlist) => playlist.playlistId == id);
     thisPlaylist.playlistTracks!.removeAt(index);
-    await savePlaylist(id);
+    await save(id);
   }
 
-  savePlaylist(int id) async {
+  save(int id) async {
     PlayList thisPlaylist =
-    all.firstWhere((playlist) => playlist.playlistId == id);
+        list.firstWhere((playlist) => playlist.playlistId == id);
     List<int> playlistTracks = [];
     if (thisPlaylist.playlistTracks!.isNotEmpty) {
       playlistTracks = thisPlaylist.playlistTracks!
           .map((track) => track.trackData!.trackId!)
           .toList();
     }
-    await playlistStore.put(id, playlistTracks);
-    await playlistNameStore.put(id, thisPlaylist.playlistName!);
+    await store.dataStore.put(id, playlistTracks);
+    await store.nameStore.put(id, thisPlaylist.playlistName!);
   }
 
-  init(TracksState tracks) async {
-    all = [];
-    List<int> playlistIds = playlistStore.keys.toList().cast();
+  init(TracksState allTracks) async {
+    list = [];
+    List<int> playlistIds = store.dataStore.keys.toList().cast();
     for (int playlistId in playlistIds) {
-      List<int> playlistTrackIds = playlistStore.get(playlistId)!;
+      List<int> playlistTrackIds = store.dataStore.get(playlistId)!;
       final PlayList thisPlaylist = PlayList(
         playlistId: playlistId,
-        playlistName: playlistNameStore.get(playlistId),
+        playlistName: store.nameStore.get(playlistId),
         playlistArt: PlayListArtUtils.getPlaylistArtPath(playlistId),
-        playlistTracks: await _initPlaylistTracks(playlistTrackIds, tracks),
+        playlistTracks: await _initTracks(playlistTrackIds, allTracks),
       );
-      all.add(thisPlaylist);
+      list.add(thisPlaylist);
     }
   }
 
-  Future<List<Track>> _initPlaylistTracks(List<int> ids, TracksState allTracks) async {
+  Future<List<Track>> _initTracks(List<int> ids, TracksState allTracks) async {
     List<Track> playlistTracks = [];
     for (int id in ids) {
       for (Track track in allTracks.list) {
@@ -99,6 +99,10 @@ class PlaylistsState {
     return playlistTracks;
   }
 }
+
+//
+//
+//
 
 class PlayList {
   int? playlistId;
@@ -113,7 +117,13 @@ class PlayList {
   });
 }
 
+//
+//
+//
+
 class PlayListArtUtils {
+  static String pathKey = "/coverarts/playlists/";
+
   static Future<Uint8List> defaultPlaylistArt() async {
     final art = await rootBundle.load(placeholderAssetImage);
     Uint8List artWork = art.buffer.asUint8List();
@@ -121,7 +131,7 @@ class PlayListArtUtils {
   }
 
   static setPlaylistArt(int id, {art}) async {
-    final artFilePath = "${antiiqDirectory.path}/coverarts/playlists/$id.jpeg";
+    final artFilePath = "${antiiqDirectory.path}$pathKey$id.jpeg";
     Uint8List? artWork = art ?? await defaultPlaylistArt();
 
     File artFile = await File(artFilePath).create(recursive: true);
@@ -135,11 +145,20 @@ class PlayListArtUtils {
   }
 
   static deletePlaylistArt(int id) async {
-    await File("${antiiqDirectory.path}/coverarts/playlists/$id.jpeg").delete();
+    await File("${antiiqDirectory.path}$pathKey$id.jpeg").delete();
   }
 
   static Uri getPlaylistArtPath(int id) {
-    final artFilePath = "${antiiqDirectory.path}/coverarts/playlists/$id.jpeg";
+    final artFilePath = "${antiiqDirectory.path}$pathKey$id.jpeg";
     return Uri.file(artFilePath);
   }
+}
+
+//
+//
+//
+
+class PlaylistStore {
+  late Box<List<int>> dataStore;
+  late Box<String> nameStore;
 }

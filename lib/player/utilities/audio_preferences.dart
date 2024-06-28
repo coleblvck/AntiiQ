@@ -13,25 +13,25 @@ getEqualizerEnabled() async {
   audioHandler.equalizer.setEnabled(enabled);
 }
 
-saveBandFreqs() async {
+saveBandFrequencies() async {
   final params = await audioHandler.equalizer.parameters;
-  List<double> bandFreqs = params.bands.map((e) => e.gain).toList();
-  await antiiqStore.put(MainBoxKeys.bandFrequencyStorage, bandFreqs);
+  List<double> frequencies = params.bands.map((e) => e.gain).toList();
+  await antiiqStore.put(MainBoxKeys.bandFrequencyStorage, frequencies);
 }
 
-List bandFreqs = [];
+List bandFrequencies = [];
 
-getBandFreqs() async {
-  bandFreqs =
+getBandFrequencies() async {
+  bandFrequencies =
       await antiiqStore.get(MainBoxKeys.bandFrequencyStorage, defaultValue: []);
 }
 
 setBands() async {
   final params = await audioHandler.equalizer.parameters;
   List<AndroidEqualizerBand> bands = params.bands;
-  if (bandFreqs.isNotEmpty) {
+  if (bandFrequencies.isNotEmpty) {
     for (var band in bands) {
-      band.setGain(bandFreqs[bands.indexOf(band)]);
+      band.setGain(bandFrequencies[bands.indexOf(band)]);
     }
   }
   bandsSet = true;
@@ -59,8 +59,8 @@ updateLoopMode(LoopMode mode) async {
 }
 
 getAndSetShuffleMode() async {
-  bool shuffleMode =
-      await antiiqStore.get(MainBoxKeys.shuffleModeStorage, defaultValue: false);
+  bool shuffleMode = await antiiqStore.get(MainBoxKeys.shuffleModeStorage,
+      defaultValue: false);
   await audioHandler.audioPlayer.setShuffleModeEnabled(shuffleMode);
 }
 

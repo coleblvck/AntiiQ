@@ -1,4 +1,5 @@
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/base_library_init.dart';
 import 'package:antiiq/player/state/list_states/albums_state.dart';
 import 'package:antiiq/player/state/list_states/artists_state.dart';
 import 'package:antiiq/player/state/list_states/genres_state.dart';
@@ -9,6 +10,7 @@ import 'package:antiiq/player/utilities/file_handling/sort.dart';
 class MusicInit {
   run(MusicState music) async {
     final TracksState tracks = music.tracks;
+    await _baseLibraryInit.run(music);
     await music.playlists.init(tracks);
     await music.queue.init(tracks);
     await music.selection.init(tracks);
@@ -16,6 +18,7 @@ class MusicInit {
     await _initSort(music);
   }
 
+  final BaseLibraryInit _baseLibraryInit = BaseLibraryInit();
 
   _initSort(MusicState music) async {
     final TracksState tracks = music.tracks;

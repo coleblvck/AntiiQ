@@ -301,7 +301,7 @@ class _EqualizerState extends State<Equalizer> {
                               band.setGain(
                                 lowerValue / 100,
                               ),
-                              saveBandFreqs(),
+                              saveBandFrequencies(),
                             },
                           ),
                         );

@@ -28,10 +28,7 @@ late Directory antiiqDirectory;
 
 //Cache
 late Box antiiqStore;
-late Box<List<int>> playlistStore;
-late Box<String> playlistNameStore;
 
-late bool dataIsInitialized;
 
 //Page Indexes Object
 var mainPageIndexes = {
@@ -73,10 +70,7 @@ Stream<PlaybackState> currentPlaybackState() =>
 
 
 final OnAudioQuery audioQuery = OnAudioQuery();
-// Indicate if application has permission to the library.
-bool hasPermissions = false;
-bool furtherPermissionPermanentlyDenied = false;
-bool furtherPermissionGranted = false;
+
 
 //Variables to show library load progress
 int libraryLoadTotal = 1;

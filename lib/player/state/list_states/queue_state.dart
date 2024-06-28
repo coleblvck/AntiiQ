@@ -1,10 +1,10 @@
 import 'dart:async';
+
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/list_states/tracks_state.dart';
-import 'package:antiiq/player/state/music_state.dart';
-import 'package:audio_service/audio_service.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
+import 'package:audio_service/audio_service.dart';
 
 class QueueState {
   List<MediaItem> initialState = [];

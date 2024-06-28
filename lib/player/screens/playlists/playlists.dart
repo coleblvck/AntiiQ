@@ -1,10 +1,10 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/playlists/playlist.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/state/list_states/playlists_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/pick_and_crop.dart';
-import 'package:antiiq/player/state/list_states/playlists_state.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -251,7 +251,7 @@ class _PlaylistsState extends State<Playlists> {
   playlistCreate() async {
     if (playlistTitleController.text != "") {
       final String name = playlistTitleController.text;
-      await state.music.playlists.createPlaylist(name, tracks: selectedTracks, art: art);
+      await state.music.playlists.create(name, tracks: selectedTracks, art: art);
       playlistTitleController.clear();
       playlistSearchController.clear();
       selectedTracks = [];
@@ -286,9 +286,9 @@ class _PlaylistsState extends State<Playlists> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
             ),
-            itemCount: state.music.playlists.all.length,
+            itemCount: state.music.playlists.list.length,
             itemBuilder: (context, index) {
-              final PlayList thisPlaylist = state.music.playlists.all[index];
+              final PlayList thisPlaylist = state.music.playlists.list[index];
               return PlaylistItem(
                 thisPlaylist: thisPlaylist,
                 mainPageStateSet: setState,

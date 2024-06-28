@@ -1,3 +1,5 @@
+import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/list_states/albums_state.dart';
 import 'package:antiiq/player/state/list_states/artists_state.dart';
 import 'package:antiiq/player/state/list_states/favourites_state.dart';
@@ -19,7 +21,11 @@ class MusicState {
   final FavouritesState favourites = FavouritesState();
   final MusicInit _musicInit = MusicInit();
 
-  init() async {
-    await _musicInit.run(this);
+  init(AntiiqState state) async {
+    if (state.permissions.has) {
+      await _musicInit.run(this);
+      state.dataIsInitialized = true;
+      await antiiqStore.put("dataInit", true);
+    }
   }
 }

@@ -1,7 +1,6 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/audio_preferences.dart';
 import 'package:antiiq/player/utilities/platform.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
@@ -135,16 +134,9 @@ initializeUserSettings() async {
   await getStatusBarMode();
 }
 
-initializeAudioPreferences() async {
-  await getEqualizerEnabled();
-  await getBandFreqs();
-  await getAndSetLoopMode();
-  await getAndSetShuffleMode();
-}
-
 themeInit() async {
-  String schemeType =
-      await antiiqStore.get(MainBoxKeys.colorSchemeType, defaultValue: "antiiq");
+  String schemeType = await antiiqStore.get(MainBoxKeys.colorSchemeType,
+      defaultValue: "antiiq");
   currentTheme =
       await antiiqStore.get(MainBoxKeys.userTheme, defaultValue: "AntiiQ");
   List<int> customColorList =
@@ -159,8 +151,8 @@ themeInit() async {
     await updateDynamicTheme(dynamicColorBrightness);
   }
 
-  dynamicThemeEnabled =
-      await antiiqStore.get(MainBoxKeys.dynamicThemeEnabled, defaultValue: false);
+  dynamicThemeEnabled = await antiiqStore.get(MainBoxKeys.dynamicThemeEnabled,
+      defaultValue: false);
 
   if (droidVersion < 12) {
     dynamicThemeEnabled = false;
@@ -174,8 +166,8 @@ themeInit() async {
 }
 
 getUserLibraryDirectories() async {
-  specificPathsToQuery =
-      await antiiqStore.get(MainBoxKeys.includedPaths, defaultValue: <String>[]);
+  specificPathsToQuery = await antiiqStore
+      .get(MainBoxKeys.includedPaths, defaultValue: <String>[]);
 }
 
 getMinimumTrackLength() async {

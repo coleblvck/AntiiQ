@@ -1,18 +1,19 @@
 import 'dart:io';
+
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/initialize.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/list_states/playlists_state.dart';
+import 'package:antiiq/player/utilities/initialize.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:restart_app/restart_app.dart';
-import 'package:antiiq/player/state/antiiq_state.dart';
 
 backup(String savePath) async {
   final dataPath = antiiqStore.path;
-  final playListsPath = playlistStore.path;
-  final playListsDataPath = playlistNameStore.path;
+  final playListsPath = state.music.playlists.store.dataStore.path;
+  final playListsDataPath = state.music.playlists.store.nameStore.path;
   await antiiqStore.close();
-  await playlistStore.close();
-  await playlistNameStore.close();
+  await state.music.playlists.store.dataStore.close();
+  await state.music.playlists.store.nameStore.close();
 
   try {
     File(dataPath!).copy("$savePath/data.antiiq");
@@ -20,18 +21,18 @@ backup(String savePath) async {
     File(playListsDataPath!).copy("$savePath/playlistsdata.antiiq");
   } finally {
     antiiqStore = await Hive.openBox(Boxes().mainBox);
-    playlistStore = await Hive.openBox(Boxes().playlistBox);
-    playlistNameStore = await Hive.openBox(Boxes().playlistNameBox);
+    state.music.playlists.store.dataStore = await Hive.openBox(Boxes().playlistBox);
+    state.music.playlists.store.nameStore = await Hive.openBox(Boxes().playlistNameBox);
   }
 }
 
 restore(String savePath) async {
   final dataPath = antiiqStore.path;
-  final playListsPath = playlistStore.path;
-  final playListsDataPath = playlistNameStore.path;
+  final playListsPath = state.music.playlists.store.dataStore.path;
+  final playListsDataPath = state.music.playlists.store.nameStore.path;
   await antiiqStore.close();
-  await playlistStore.close();
-  await playlistNameStore.close();
+  await state.music.playlists.store.dataStore.close();
+  await state.music.playlists.store.nameStore.close();
 
   try {
     File("$savePath/data.antiiq").copy(dataPath!);
@@ -39,8 +40,8 @@ restore(String savePath) async {
     File("$savePath/playlistsdata.antiiq").copy(playListsDataPath!);
   } finally {
     antiiqStore = await Hive.openBox(Boxes().mainBox);
-    playlistStore = await Hive.openBox(Boxes().playlistBox);
-    playlistNameStore = await Hive.openBox(Boxes().playlistNameBox);
+    state.music.playlists.store.dataStore = await Hive.openBox(Boxes().playlistBox);
+    state.music.playlists.store.nameStore = await Hive.openBox(Boxes().playlistNameBox);
   }
 
   await restorePlaylists();
@@ -48,8 +49,8 @@ restore(String savePath) async {
 }
 
 restorePlaylists() async {
-  state.music.playlists.all = [];
-  List<int> playlistIds = playlistStore.keys.toList().cast();
+  state.music.playlists.list = [];
+  List<int> playlistIds = state.music.playlists.store.dataStore.keys.toList().cast();
   for (int playlistId in playlistIds) {
     await PlayListArtUtils.setPlaylistArt(playlistId);
   }

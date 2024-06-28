@@ -1,8 +1,7 @@
-//Dart Packages
 import 'dart:io';
 
-//Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:flutter/services.dart';
 import 'package:mime/mime.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -29,7 +28,7 @@ getDefaultArt() async {
 }
 
 setDefaultArt() async {
-  if (dataIsInitialized) {
+  if (state.dataIsInitialized) {
     defaultArtUri =
         Uri.file("${antiiqDirectory.path}/coverarts/defaultart.jpeg");
   } else {
@@ -68,7 +67,7 @@ Future<Uint8List?> getAlbumArtBytes(id) async {
 
 Future<Uri> getAlbumArt(id, pathOfSong) async {
   final artFilePath = "${antiiqDirectory.path}/coverarts/albums/$id.jpeg";
-  if (!dataIsInitialized) {
+  if (!state.dataIsInitialized) {
     Uint8List? art = await getAlbumArtBytes(id);
     art ??= await getDirectoryArt(pathOfSong) ?? await defaultArt();
 

@@ -2,17 +2,17 @@ import 'dart:io';
 
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/playlists/playlist_song.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/state/list_states/playlists_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/duration_getters.dart';
 import 'package:antiiq/player/utilities/pick_and_crop.dart';
-import 'package:antiiq/player/state/list_states/playlists_state.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:text_scroll/text_scroll.dart';
-import 'package:antiiq/player/state/antiiq_state.dart';
 
 class PlaylistItem extends StatelessWidget {
   const PlaylistItem({
@@ -164,7 +164,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                               playlist.playlistTracks!.removeAt(oldIndex);
                           playlist.playlistTracks!.insert(newIndex, track);
                         });
-                        await state.music.playlists.savePlaylist(playlist.playlistId!);
+                        await state.music.playlists.save(playlist.playlistId!);
                       },
                       itemExtent: 100,
                       itemCount: playlist.playlistTracks!.length,
@@ -235,7 +235,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                     ),
                     IconButton(
                       onPressed: () async {
-                        await state.music.playlists.deletePlaylist(playlist);
+                        await state.music.playlists.delete(playlist);
                         if (context.mounted) {
                           mainPageStateSet(() {});
                           Navigator.of(context).pop();
@@ -272,7 +272,7 @@ showPlaylistEditDialog(
   titleController.text = playlist.playlistName!;
   Uint8List? art;
   playlistUpdate() async {
-    await state.music.playlists.updatePlaylist(playlist.playlistId!,
+    await state.music.playlists.update(playlist.playlistId!,
         name: titleController.text, art: art);
 
     setState(() {});

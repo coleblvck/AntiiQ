@@ -5,9 +5,9 @@ import 'package:antiiq/player/screens/main_screen/main_backdrop.dart';
 import 'package:antiiq/player/screens/now_playing/now_playing.dart';
 import 'package:antiiq/player/screens/queue/queue.dart';
 import 'package:antiiq/player/screens/settings/settings.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/initialize.dart';
 import 'package:antiiq/player/widgets/mini_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,7 +34,7 @@ class _MainBoxState extends State<MainBox> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
-        if (hasPermissions) {
+        if (state.permissions.has) {
           initData();
         }
       },
@@ -156,7 +156,7 @@ class _MainBoxState extends State<MainBox> {
         });
       },
     );
-    await loadLibrary();
+    await state.libraryInit();
 
     libraryLoadTimer.cancel();
 
@@ -279,7 +279,7 @@ class _MainBoxState extends State<MainBox> {
               overlay: true,
               color: AntiiQTheme.of(context).colorScheme.background,
               body:
-                  !hasPermissions ? noAccessToLibraryWidget() : mainBackdrop(),
+                  !state.permissions.has ? noAccessToLibraryWidget() : mainBackdrop(),
             ),
             onBoxOpen: () {
               FocusManager.instance.primaryFocus?.unfocus();
@@ -359,9 +359,8 @@ class _MainBoxState extends State<MainBox> {
             const Text("Application doesn't have access to the library"),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () => checkAndRequestPermissions(
+              onPressed: () => state.permissions.checkAndRequest(
                 retry: true,
-                stateSet: stateSet,
               ),
               child: const Text("Allow"),
             ),

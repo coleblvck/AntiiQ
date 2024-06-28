@@ -1,4 +1,5 @@
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class Behaviour extends StatefulWidget {
 }
 
 rescan() async {
-  dataIsInitialized = false;
+  state.dataIsInitialized = false;
   await antiiqStore.put("dataInit", false);
   Restart.restartApp();
 }

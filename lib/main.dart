@@ -1,42 +1,15 @@
-//Flutter Packages
-
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/main_screen/main_box.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-//Antiiq Packages
-import 'package:antiiq/player/utilities/audio_handler.dart';
-import 'package:antiiq/player/utilities/file_handling/intent.dart';
-import 'package:antiiq/player/utilities/initialize.dart';
-import 'package:antiiq/player/utilities/platform.dart';
-import 'package:antiiq/player/utilities/user_settings.dart';
-//Audio Service
-import 'package:audio_service/audio_service.dart';
+import 'package:antiiq/player/utilities/file_handling/intent_handling.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   state = AntiiqState();
-  await getDeviceInfo();
-  await initialLoad();
-  await SystemChrome.setPreferredOrientations(
-    [
-      DeviceOrientation.portraitUp,
-    ],
-  );
-
-  audioHandler = await AudioService.init(
-      builder: () => AntiiqAudioHandler(),
-      config: const AudioServiceConfig(
-        androidNotificationChannelId: "com.coleblvck.antiiq.channel.audio",
-        androidNotificationChannelName: "Antiiq Player",
-        androidNotificationIcon: "drawable/antiiq_icon",
-        androidNotificationOngoing: false,
-        androidStopForegroundOnPause: false,
-      ));
-  await initializeAudioPreferences();
+  await state.init();
   // Remove this from here or invoke optional popup.
   await initReceiveIntent();
 
@@ -46,7 +19,6 @@ void main() async {
 class Antiiq extends StatelessWidget {
   const Antiiq({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AntiiQColorScheme>(
