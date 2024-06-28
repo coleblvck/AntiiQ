@@ -2,6 +2,7 @@ import 'package:antiiq/player/state/list_states/albums_state.dart';
 import 'package:antiiq/player/state/list_states/artists_state.dart';
 import 'package:antiiq/player/state/list_states/favourites_state.dart';
 import 'package:antiiq/player/state/list_states/genres_state.dart';
+import 'package:antiiq/player/state/list_states/playlists_state.dart';
 import 'package:antiiq/player/state/list_states/queue_state.dart';
 import 'package:antiiq/player/state/list_states/selection_state.dart';
 import 'package:antiiq/player/state/list_states/tracks_state.dart';
@@ -12,6 +13,7 @@ class MusicState {
   final AlbumsState albums = AlbumsState();
   final ArtistsState artists = ArtistsState();
   final GenresState genres = GenresState();
+  final PlaylistsState playlists = PlaylistsState();
   final QueueState queue = QueueState();
   final SelectionState selection = SelectionState();
   final FavouritesState favourites = FavouritesState();

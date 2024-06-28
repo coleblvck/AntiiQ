@@ -2,7 +2,7 @@ import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/file_handling/art_queries.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
+import 'package:antiiq/player/state/list_states/playlists_state.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
@@ -13,7 +13,6 @@ queryAndSort() async {
   await getAlbums();
   await getArtists();
   await getGenres();
-  await getPlaylistsfromStore();
   await state.music.init();
 
   dataIsInitialized = true;

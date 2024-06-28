@@ -9,6 +9,7 @@ import 'package:antiiq/player/utilities/file_handling/sort.dart';
 class MusicInit {
   run(MusicState music) async {
     final TracksState tracks = music.tracks;
+    await music.playlists.init(tracks);
     await music.queue.init(tracks);
     await music.selection.init(tracks);
     await music.favourites.init(tracks);

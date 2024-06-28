@@ -1,8 +1,9 @@
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/pick_and_crop.dart';
-import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
+import 'package:antiiq/player/state/list_states/playlists_state.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +22,7 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
   playlistCreate() async {
     if (playlistTitleController.text != "") {
       final String name = playlistTitleController.text;
-      await createPlaylist(name, tracks: tracks, art: art);
+      await state.music.playlists.createPlaylist(name, tracks: tracks, art: art);
       playlistTitleController.clear();
       if (context.mounted) {
         Navigator.of(context).pop();
@@ -125,13 +126,13 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: allPlaylists.length,
+                itemCount: state.music.playlists.all.length,
                 itemExtent: 100,
                 itemBuilder: (context, index) {
-                  final thisPlaylist = allPlaylists[index];
+                  final thisPlaylist = state.music.playlists.all[index];
                   return GestureDetector(
                     onTap: () async {
-                      await addToPlaylist(thisPlaylist.playlistId!, tracks);
+                      await state.music.playlists.addToPlaylist(thisPlaylist.playlistId!, tracks);
                       if (context.mounted) {
                         Navigator.of(context).pop();
                       }

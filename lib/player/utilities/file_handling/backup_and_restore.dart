@@ -1,10 +1,10 @@
 import 'dart:io';
-
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/utilities/initialize.dart';
-import 'package:antiiq/player/utilities/playlisting/playlisting.dart';
+import 'package:antiiq/player/state/list_states/playlists_state.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 
 backup(String savePath) async {
   final dataPath = antiiqStore.path;
@@ -48,9 +48,9 @@ restore(String savePath) async {
 }
 
 restorePlaylists() async {
-  allPlaylists = [];
+  state.music.playlists.all = [];
   List<int> playlistIds = playlistStore.keys.toList().cast();
   for (int playlistId in playlistIds) {
-    await setPlaylistArt(playlistId);
+    await PlayListArtUtils.setPlaylistArt(playlistId);
   }
 }
