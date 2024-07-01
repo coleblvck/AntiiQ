@@ -8,12 +8,10 @@
 
 [![IzzyOnDroid Badge](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.coleblvck.antiiq&label=IzzyOnDroid&cacheSeconds=86400)](https://apt.izzysoft.de/packages/com.coleblvck.antiiq/)
 
-<a href="https://apt.izzysoft.de/packages/com.coleblvck.antiiq">
-    <img alt="Get it on IzzyOnDroid" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="60">
-</a>
-<a href="https://codeberg.org/coleblvck/AntiiQ/releases">
-    <img alt="Get it on Codeberg" src="https://get-it-on.codeberg.org/get-it-on-blue-on-white.png" height="60">
-</a>
+
+[![Get it on IzzyOnDroid](https://img.shields.io/badge/IzzyOnDroid%20Repo-red?style=for-the-badge&logo=Git&labelColor=black)](https://apt.izzysoft.de/packages/com.coleblvck.antiiq)
+[![Get it on Codeberg](https://img.shields.io/badge/Codeberg-Repo-blue?style=for-the-badge&logo=codeberg&labelColor=black)](https://codeberg.org/coleblvck/AntiiQ/releases)
+
 
 
 ## Screenshots
