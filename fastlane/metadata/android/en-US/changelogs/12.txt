@@ -1,0 +1,4 @@
+- Improvements and BugFixes
+- No need for separate apply and restart when changing UI settings
+- Dynamic Colours for Android versions below 12
+- Amoled option for Dynamic Colour Theme

@@ -8,7 +8,8 @@
 <div align="center">
 
 [![Get it on IzzyOnDroid](https://img.shields.io/badge/IzzyOnDroid-red?style=for-the-badge&logo=f-droid&labelColor=black)](https://apt.izzysoft.de/packages/com.coleblvck.antiiq)
-[![Get it on Codeberg](https://img.shields.io/badge/Codeberg-Repo-blue?style=for-the-badge&logo=codeberg&labelColor=black)](https://codeberg.org/coleblvck/AntiiQ/releases)
+[![Get it on Codeberg](https://img.shields.io/badge/Codeberg-blue?style=for-the-badge&logo=codeberg&labelColor=black)](https://codeberg.org/coleblvck/AntiiQ/releases)
+[![Get it on Github](https://img.shields.io/badge/Github-white?style=for-the-badge&logo=github&labelColor=black)](https://github.com/coleblvck/AntiiQ/releases)
 
 </div>
 
@@ -39,6 +40,7 @@
 - Search functionality
 - Favourites
 - Persistent Selection
+- Other subtle features that enhance user experience.
 
 
 ## Credits

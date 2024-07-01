@@ -14,6 +14,17 @@ class Version {
 
 List<Version> versions = [
   const Version(
+    version: "1.4.2",
+    title: "Melomaniac",
+    date: "1-JULY-2024",
+    changes: [
+      "- Improvements and BugFixes",
+      "- No need for separate apply and restart when changing UI settings",
+      "- Dynamic Colours for Android versions below 12",
+      "- Amoled option for Dynamic Colour Theme",
+    ],
+  ),
+  const Version(
     version: "1.4.1",
     title: "Melomaniac",
     date: "14-JUN-2024",
