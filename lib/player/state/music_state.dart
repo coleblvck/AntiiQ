@@ -1,4 +1,3 @@
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/list_states/albums_state.dart';
 import 'package:antiiq/player/state/list_states/artists_state.dart';
@@ -25,7 +24,7 @@ class MusicState {
     if (state.permissions.has) {
       await _musicInit.run(this);
       state.dataIsInitialized = true;
-      await antiiqStore.put("dataInit", true);
+      await state.store.put("dataInit", true);
     }
   }
 }

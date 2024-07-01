@@ -103,7 +103,7 @@ class QueueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final QueueState queue = state.music.queue;
+    final QueueState queue = antiiqState.music.queue;
     return StreamBuilder<List<MediaItem>>(
         stream: queue.flow.stream,
         builder: (context, snapshot) {

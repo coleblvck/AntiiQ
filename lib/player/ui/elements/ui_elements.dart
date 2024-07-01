@@ -313,6 +313,12 @@ class AntiiQTheme extends InheritedWidget {
   final CardThemes cardThemes = CardThemes();
   final TextStyles textStyles = TextStyles();
   final ButtonStyles buttonStyles = ButtonStyles();
+  final RoundedRectangleBorder bottomSheetShape = RoundedRectangleBorder(
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(generalRadius),
+      topRight: Radius.circular(generalRadius),
+    ),
+  );
 
   static AntiiQTheme? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<AntiiQTheme>();
@@ -326,6 +332,6 @@ class AntiiQTheme extends InheritedWidget {
 
   @override
   bool updateShouldNotify(AntiiQTheme oldWidget) {
-    return oldWidget.colorScheme != colorScheme;
+    return oldWidget != this;
   }
 }

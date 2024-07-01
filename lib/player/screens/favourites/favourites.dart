@@ -25,9 +25,9 @@ class FavouritesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Track>>(
-        stream: state.music.favourites.flow.stream,
+        stream: antiiqState.music.favourites.flow.stream,
         builder: (context, snapshot) {
-          final List<Track> favouritesSituation = snapshot.data ?? state.music.favourites.list;
+          final List<Track> favouritesSituation = snapshot.data ?? antiiqState.music.favourites.list;
           return Column(
             children: [
               Divider(

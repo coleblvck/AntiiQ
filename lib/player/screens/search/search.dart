@@ -30,7 +30,7 @@ class _SearchState extends State<Search> {
     artistResults = [];
     if (term != "") {
       String normalizedTerm = term.toLowerCase();
-      for (Track track in state.music.tracks.list) {
+      for (Track track in antiiqState.music.tracks.list) {
         if (track.trackData!.trackName!
                 .toLowerCase()
                 .contains(normalizedTerm) ||
@@ -43,13 +43,13 @@ class _SearchState extends State<Search> {
           searchResults.add(track);
         }
       }
-      for (Album album in state.music.albums.list) {
+      for (Album album in antiiqState.music.albums.list) {
         if (album.albumName!.toLowerCase().contains(normalizedTerm)) {
           albumResults.add(album);
         }
       }
 
-      for (Artist artist in state.music.artists.list) {
+      for (Artist artist in antiiqState.music.artists.list) {
         if (artist.artistName!.toLowerCase().contains(normalizedTerm)) {
           artistResults.add(artist);
         }
@@ -139,7 +139,7 @@ class _SearchState extends State<Search> {
                         thisTrack.trackData!.trackName!,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onSurface,
+                          color: AntiiQTheme.of(context).colorScheme.onBackground,
                         ),
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,
@@ -148,7 +148,7 @@ class _SearchState extends State<Search> {
                         thisTrack.mediaItem!.artist!,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onSurface,
+                          color: AntiiQTheme.of(context).colorScheme.onBackground,
                         ),
                         velocity: defaultTextScrollvelocity,
                         delayBefore: delayBeforeScroll,

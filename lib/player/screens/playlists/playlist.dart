@@ -87,7 +87,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
     backgroundColor: AntiiQTheme.of(context).colorScheme.background,
     showDragHandle: true,
     barrierColor: AntiiQTheme.of(context).colorScheme.background.withAlpha(200),
-    shape: bottomSheetShape,
+    shape: AntiiQTheme.of(context).bottomSheetShape,
     context: context,
     builder: (context) => StatefulBuilder(builder: (context, setState) {
       return Padding(
@@ -164,7 +164,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                               playlist.playlistTracks!.removeAt(oldIndex);
                           playlist.playlistTracks!.insert(newIndex, track);
                         });
-                        await state.music.playlists.save(playlist.playlistId!);
+                        await antiiqState.music.playlists.save(playlist.playlistId!);
                       },
                       itemExtent: 100,
                       itemCount: playlist.playlistTracks!.length,
@@ -235,7 +235,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                     ),
                     IconButton(
                       onPressed: () async {
-                        await state.music.playlists.delete(playlist);
+                        await antiiqState.music.playlists.delete(playlist);
                         if (context.mounted) {
                           mainPageStateSet(() {});
                           Navigator.of(context).pop();
@@ -272,7 +272,7 @@ showPlaylistEditDialog(
   titleController.text = playlist.playlistName!;
   Uint8List? art;
   playlistUpdate() async {
-    await state.music.playlists.update(playlist.playlistId!,
+    await antiiqState.music.playlists.update(playlist.playlistId!,
         name: titleController.text, art: art);
 
     setState(() {});

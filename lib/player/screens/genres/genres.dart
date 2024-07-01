@@ -32,7 +32,7 @@ class GenresGrid extends StatelessWidget {
         ),
         ListHeader(
           headerTitle: headerTitle,
-          listToCount: state.music.genres.list,
+          listToCount: antiiqState.music.genres.list,
           listToShuffle: const [],
           sortList: "allGenres",
           availableSortTypes: genreListSortTypes,
@@ -47,10 +47,10 @@ class GenresGrid extends StatelessWidget {
             thickness: 18,
             radius: const Radius.circular(5),
             child: StreamBuilder<List<Genre>>(
-                stream: state.music.genres.flow.stream,
+                stream: antiiqState.music.genres.flow.stream,
                 builder: (context, snapshot) {
                   final List<Genre> currentGenreStream =
-                      snapshot.data ?? state.music.genres.list;
+                      snapshot.data ?? antiiqState.music.genres.list;
                   return GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(

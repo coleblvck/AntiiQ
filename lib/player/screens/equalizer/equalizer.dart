@@ -1,6 +1,6 @@
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/audio_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_round_slider/flutter_round_slider.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
@@ -236,7 +236,7 @@ class _EqualizerState extends State<Equalizer> {
                     AntiiQTheme.of(context).colorScheme.onPrimary,
                     value: enabled,
                     onChanged: (value) {
-                      setEqualizerEnabled(value);
+                      antiiqState.audioSetup.preferences.setEqualizerEnabled(value);
                     },
                   ),
                 ],
@@ -301,7 +301,7 @@ class _EqualizerState extends State<Equalizer> {
                               band.setGain(
                                 lowerValue / 100,
                               ),
-                              saveBandFrequencies(),
+                              antiiqState.audioSetup.preferences.saveBandFrequencies(),
                             },
                           ),
                         );

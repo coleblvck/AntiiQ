@@ -25,9 +25,9 @@ class SelectionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Track>>(
-        stream: state.music.selection.flow.stream,
+        stream: antiiqState.music.selection.flow.stream,
         builder: (context, snapshot) {
-          final List<Track> selectionSituation = snapshot.data ?? state.music.selection.list;
+          final List<Track> selectionSituation = snapshot.data ?? antiiqState.music.selection.list;
           return Column(
             children: [
               Divider(

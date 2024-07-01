@@ -27,7 +27,7 @@ class AlbumsGrid extends StatelessWidget {
         ),
         ListHeader(
           headerTitle: headerTitle,
-          listToCount: state.music.albums.list,
+          listToCount: antiiqState.music.albums.list,
           listToShuffle: const [],
           sortList: "allAlbums",
           availableSortTypes: albumListSortTypes,
@@ -42,9 +42,9 @@ class AlbumsGrid extends StatelessWidget {
             thickness: 18,
             radius: const Radius.circular(5),
             child: StreamBuilder<List<Album>>(
-              stream: state.music.albums.flow.stream,
+              stream: antiiqState.music.albums.flow.stream,
               builder: (context, snapshot) {
-                final List<Album> currentAlbumStream = snapshot.data ?? state.music.albums.list;
+                final List<Album> currentAlbumStream = snapshot.data ?? antiiqState.music.albums.list;
                 return GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2),

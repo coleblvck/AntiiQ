@@ -29,17 +29,17 @@ class UnSwipedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Track>>(
-      stream: state.music.selection.flow.stream,
+      stream: antiiqState.music.selection.flow.stream,
       builder: (context, snapshot) {
         final List<Track> selectionSituation =
-            snapshot.data ?? state.music.selection.list;
+            snapshot.data ?? antiiqState.music.selection.list;
         return GestureDetector(
           onTap: () {
             playFromList(index, albumToPlay);
           },
           onLongPress: () {
             if (selectionSituation.isEmpty) {
-              state.music.selection.selectOrDeselect(track);
+              antiiqState.music.selection.selectOrDeselect(track);
             }
           },
           child: CustomCard(
@@ -78,7 +78,7 @@ class UnSwipedCard extends StatelessWidget {
                                 AntiiQTheme.of(context).colorScheme.surface),
                             value: selectionSituation.contains(track),
                             onChanged: (value) {
-                              state.music.selection.selectOrDeselect(track);
+                              antiiqState.music.selection.selectOrDeselect(track);
                             },
                           ),
                         )

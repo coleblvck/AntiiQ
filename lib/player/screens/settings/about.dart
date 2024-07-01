@@ -264,7 +264,7 @@ showLicenses(context) {
     enableDrag: true,
     isScrollControlled: true,
     useSafeArea: true,
-    shape: bottomSheetShape,
+    shape: AntiiQTheme.of(context).bottomSheetShape,
     context: context,
     builder: (context) => SizedBox(
       height: MediaQuery.of(context).size.height - 150,

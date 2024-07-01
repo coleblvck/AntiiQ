@@ -29,7 +29,7 @@ class QueueSongItem extends StatelessWidget {
       height: 120,
       child: GestureDetector(
         onTap: () {
-          playFromList(index, state.music.queue.state);
+          playFromList(index, antiiqState.music.queue.state);
         },
         child: CustomCard(
           theme: AntiiQTheme.of(context).cardThemes.background,

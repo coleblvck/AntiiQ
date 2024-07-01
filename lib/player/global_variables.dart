@@ -7,28 +7,18 @@ Name says it all
 //Flutter Packages
 import 'dart:async';
 import 'dart:io';
-
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
-import 'package:antiiq/player/ui/elements/ui_elements.dart';
-//Antiiq Packages
 import 'package:antiiq/player/utilities/audio_handler.dart';
-//Audio Service
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-//Hive
-import 'package:hive_flutter/hive_flutter.dart';
-//On Audio Query
 import 'package:on_audio_query/on_audio_query.dart';
 
 late AntiiqAudioHandler audioHandler;
 PageController mainPageController = PageController();
 
-//App Directory
 late Directory antiiqDirectory;
 
 //Cache
-late Box antiiqStore;
-
 
 //Page Indexes Object
 var mainPageIndexes = {
@@ -68,9 +58,7 @@ Stream<Duration> currentPosition() => AudioService.position.asBroadcastStream();
 Stream<PlaybackState> currentPlaybackState() =>
     audioHandler.playbackState.asBroadcastStream();
 
-
 final OnAudioQuery audioQuery = OnAudioQuery();
-
 
 //Variables to show library load progress
 int libraryLoadTotal = 1;
@@ -80,21 +68,14 @@ String loadingMessage = "Loading Library";
 String placeholderAssetImage = "assets/placeholder.png";
 String logoImage = "assets/AntiiQ.png";
 
-RoundedRectangleBorder bottomSheetShape = RoundedRectangleBorder(
-  borderRadius: BorderRadius.only(
-    topLeft: Radius.circular(generalRadius),
-    topRight: Radius.circular(generalRadius),
-  ),
-);
-
-
 late bool interactiveMiniPlayerSeekbar;
 
 StreamController<bool> interactiveSeekbarStream = StreamController.broadcast();
 
 late bool showTrackDuration;
 
-StreamController<bool> trackDurationDisplayStream = StreamController.broadcast();
+StreamController<bool> trackDurationDisplayStream =
+    StreamController.broadcast();
 
 late Timer runtimeAutoScanTimer;
 
@@ -113,17 +94,19 @@ late bool previousRestart;
 
 late bool swipeGestures;
 
-enum QuitType {dialog, doubleTap}
+enum QuitType { dialog, doubleTap }
 
 late QuitType currentQuitType;
 
 double settingsPageAppBarElevation = 1.0;
 double settingsPageAppBarIconButtonSize = 45.0;
 
-enum StatusBarMode {defaultMode, immersiveMode}
+enum StatusBarMode { defaultMode, immersiveMode }
+
 late StatusBarMode currentStatusBarMode;
 
-enum ColorSchemeType {antiiq, custom, dynamic}
+enum ColorSchemeType { antiiq, custom, dynamic }
+
 late ColorSchemeType currentColorSchemeType;
 
 Color generalErrorColor = const Color.fromARGB(199, 248, 0, 0);

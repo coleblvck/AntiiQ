@@ -1,7 +1,7 @@
-import 'package:antiiq/player/state/audio_preferences.dart';
-import 'package:audio_service/audio_service.dart';
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/audio_preferences.dart';
 import 'package:antiiq/player/utilities/audio_handler.dart';
+import 'package:audio_service/audio_service.dart';
 
 class AudioSetup {
   final AudioPreferences preferences = AudioPreferences();

@@ -34,8 +34,8 @@ class SongsList extends StatelessWidget {
         ),
         ListHeader(
           headerTitle: headerTitle,
-          listToCount: state.music.tracks.list,
-          listToShuffle: state.music.tracks.list,
+          listToCount: antiiqState.music.tracks.list,
+          listToShuffle: antiiqState.music.tracks.list,
           sortList: "allTracks",
           availableSortTypes: trackListSortTypes,
         ),
@@ -49,9 +49,9 @@ class SongsList extends StatelessWidget {
             thickness: 18,
             radius: const Radius.circular(5),
             child: StreamBuilder<List<Track>>(
-              stream: state.music.tracks.flow.stream,
+              stream: antiiqState.music.tracks.flow.stream,
               builder: (context, snapshot) {
-                final List<Track> allStreamTracks = snapshot.data ?? state.music.tracks.list;
+                final List<Track> allStreamTracks = snapshot.data ?? antiiqState.music.tracks.list;
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   primary: true,

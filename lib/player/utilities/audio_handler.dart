@@ -1,23 +1,16 @@
-//Dart Packages
 import 'dart:async';
 
-//Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
-//Audio Handler
 import 'package:antiiq/player/state/antiiq_state.dart';
-import 'package:antiiq/player/utilities/audio_preferences.dart';
 import 'package:audio_service/audio_service.dart';
-//Just Audio
 import 'package:just_audio/just_audio.dart';
 
-//Audio Handler
 class AntiiqAudioHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
   AntiiqAudioHandler() {
     initialize();
   }
 
-  //Audio Player Definition And Variable Declarations
   late final AudioPlayer audioPlayer = AudioPlayer(
       handleInterruptions: true,
       androidApplyAudioAttributes: true,
@@ -38,9 +31,7 @@ class AntiiqAudioHandler extends BaseAudioHandler
   late ConcatenatingAudioSource source;
   int clicks = 0;
 
-  //Initial Setup
   initialize() {
-    // Broadcast that we're connecting, and what controls are available.
     eventSubscription = audioPlayer.playbackEventStream.listen(
       (event) {
         broadcastState();
@@ -132,21 +123,20 @@ class AntiiqAudioHandler extends BaseAudioHandler
     }
   }
 
-  //Class Methods (and some non- Class Methods, arranged according to their functions)
   @override
   Future<void> play() async {
     if (antiiqQueue.isEmpty) {
-      if (state.music.queue.initialState.isEmpty) {
+      if (antiiqState.music.queue.initialState.isEmpty) {
         await updateQueue(
-            state.music.tracks.list.map((e) => e.mediaItem!).toList());
+            antiiqState.music.tracks.list.map((e) => e.mediaItem!).toList());
       } else {
-        await updateQueue(state.music.queue.initialState);
+        await updateQueue(antiiqState.music.queue.initialState);
       }
     }
     audioPlayer.play();
 
-    if (!bandsSet) {
-      await setBands();
+    if (!antiiqState.audioSetup.preferences.bandsSet) {
+      await antiiqState.audioSetup.preferences.setBands();
     }
   }
 
@@ -157,16 +147,13 @@ class AntiiqAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> stop() async {
-    // Stop playing audio.
     audioPlayer.stop();
     eventSubscription.cancel();
     await broadcastState();
-    // Broadcast that we've stopped.
     playbackState.add(PlaybackState(
         controls: [],
         playing: false,
         processingState: AudioProcessingState.completed));
-    // Shut down this background task
     await super.stop();
   }
 

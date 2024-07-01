@@ -57,8 +57,8 @@ class _LibraryState extends State<Library> {
   }
 
   fullRescan() async {
-    state.dataIsInitialized = false;
-    await antiiqStore.put("dataInit", false);
+    antiiqState.dataIsInitialized = false;
+    await antiiqState.store.put("dataInit", false);
     Restart.restartApp();
   }
 

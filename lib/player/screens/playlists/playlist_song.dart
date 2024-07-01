@@ -91,7 +91,7 @@ class PlaylistSong extends StatelessWidget {
                         child: IconButton(
                           color: Colors.red,
                           onPressed: () async {
-                            await state.music.playlists.removeTrack(
+                            await antiiqState.music.playlists.removeTrack(
                                 playlist.playlistId!, index);
                             setState(() {});
                             mainPageStateSet(() {});

@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 //Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
-import 'package:antiiq/player/utilities/audio_preferences.dart';
 import 'package:antiiq/player/widgets/seekbar.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -200,8 +200,10 @@ class NowPlayingFullCard extends StatelessWidget {
                                                         padding:
                                                             EdgeInsets.zero,
                                                         onPressed: () {
-                                                          updateLoopMode(
-                                                              LoopMode.off);
+                                                          antiiqState.audioSetup
+                                                              .preferences
+                                                              .updateLoopMode(
+                                                                  LoopMode.off);
                                                         },
                                                         iconSize: 30,
                                                         icon: const Icon(
@@ -217,8 +219,11 @@ class NowPlayingFullCard extends StatelessWidget {
                                                             padding:
                                                                 EdgeInsets.zero,
                                                             onPressed: () {
-                                                              updateLoopMode(
-                                                                  LoopMode.all);
+                                                              antiiqState.audioSetup
+                                                                  .preferences
+                                                                  .updateLoopMode(
+                                                                      LoopMode
+                                                                          .all);
                                                             },
                                                             iconSize: 30,
                                                             icon: const Icon(
@@ -234,8 +239,11 @@ class NowPlayingFullCard extends StatelessWidget {
                                                             padding:
                                                                 EdgeInsets.zero,
                                                             onPressed: () {
-                                                              updateLoopMode(
-                                                                  LoopMode.one);
+                                                              antiiqState.audioSetup
+                                                                  .preferences
+                                                                  .updateLoopMode(
+                                                                      LoopMode
+                                                                          .one);
                                                             },
                                                             iconSize: 30,
                                                             icon: const Icon(
@@ -258,8 +266,10 @@ class NowPlayingFullCard extends StatelessWidget {
                                                         padding:
                                                             EdgeInsets.zero,
                                                         onPressed: () {
-                                                          updateShuffleMode(
-                                                              false);
+                                                          antiiqState.audioSetup
+                                                              .preferences
+                                                              .updateShuffleMode(
+                                                                  false);
                                                         },
                                                         iconSize: 30,
                                                         icon: const Icon(
@@ -273,8 +283,10 @@ class NowPlayingFullCard extends StatelessWidget {
                                                         padding:
                                                             EdgeInsets.zero,
                                                         onPressed: () {
-                                                          updateShuffleMode(
-                                                              true);
+                                                          antiiqState.audioSetup
+                                                              .preferences
+                                                              .updateShuffleMode(
+                                                                  true);
                                                         },
                                                         iconSize: 30,
                                                         icon: const Icon(

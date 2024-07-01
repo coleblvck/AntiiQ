@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +8,7 @@ Future<Directory?> pickFolder(String path, context) async {
 
   String? newPath = await FilesystemPicker.openBottomSheet(
     context: context,
-    shape: bottomSheetShape,
+    shape: AntiiQTheme.of(context).bottomSheetShape,
     rootDirectory: Directory(path),
     fsType: FilesystemType.folder,
     barrierColor: Colors.transparent,

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/list_states/tracks_state.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
@@ -41,7 +41,7 @@ class FavouritesState {
 
   init(TracksState tracks) async {
     final List<int> favouriteIds =
-        await antiiqStore.get(MainBoxKeys.favourites, defaultValue: <int>[]);
+        await antiiqState.store.get(MainBoxKeys.favourites, defaultValue: <int>[]);
     list = [];
     for (int id in favouriteIds) {
       for (Track track in tracks.list) {
@@ -56,6 +56,6 @@ class FavouritesState {
   _save() async {
     final List<int> favouriteIds =
         list.map((track) => track.trackData!.trackId!).toList();
-    await antiiqStore.put(MainBoxKeys.favourites, favouriteIds);
+    await antiiqState.store.put(MainBoxKeys.favourites, favouriteIds);
   }
 }

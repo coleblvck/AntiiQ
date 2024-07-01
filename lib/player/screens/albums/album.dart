@@ -103,7 +103,7 @@ showAlbum(context, Album album) {
     backgroundColor: AntiiQTheme.of(context).colorScheme.background,
     showDragHandle: true,
     barrierColor: AntiiQTheme.of(context).colorScheme.background.withAlpha(200),
-    shape: bottomSheetShape,
+    shape: AntiiQTheme.of(context).bottomSheetShape,
     context: context,
     builder: (context) => Padding(
       padding: const EdgeInsets.all(10.0),

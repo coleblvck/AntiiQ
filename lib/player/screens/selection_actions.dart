@@ -1,4 +1,3 @@
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/albums/album.dart';
 import 'package:antiiq/player/screens/artists/artist.dart';
 import 'package:antiiq/player/screens/genres/genre.dart';
@@ -17,7 +16,7 @@ import 'package:text_scroll/text_scroll.dart';
 
 findTrackAndOpenSheet(context, MediaItem item) {
   final Track track =
-      state.music.tracks.list.firstWhere((track) => track.mediaItem == item);
+      antiiqState.music.tracks.list.firstWhere((track) => track.mediaItem == item);
   openSheetFromTrack(context, track);
 }
 
@@ -29,7 +28,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
     {bool thisGlobalSelection = false}) {
   showModalBottomSheet(
     enableDrag: true,
-    shape: bottomSheetShape,
+    shape: AntiiQTheme.of(context).bottomSheetShape,
     context: context,
     backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
     builder: (context) {
@@ -70,7 +69,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        if (state.music.artists.list
+                                        if (antiiqState.music.artists.list
                                             .map((artist) => artist.artistId)
                                             .toList()
                                             .contains(tracks[0]
@@ -91,7 +90,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        if (state.music.albums.list
+                                        if (antiiqState.music.albums.list
                                             .map((album) => album.albumId)
                                             .toList()
                                             .contains(
@@ -111,7 +110,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        if (state.music.genres.list
+                                        if (antiiqState.music.genres.list
                                             .map((genre) => genre.genreName)
                                             .toList()
                                             .contains(
@@ -136,10 +135,10 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                           ],
                         ),
                         StreamBuilder<List<Track>>(
-                          stream: state.music.favourites.flow.stream,
+                          stream: antiiqState.music.favourites.flow.stream,
                           builder: (context, snapshot) {
                             final List<Track> favouritesSituation =
-                                snapshot.data ?? state.music.favourites.list;
+                                snapshot.data ?? antiiqState.music.favourites.list;
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
@@ -158,7 +157,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                   ),
                                   IconButton(
                                     onPressed: () =>
-                                        state.music.favourites.addOrRemove(tracks[0]),
+                                        antiiqState.music.favourites.addOrRemove(tracks[0]),
                                     icon: const Icon(RemixIcon.heart_pulse),
                                     color:
                                         favouritesSituation.contains(tracks[0])
@@ -171,10 +170,10 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                           },
                         ),
                         StreamBuilder<List<Track>>(
-                          stream: state.music.selection.flow.stream,
+                          stream: antiiqState.music.selection.flow.stream,
                           builder: (context, snapshot) {
                             final List<Track> selectionSituation =
-                                snapshot.data ?? state.music.selection.list;
+                                snapshot.data ?? antiiqState.music.selection.list;
                             return CustomCard(
                               theme:
                                   AntiiQTheme.of(context).cardThemes.background,
@@ -204,7 +203,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                         thisGlobalSelection && value == false
                                             ? Navigator.of(context).pop()
                                             : null;
-                                        state.music.selection.selectOrDeselect(tracks[0]);
+                                        antiiqState.music.selection.selectOrDeselect(tracks[0]);
                                       },
                                     )
                                   ],
@@ -235,7 +234,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                             ),
                           ),
                           Text(
-                            "Selected Tracks: ${state.music.selection.list.length}",
+                            "Selected Tracks: ${antiiqState.music.selection.list.length}",
                             style: AntiiQTheme.of(context)
                                 .textStyles
                                 .onSurfaceText,
@@ -268,7 +267,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                   ? CustomButton(
                       style: ButtonStyles().style2,
                       function: () {
-                        state.music.selection.clear();
+                        antiiqState.music.selection.clear();
                         Navigator.of(context).pop();
                       },
                       child: const Text("Clear Selection"),
@@ -308,7 +307,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
 goToGenre(BuildContext context, List<Track> tracks) {
   showGenre(
     context,
-    state.music.genres.list.firstWhere(
+    antiiqState.music.genres.list.firstWhere(
       (genre) => genre.genreName == tracks[0].trackData!.genre,
     ),
   );
@@ -317,7 +316,7 @@ goToGenre(BuildContext context, List<Track> tracks) {
 goToArtist(BuildContext context, List<Track> tracks) {
   showArtist(
     context,
-    state.music.artists.list.firstWhere(
+    antiiqState.music.artists.list.firstWhere(
       (artist) => artist.artistId == tracks[0].trackData!.artistId,
     ),
   );
@@ -326,7 +325,7 @@ goToArtist(BuildContext context, List<Track> tracks) {
 goToAlbum(BuildContext context, List<Track> tracks) {
   showAlbum(
     context,
-    state.music.albums.list.firstWhere(
+    antiiqState.music.albums.list.firstWhere(
       (album) => album.albumId == tracks[0].trackData!.albumId,
     ),
   );

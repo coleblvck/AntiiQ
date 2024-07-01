@@ -1,5 +1,3 @@
-//Flutter Packages
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
@@ -50,10 +48,10 @@ class ListHeader extends StatelessWidget {
             child: Row(
               children: [
                 StreamBuilder<List<Track>>(
-                    stream: state.music.selection.flow.stream,
+                    stream: antiiqState.music.selection.flow.stream,
                     builder: (context, snapshot) {
                       final List<Track> selectionSituation =
-                          snapshot.data ?? state.music.selection.list;
+                          snapshot.data ?? antiiqState.music.selection.list;
                       return selectionSituation.isNotEmpty
                           ? IconButton(
                               padding: EdgeInsets.zero,
@@ -111,7 +109,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
     {setState}) {
   showModalBottomSheet(
     backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
-    shape: bottomSheetShape,
+    shape: AntiiQTheme.of(context).bottomSheetShape,
     context: context,
     builder: (context) {
       commenceSort(sortType, sortDirection) {
@@ -140,26 +138,26 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
       late String currentDirection;
       late String currentSortType;
       if (sortList == "allTracks") {
-        currentDirection = state.music.tracks.sort.currentDirection;
-        currentSortType = state.music.tracks.sort.currentSort;
+        currentDirection = antiiqState.music.tracks.sort.currentDirection;
+        currentSortType = antiiqState.music.tracks.sort.currentSort;
       } else if (sortList == "allAlbums") {
-        currentDirection = state.music.albums.sort.currentDirection;
-        currentSortType = state.music.albums.sort.currentSort;
+        currentDirection = antiiqState.music.albums.sort.currentDirection;
+        currentSortType = antiiqState.music.albums.sort.currentSort;
       } else if (sortList == "allArtists") {
-        currentDirection = state.music.artists.sort.currentDirection;
-        currentSortType = state.music.artists.sort.currentSort;
+        currentDirection = antiiqState.music.artists.sort.currentDirection;
+        currentSortType = antiiqState.music.artists.sort.currentSort;
       } else if (sortList == "allGenres") {
-        currentDirection = state.music.genres.sort.currentDirection;
-        currentSortType = state.music.genres.sort.currentSort;
+        currentDirection = antiiqState.music.genres.sort.currentDirection;
+        currentSortType = antiiqState.music.genres.sort.currentSort;
       } else if (sortList == "allAlbumTracks") {
-        currentDirection = state.music.albums.tracksSort.currentDirection;
-        currentSortType = state.music.albums.tracksSort.currentSort;
+        currentDirection = antiiqState.music.albums.tracksSort.currentDirection;
+        currentSortType = antiiqState.music.albums.tracksSort.currentSort;
       } else if (sortList == "allArtistTracks") {
-        currentDirection = state.music.artists.tracksSort.currentDirection;
-        currentSortType = state.music.artists.tracksSort.currentSort;
+        currentDirection = antiiqState.music.artists.tracksSort.currentDirection;
+        currentSortType = antiiqState.music.artists.tracksSort.currentSort;
       } else if (sortList == "allGenreTracks") {
-        currentDirection = state.music.genres.tracksSort.currentDirection;
-        currentSortType = state.music.genres.tracksSort.currentSort;
+        currentDirection = antiiqState.music.genres.tracksSort.currentDirection;
+        currentSortType = antiiqState.music.genres.tracksSort.currentSort;
       }
 
       return SingleChildScrollView(
@@ -207,7 +205,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                         AntiiQTheme.of(context)
                                             .colorScheme
                                             .background),
-                                    value: state.music.tracks.sort.currentSort ==
+                                    value: antiiqState.music.tracks.sort.currentSort ==
                                         availableSortType,
                                     onChanged: null,
                                   )
@@ -220,7 +218,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                             AntiiQTheme.of(context)
                                                 .colorScheme
                                                 .background),
-                                        value: state.music.albums.sort.currentSort ==
+                                        value: antiiqState.music.albums.sort.currentSort ==
                                             availableSortType,
                                         onChanged: null,
                                       )
@@ -233,7 +231,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                                 AntiiQTheme.of(context)
                                                     .colorScheme
                                                     .background),
-                                            value: state.music.artists.sort.currentSort ==
+                                            value: antiiqState.music.artists.sort.currentSort ==
                                                 availableSortType,
                                             onChanged: null,
                                           )
@@ -248,7 +246,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                                         AntiiQTheme.of(context)
                                                             .colorScheme
                                                             .background),
-                                                value: state.music.genres.sort.currentSort ==
+                                                value: antiiqState.music.genres.sort.currentSort ==
                                                     availableSortType,
                                                 onChanged: null,
                                               )
@@ -264,7 +262,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                                                     context)
                                                                 .colorScheme
                                                                 .background),
-                                                    value: state.music.albums.tracksSort
+                                                    value: antiiqState.music.albums.tracksSort
                                                             .currentSort ==
                                                         availableSortType,
                                                     onChanged: null,
@@ -282,7 +280,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                                                         context)
                                                                     .colorScheme
                                                                     .background),
-                                                        value: state.music.artists.tracksSort
+                                                        value: antiiqState.music.artists.tracksSort
                                                                 .currentSort ==
                                                             availableSortType,
                                                         onChanged: null,
@@ -300,7 +298,7 @@ showSortModal(context, String sortList, List<String> availableSortTypes,
                                                                         context)
                                                                     .colorScheme
                                                                     .background),
-                                                            value: state.music.genres.tracksSort
+                                                            value: antiiqState.music.genres.tracksSort
                                                                     .currentSort ==
                                                                 availableSortType,
                                                             onChanged: null,

@@ -1,4 +1,4 @@
-import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/base_library_init.dart';
 import 'package:antiiq/player/state/list_states/albums_state.dart';
 import 'package:antiiq/player/state/list_states/artists_state.dart';
@@ -25,7 +25,7 @@ class MusicInit {
     final AlbumsState albums = music.albums;
     final ArtistsState artists = music.artists;
     final GenresState genres = music.genres;
-    List<String> savedTrackSort = await antiiqStore.get(
+    List<String> savedTrackSort = await antiiqState.store.get(
       SortBoxKeys.trackSort,
       defaultValue: <String>[
         tracks.sort.currentSort,
@@ -34,7 +34,7 @@ class MusicInit {
     );
     await beginSort(savedTrackSort[0], savedTrackSort[1], allTracks: true);
 
-    List<String> savedAlbumSort = await antiiqStore.get(
+    List<String> savedAlbumSort = await antiiqState.store.get(
       SortBoxKeys.albumSort,
       defaultValue: <String>[
         albums.sort.currentSort,
@@ -43,7 +43,7 @@ class MusicInit {
     );
     await beginSort(savedAlbumSort[0], savedAlbumSort[1], allAlbums: true);
 
-    List<String> savedArtistSort = await antiiqStore.get(
+    List<String> savedArtistSort = await antiiqState.store.get(
       SortBoxKeys.artistSort,
       defaultValue: <String>[
         artists.sort.currentSort,
@@ -52,7 +52,7 @@ class MusicInit {
     );
     await beginSort(savedArtistSort[0], savedArtistSort[1], allArtists: true);
 
-    List<String> savedGenreSort = await antiiqStore.get(
+    List<String> savedGenreSort = await antiiqState.store.get(
       SortBoxKeys.genreSort,
       defaultValue: <String>[
         genres.sort.currentSort,
@@ -61,7 +61,7 @@ class MusicInit {
     );
     await beginSort(savedGenreSort[0], savedGenreSort[1], allGenres: true);
 
-    List<String> savedAlbumTracksSort = await antiiqStore.get(
+    List<String> savedAlbumTracksSort = await antiiqState.store.get(
       SortBoxKeys.albumTracksSort,
       defaultValue: <String>[
         albums.tracksSort.currentSort,
@@ -71,7 +71,7 @@ class MusicInit {
     await beginSort(savedAlbumTracksSort[0], savedAlbumTracksSort[1],
         allAlbumTracks: true);
 
-    List<String> savedArtistTracksSort = await antiiqStore.get(
+    List<String> savedArtistTracksSort = await antiiqState.store.get(
       SortBoxKeys.artistTracksSort,
       defaultValue: <String>[
         artists.tracksSort.currentSort,
@@ -81,7 +81,7 @@ class MusicInit {
     await beginSort(savedArtistTracksSort[0], savedArtistTracksSort[1],
         allArtistTracks: true);
 
-    List<String> savedGenreTracksSort = await antiiqStore.get(
+    List<String> savedGenreTracksSort = await antiiqState.store.get(
       SortBoxKeys.genreTracksSort,
       defaultValue: <String>[
         genres.tracksSort.currentSort,

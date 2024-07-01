@@ -3,16 +3,11 @@ import 'package:antiiq/player/screens/main_screen/main_box.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/file_handling/intent_handling.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  state = AntiiqState();
-  await state.init();
-  // Remove this from here or invoke optional popup.
-  await initReceiveIntent();
-
+  await AntiiqState.create();
   runApp(const Antiiq());
 }
 

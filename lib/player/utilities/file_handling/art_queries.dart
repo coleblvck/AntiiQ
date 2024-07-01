@@ -28,7 +28,7 @@ getDefaultArt() async {
 }
 
 setDefaultArt() async {
-  if (state.dataIsInitialized) {
+  if (antiiqState.dataIsInitialized) {
     defaultArtUri =
         Uri.file("${antiiqDirectory.path}/coverarts/defaultart.jpeg");
   } else {
@@ -67,7 +67,7 @@ Future<Uint8List?> getAlbumArtBytes(id) async {
 
 Future<Uri> getAlbumArt(id, pathOfSong) async {
   final artFilePath = "${antiiqDirectory.path}/coverarts/albums/$id.jpeg";
-  if (!state.dataIsInitialized) {
+  if (!antiiqState.dataIsInitialized) {
     Uint8List? art = await getAlbumArtBytes(id);
     art ??= await getDirectoryArt(pathOfSong) ?? await defaultArt();
 

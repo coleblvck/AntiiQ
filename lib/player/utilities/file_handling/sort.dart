@@ -1,4 +1,3 @@
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 
@@ -339,100 +338,100 @@ beginSort(
   bool allGenreTracks = false,
 }) async {
   if (allTracks) {
-    state.music.tracks.sort = SortArrangement(
+    antiiqState.music.tracks.sort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
     await sortTracks(
       sortDirections[sortDirection]!,
       sortTypes[sortType]!,
-      state.music.tracks.list,
+      antiiqState.music.tracks.list,
     );
-    state.music.tracks.updateFlow();
-    await antiiqStore.put(SortBoxKeys.trackSort, [sortType, sortDirection]);
+    antiiqState.music.tracks.updateFlow();
+    await antiiqState.store.put(SortBoxKeys.trackSort, [sortType, sortDirection]);
   } else if (allAlbums) {
-    state.music.albums.sort = SortArrangement(
+    antiiqState.music.albums.sort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
     await sortAlbums(
       sortDirections[sortDirection]!,
       sortTypes[sortType]!,
-      state.music.albums.list,
+      antiiqState.music.albums.list,
     );
-    state.music.albums.updateFlow();
-    await antiiqStore.put(SortBoxKeys.albumSort, [sortType, sortDirection]);
+    antiiqState.music.albums.updateFlow();
+    await antiiqState.store.put(SortBoxKeys.albumSort, [sortType, sortDirection]);
   } else if (allArtists) {
-    state.music.artists.sort = SortArrangement(
+    antiiqState.music.artists.sort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
     await sortArtists(
       sortDirections[sortDirection]!,
       sortTypes[sortType]!,
-      state.music.artists.list,
+      antiiqState.music.artists.list,
     );
-    state.music.artists.updateFlow();
-    await antiiqStore.put(SortBoxKeys.artistSort, [sortType, sortDirection]);
+    antiiqState.music.artists.updateFlow();
+    await antiiqState.store.put(SortBoxKeys.artistSort, [sortType, sortDirection]);
   } else if (allGenres) {
-    state.music.genres.sort = SortArrangement(
+    antiiqState.music.genres.sort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
     await sortGenres(
       sortDirections[sortDirection]!,
       sortTypes[sortType]!,
-      state.music.genres.list,
+      antiiqState.music.genres.list,
     );
-    state.music.genres.updateFlow();
-    await antiiqStore.put(SortBoxKeys.genreSort, [sortType, sortDirection]);
+    antiiqState.music.genres.updateFlow();
+    await antiiqState.store.put(SortBoxKeys.genreSort, [sortType, sortDirection]);
   } else if (allAlbumTracks) {
-    state.music.albums.tracksSort = SortArrangement(
+    antiiqState.music.albums.tracksSort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
 
-    for (Album album in state.music.albums.list) {
+    for (Album album in antiiqState.music.albums.list) {
       await sortTracks(
         sortDirections[sortDirection]!,
         sortTypes[sortType]!,
         album.albumTracks!,
       );
     }
-    state.music.albums.updateFlow();
-    await antiiqStore
+    antiiqState.music.albums.updateFlow();
+    await antiiqState.store
         .put(SortBoxKeys.albumTracksSort, [sortType, sortDirection]);
   } else if (allArtistTracks) {
-    state.music.artists.tracksSort = SortArrangement(
+    antiiqState.music.artists.tracksSort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
 
-    for (Artist artist in state.music.artists.list) {
+    for (Artist artist in antiiqState.music.artists.list) {
       await sortTracks(
         sortDirections[sortDirection]!,
         sortTypes[sortType]!,
         artist.artistTracks!,
       );
     }
-    state.music.artists.updateFlow();
-    await antiiqStore
+    antiiqState.music.artists.updateFlow();
+    await antiiqState.store
         .put(SortBoxKeys.artistTracksSort, [sortType, sortDirection]);
   } else if (allGenreTracks) {
-    state.music.genres.tracksSort = SortArrangement(
+    antiiqState.music.genres.tracksSort = SortArrangement(
       currentSort: sortType,
       currentDirection: sortDirection,
     );
 
-    for (Genre genre in state.music.genres.list) {
+    for (Genre genre in antiiqState.music.genres.list) {
       await sortTracks(
         sortDirections[sortDirection]!,
         sortTypes[sortType]!,
         genre.genreTracks!,
       );
     }
-    state.music.genres.updateFlow();
-    await antiiqStore
+    antiiqState.music.genres.updateFlow();
+    await antiiqState.store
         .put(SortBoxKeys.genreTracksSort, [sortType, sortDirection]);
   }
 }

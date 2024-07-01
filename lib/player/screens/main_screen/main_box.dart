@@ -34,7 +34,7 @@ class _MainBoxState extends State<MainBox> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
-        if (state.permissions.has) {
+        if (antiiqState.permissions.has) {
           initData();
         }
       },
@@ -156,7 +156,7 @@ class _MainBoxState extends State<MainBox> {
         });
       },
     );
-    await state.libraryInit();
+    await antiiqState.libraryInit();
 
     libraryLoadTimer.cancel();
 
@@ -279,7 +279,7 @@ class _MainBoxState extends State<MainBox> {
               overlay: true,
               color: AntiiQTheme.of(context).colorScheme.background,
               body:
-                  !state.permissions.has ? noAccessToLibraryWidget() : mainBackdrop(),
+                  !antiiqState.permissions.has ? noAccessToLibraryWidget() : mainBackdrop(),
             ),
             onBoxOpen: () {
               FocusManager.instance.primaryFocus?.unfocus();
@@ -359,7 +359,7 @@ class _MainBoxState extends State<MainBox> {
             const Text("Application doesn't have access to the library"),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () => state.permissions.checkAndRequest(
+              onPressed: () => antiiqState.permissions.checkAndRequest(
                 retry: true,
               ),
               child: const Text("Allow"),

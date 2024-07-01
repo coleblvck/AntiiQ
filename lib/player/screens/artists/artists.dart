@@ -33,7 +33,7 @@ class ArtistsList extends StatelessWidget {
         ),
         ListHeader(
           headerTitle: headerTitle,
-          listToCount: state.music.artists.list,
+          listToCount: antiiqState.music.artists.list,
           listToShuffle: const [],
           sortList: "allArtists",
           availableSortTypes: artistListSortTypes,
@@ -48,9 +48,9 @@ class ArtistsList extends StatelessWidget {
             thickness: 18,
             radius: const Radius.circular(5),
             child: StreamBuilder<List<Artist>>(
-              stream: state.music.artists.flow.stream,
+              stream: antiiqState.music.artists.flow.stream,
               builder: (context, snapshot) {
-                final List<Artist> currentArtistStream = snapshot.data ?? state.music.artists.list;
+                final List<Artist> currentArtistStream = snapshot.data ?? antiiqState.music.artists.list;
                 return ListView.builder(
                   itemExtent: 100,
                   physics: const BouncingScrollPhysics(),

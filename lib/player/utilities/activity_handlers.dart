@@ -3,7 +3,7 @@ import 'dart:io';
 
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/utilities/audio_preferences.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audiotags/audiotags.dart';
@@ -85,7 +85,7 @@ addToQueue(item) async {
 }
 
 shuffleList(List<MediaItem> list) async {
-  await updateShuffleMode(true);
+  await antiiqState.audioSetup.preferences.updateShuffleMode(true);
   await loadQueue(list);
   await next();
   await resume();

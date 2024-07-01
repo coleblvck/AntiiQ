@@ -8,7 +8,10 @@
 
 [![IzzyOnDroid Badge](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.coleblvck.antiiq&label=IzzyOnDroid&cacheSeconds=86400)](https://apt.izzysoft.de/packages/com.coleblvck.antiiq/)
 
-[Grab the latest APK from Codeberg](https://codeberg.org/coleblvck/AntiiQ/releases)
+
+[![Get it on IzzyOnDroid](https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png)](https://apt.izzysoft.de/packages/com.coleblvck.antiiq)
+[![Get it on Codeberg](https://get-it-on.codeberg.org/get-it-on-blue-on-white.png)](https://codeberg.org/coleblvck/AntiiQ/releases)
+
 
 
 ## Screenshots
@@ -37,27 +40,27 @@
 - Embedded covers support
 - Search functionality
 - Favourites
-- Global Selection
+- Persistent Selection
 
 
 ## Credits
 [ryanheise](https://github.com/ryanheise) for beautiful and seamless implementations of a plethora of audio-related Flutter plugins.
+...
+- To update
 
 
-## To-Do...?
-- ~~Scan Cover Arts present in track folder~~
-- ~~Better Usability & Accessibility~~
+## In the plans...? (No particular order)
 - Translations
-- ~~Additional configurations~~
-- Landscape mode
+- Landscape mode?
 - Add warning dialogs for actions such as "Delete Playlist"
-- ~~UI tweaking options~~
-- ~~Add a toggle for showing track duration on the now-playing screen~~
-- ~~More Themes(Probably including user theming)~~
-- A host of other features.
+- Listen history
+- Embedded lyrics
+- Certain improvements to queue handling.
+- Network Audio
+- Some other nice to have features and enhancements.
 
 ## Might-Not-DO...
-- Tag Editing: Attempted in a few different ways; app became quite heavy, while also leaving some pretty large footprints in cache and data storages.
+- Tag Editing: Tried and things got too bulky, I'm open to suggestions on this.
 
 ## Feedback and Suggestions:
-Very welcome.
+- welcome.

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:antiiq/player/global_variables.dart';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/list_states/tracks_state.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/user_settings.dart';
@@ -32,7 +33,7 @@ class QueueState {
   _getInitialState(TracksState tracks) async {
     initialState = [];
     List<int> stateToInit =
-    await antiiqStore.get(MainBoxKeys.queueState, defaultValue: <int>[]);
+    await antiiqState.store.get(MainBoxKeys.queueState, defaultValue: <int>[]);
     for (int id in stateToInit) {
       for (Track track in tracks.list) {
         if (track.trackData!.trackId == id) {
@@ -45,6 +46,6 @@ class QueueState {
   _save() async {
     List<int> stateToSave =
     _state.map((item) => item.extras!["id"]).toList().cast();
-    await antiiqStore.put(MainBoxKeys.queueState, stateToSave);
+    await antiiqState.store.put(MainBoxKeys.queueState, stateToSave);
   }
 }

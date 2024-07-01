@@ -1,4 +1,3 @@
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
@@ -21,7 +20,7 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
   playlistCreate() async {
     if (playlistTitleController.text != "") {
       final String name = playlistTitleController.text;
-      await state.music.playlists.create(name, tracks: tracks, art: art);
+      await antiiqState.music.playlists.create(name, tracks: tracks, art: art);
       playlistTitleController.clear();
       if (context.mounted) {
         Navigator.of(context).pop();
@@ -34,7 +33,7 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
     isScrollControlled: true,
     enableDrag: true,
     showDragHandle: true,
-    shape: bottomSheetShape,
+    shape: AntiiQTheme.of(context).bottomSheetShape,
     backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
     context: context,
     builder: (context) {
@@ -125,13 +124,13 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: state.music.playlists.list.length,
+                itemCount: antiiqState.music.playlists.list.length,
                 itemExtent: 100,
                 itemBuilder: (context, index) {
-                  final thisPlaylist = state.music.playlists.list[index];
+                  final thisPlaylist = antiiqState.music.playlists.list[index];
                   return GestureDetector(
                     onTap: () async {
-                      await state.music.playlists.addTracks(thisPlaylist.playlistId!, tracks);
+                      await antiiqState.music.playlists.addTracks(thisPlaylist.playlistId!, tracks);
                       if (context.mounted) {
                         Navigator.of(context).pop();
                       }

@@ -1,4 +1,3 @@
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/playlists/playlist.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/list_states/playlists_state.dart';
@@ -38,14 +37,14 @@ class _PlaylistsState extends State<Playlists> {
       showDragHandle: true,
       barrierColor:
           AntiiQTheme.of(context).colorScheme.background.withAlpha(200),
-      shape: bottomSheetShape,
+      shape: AntiiQTheme.of(context).bottomSheetShape,
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
           search(term) {
             searchResults = [];
             if (term != "") {
-              for (Track track in state.music.tracks.list) {
+              for (Track track in antiiqState.music.tracks.list) {
                 if (track.trackData!.trackName!
                     .toLowerCase()
                     .contains(term.toLowerCase())) {
@@ -251,7 +250,7 @@ class _PlaylistsState extends State<Playlists> {
   playlistCreate() async {
     if (playlistTitleController.text != "") {
       final String name = playlistTitleController.text;
-      await state.music.playlists.create(name, tracks: selectedTracks, art: art);
+      await antiiqState.music.playlists.create(name, tracks: selectedTracks, art: art);
       playlistTitleController.clear();
       playlistSearchController.clear();
       selectedTracks = [];
@@ -286,9 +285,9 @@ class _PlaylistsState extends State<Playlists> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
             ),
-            itemCount: state.music.playlists.list.length,
+            itemCount: antiiqState.music.playlists.list.length,
             itemBuilder: (context, index) {
-              final PlayList thisPlaylist = state.music.playlists.list[index];
+              final PlayList thisPlaylist = antiiqState.music.playlists.list[index];
               return PlaylistItem(
                 thisPlaylist: thisPlaylist,
                 mainPageStateSet: setState,
