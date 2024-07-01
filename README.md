@@ -5,14 +5,12 @@
 
 <h3 align="center">An offline Music Player suitable for large collections.</h3>
 
+<div align="center">
 
-[![IzzyOnDroid Badge](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.coleblvck.antiiq&label=IzzyOnDroid&cacheSeconds=86400)](https://apt.izzysoft.de/packages/com.coleblvck.antiiq/)
-
-
-[![Get it on IzzyOnDroid](https://img.shields.io/badge/IzzyOnDroid%20Repo-red?style=for-the-badge&logo=Git&labelColor=black)](https://apt.izzysoft.de/packages/com.coleblvck.antiiq)
+[![Get it on IzzyOnDroid](https://img.shields.io/badge/IzzyOnDroid-red?style=for-the-badge&logo=f-droid&labelColor=black)](https://apt.izzysoft.de/packages/com.coleblvck.antiiq)
 [![Get it on Codeberg](https://img.shields.io/badge/Codeberg-Repo-blue?style=for-the-badge&logo=codeberg&labelColor=black)](https://codeberg.org/coleblvck/AntiiQ/releases)
 
-
+</div>
 
 ## Screenshots
 
