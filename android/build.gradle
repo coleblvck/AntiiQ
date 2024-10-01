@@ -15,7 +15,7 @@ allprojects {
                 def javaVersion = JavaVersion.VERSION_17
                 android {
                     def minimumApiVersion = 21
-                    def androidApiVersion = 33
+                    def androidApiVersion = 34
                     compileSdkVersion androidApiVersion
                     defaultConfig {
                         minSdkVersion minimumApiVersion
