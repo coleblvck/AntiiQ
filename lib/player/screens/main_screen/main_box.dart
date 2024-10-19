@@ -196,7 +196,10 @@ class _MainBoxState extends State<MainBox> {
     //
     return PopScope(
       canPop: false,
-      onPopInvoked: (bool didPop) async {
+      //
+      // Look further into this
+      //
+      onPopInvokedWithResult: (bool didPop, _) async {
         if (didPop) {
           return;
         }
