@@ -5,8 +5,8 @@ import 'package:antiiq/player/screens/playlists/playlist_song.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/list_states/playlists_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/duration_getters.dart';
 import 'package:antiiq/player/utilities/pick_and_crop.dart';
+import 'package:antiiq/player/widgets/collection_widgets/collection_heading.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:flutter/material.dart';
@@ -107,42 +107,10 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                     ),
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            TextScroll(
-                              playlist.playlistName!,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: 25,
-                                color:
-                                    AntiiQTheme.of(context).colorScheme.primary,
-                              ),
-                              velocity: defaultTextScrollvelocity,
-                              delayBefore: delayBeforeScroll,
-                            ),
-                            Card(
-                              color: AntiiQTheme.of(context)
-                                  .colorScheme
-                                  .background,
-                              surfaceTintColor: Colors.transparent,
-                              margin: const EdgeInsets.symmetric(vertical: 5),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(
-                                  "Length: ${totalDuration(playlist.playlistTracks!)}",
-                                  style: TextStyle(
-                                    color: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .primary,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                          padding: const EdgeInsets.all(5.0),
+                          child: CollectionHeading(
+                              headings: [playlist.playlistName],
+                              tracks: playlist.playlistTracks!)),
                     ),
                     SliverToBoxAdapter(
                       child: ListHeader(
@@ -164,7 +132,8 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                               playlist.playlistTracks!.removeAt(oldIndex);
                           playlist.playlistTracks!.insert(newIndex, track);
                         });
-                        await antiiqState.music.playlists.save(playlist.playlistId!);
+                        await antiiqState.music.playlists
+                            .save(playlist.playlistId!);
                       },
                       itemExtent: 100,
                       itemCount: playlist.playlistTracks!.length,
@@ -272,8 +241,8 @@ showPlaylistEditDialog(
   titleController.text = playlist.playlistName!;
   Uint8List? art;
   playlistUpdate() async {
-    await antiiqState.music.playlists.update(playlist.playlistId!,
-        name: titleController.text, art: art);
+    await antiiqState.music.playlists
+        .update(playlist.playlistId!, name: titleController.text, art: art);
 
     setState(() {});
     mainPageStateSet(() {});

@@ -27,20 +27,12 @@ class ArtistsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Divider(
-          color: AntiiQTheme.of(context).colorScheme.secondary,
-          height: 1,
-        ),
         ListHeader(
           headerTitle: headerTitle,
           listToCount: antiiqState.music.artists.list,
           listToShuffle: const [],
           sortList: "allArtists",
           availableSortTypes: artistListSortTypes,
-        ),
-        Divider(
-          color: AntiiQTheme.of(context).colorScheme.secondary,
-          height: 1,
         ),
         Expanded(
           child: Scrollbar(

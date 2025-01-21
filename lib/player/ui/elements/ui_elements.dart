@@ -17,6 +17,7 @@ class CustomCard extends StatelessWidget {
       color: theme.color ?? AntiiQTheme.of(context).cardThemes.background.color,
       shadowColor: Colors.black,
       surfaceTintColor: theme.surfaceTintColor ?? Colors.transparent,
+      margin: theme.margin ?? const EdgeInsets.all(4.0),
       child: child,
     );
   }

@@ -568,7 +568,7 @@ class _UserInterfaceState extends State<UserInterface> {
               ),
               SliverToBoxAdapter(
                 child: CustomCard(
-                  theme: AntiiQTheme.of(context).cardThemes.primary,
+                  theme: AntiiQTheme.of(context).cardThemes.secondary,
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: Column(
@@ -580,7 +580,7 @@ class _UserInterfaceState extends State<UserInterface> {
                             "Cover Art Fit:",
                             style: AntiiQTheme.of(context)
                                 .textStyles
-                                .onPrimaryText,
+                                .onSecondaryText,
                           ),
                         ),
                         Container(

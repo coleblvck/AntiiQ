@@ -26,20 +26,12 @@ class GenresGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Divider(
-          color: AntiiQTheme.of(context).colorScheme.secondary,
-          height: 1,
-        ),
         ListHeader(
           headerTitle: headerTitle,
           listToCount: antiiqState.music.genres.list,
           listToShuffle: const [],
           sortList: "allGenres",
           availableSortTypes: genreListSortTypes,
-        ),
-        Divider(
-          color: AntiiQTheme.of(context).colorScheme.secondary,
-          height: 1,
         ),
         Expanded(
           child: Scrollbar(

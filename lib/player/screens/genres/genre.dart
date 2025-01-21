@@ -5,9 +5,9 @@ import 'package:antiiq/player/screens/genres/genre_song.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
 //Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/duration_getters.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
+import 'package:antiiq/player/widgets/collection_widgets/collection_heading.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:flutter/material.dart';
@@ -36,59 +36,62 @@ class GenreItem extends StatelessWidget {
           showGenre(context, genre);
         },
         child: StreamBuilder<ArtFit>(
-          stream: coverArtFitStream.stream,
-          builder: (context, snapshot) {
-            final coverArtFit = snapshot.data ?? currentCoverArtFit;
-            return Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(
-                    File.fromUri(genre.genreTracks![0].mediaItem!.artUri!),
+            stream: coverArtFitStream.stream,
+            builder: (context, snapshot) {
+              final coverArtFit = snapshot.data ?? currentCoverArtFit;
+              return Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(
+                      File.fromUri(genre.genreTracks![0].mediaItem!.artUri!),
+                    ),
+                    fit: coverArtFit == ArtFit.contain
+                        ? BoxFit.contain
+                        : BoxFit.cover,
                   ),
-                  fit: coverArtFit == ArtFit.contain? BoxFit.contain: BoxFit.cover,
+                  borderRadius: BorderRadius.circular(generalRadius),
                 ),
-                borderRadius: BorderRadius.circular(generalRadius),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      CustomCard(
-                        theme: AntiiQTheme.of(context).cardThemes.background,
-                        child: IconButton(
-                          onPressed: () {
-                            doThingsWithAudioSheet(context, genre.genreTracks!);
-                          },
-                          icon: Icon(
-                            RemixIcon.menu_4,
-                            color: AntiiQTheme.of(context).colorScheme.secondary,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        CustomCard(
+                          theme: AntiiQTheme.of(context).cardThemes.background,
+                          child: IconButton(
+                            onPressed: () {
+                              doThingsWithAudioSheet(
+                                  context, genre.genreTracks!);
+                            },
+                            icon: Icon(
+                              RemixIcon.menu_4,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.secondary,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  CustomCard(
-                    theme: AntiiQTheme.of(context).cardThemes.background,
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          title,
-                          subtitle,
-                        ],
+                      ],
+                    ),
+                    CustomCard(
+                      theme: AntiiQTheme.of(context).cardThemes.background,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5.0, horizontal: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            title,
+                            subtitle,
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }
-        ),
+                  ],
+                ),
+              );
+            }),
       ),
     );
   }
@@ -118,50 +121,10 @@ showGenre(context, Genre genre) {
                   slivers: [
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Genre",
-                              style: TextStyle(
-                                color:
-                                    AntiiQTheme.of(context).colorScheme.primary,
-                                fontSize: 20,
-                              ),
-                            ),
-                            TextScroll(
-                              genre.genreName!,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: 20,
-                                color:
-                                    AntiiQTheme.of(context).colorScheme.primary,
-                              ),
-                              velocity: defaultTextScrollvelocity,
-                              delayBefore: delayBeforeScroll,
-                            ),
-                            Card(
-                              color: AntiiQTheme.of(context)
-                                  .colorScheme
-                                  .background,
-                              surfaceTintColor: Colors.transparent,
-                              margin: const EdgeInsets.symmetric(vertical: 5),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(
-                                  "Length: ${totalDuration(genre.genreTracks!)}",
-                                  style: TextStyle(
-                                    color: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .primary,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                          padding: const EdgeInsets.all(5.0),
+                          child: CollectionHeading(
+                              headings: ["Genre: ${genre.genreName}"],
+                              tracks: genre.genreTracks!)),
                     ),
                     SliverToBoxAdapter(
                       child: ListHeader(
@@ -183,8 +146,9 @@ showGenre(context, Genre genre) {
                             thisTrack.trackData!.trackName!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color:
-                                  AntiiQTheme.of(context).colorScheme.onBackground,
+                              color: AntiiQTheme.of(context)
+                                  .colorScheme
+                                  .onBackground,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -193,8 +157,9 @@ showGenre(context, Genre genre) {
                             thisTrack.mediaItem!.artist!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color:
-                                  AntiiQTheme.of(context).colorScheme.onBackground,
+                              color: AntiiQTheme.of(context)
+                                  .colorScheme
+                                  .onBackground,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,

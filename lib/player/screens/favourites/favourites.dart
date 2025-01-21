@@ -30,20 +30,12 @@ class FavouritesList extends StatelessWidget {
           final List<Track> favouritesSituation = snapshot.data ?? antiiqState.music.favourites.list;
           return Column(
             children: [
-              Divider(
-                color: AntiiQTheme.of(context).colorScheme.secondary,
-                height: 1,
-              ),
               ListHeader(
                 headerTitle: headerTitle,
                 listToCount: favouritesSituation,
                 listToShuffle: favouritesSituation,
                 sortList: "none",
                 availableSortTypes: const [],
-              ),
-              Divider(
-                color: AntiiQTheme.of(context).colorScheme.secondary,
-                height: 1,
               ),
               Expanded(
                 child: Scrollbar(

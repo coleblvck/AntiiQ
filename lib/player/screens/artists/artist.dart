@@ -3,9 +3,9 @@ import 'package:antiiq/player/screens/artists/artist_song.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
 //Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/duration_getters.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
+import 'package:antiiq/player/widgets/collection_widgets/collection_heading.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:flutter/material.dart';
@@ -104,50 +104,10 @@ showArtist(context, Artist artist) {
                     ),
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Artist",
-                              style: TextStyle(
-                                color:
-                                    AntiiQTheme.of(context).colorScheme.primary,
-                                fontSize: 20,
-                              ),
-                            ),
-                            TextScroll(
-                              artist.artistName!,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: 20,
-                                color:
-                                    AntiiQTheme.of(context).colorScheme.primary,
-                              ),
-                              velocity: defaultTextScrollvelocity,
-                              delayBefore: delayBeforeScroll,
-                            ),
-                            Card(
-                              color: AntiiQTheme.of(context)
-                                  .colorScheme
-                                  .background,
-                              surfaceTintColor: Colors.transparent,
-                              margin: const EdgeInsets.symmetric(vertical: 5),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(
-                                  "Length: ${totalDuration(artist.artistTracks!)}",
-                                  style: TextStyle(
-                                    color: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .primary,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                          padding: const EdgeInsets.all(5.0),
+                          child: CollectionHeading(
+                              headings: ["Artist: ${artist.artistName!}"],
+                              tracks: artist.artistTracks!)),
                     ),
                     SliverToBoxAdapter(
                       child: ListHeader(
@@ -169,8 +129,9 @@ showArtist(context, Artist artist) {
                             thisTrack.trackData!.trackName!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color:
-                                  AntiiQTheme.of(context).colorScheme.onBackground,
+                              color: AntiiQTheme.of(context)
+                                  .colorScheme
+                                  .onBackground,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,
@@ -179,8 +140,9 @@ showArtist(context, Artist artist) {
                             thisTrack.mediaItem!.artist!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color:
-                                  AntiiQTheme.of(context).colorScheme.onBackground,
+                              color: AntiiQTheme.of(context)
+                                  .colorScheme
+                                  .onBackground,
                             ),
                             velocity: defaultTextScrollvelocity,
                             delayBefore: delayBeforeScroll,

@@ -28,20 +28,12 @@ class SongsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Divider(
-          color: AntiiQTheme.of(context).colorScheme.secondary,
-          height: 1,
-        ),
         ListHeader(
           headerTitle: headerTitle,
           listToCount: antiiqState.music.tracks.list,
           listToShuffle: antiiqState.music.tracks.list,
           sortList: "allTracks",
           availableSortTypes: trackListSortTypes,
-        ),
-        Divider(
-          color: AntiiQTheme.of(context).colorScheme.secondary,
-          height: 1,
         ),
         Expanded(
           child: Scrollbar(

@@ -30,20 +30,12 @@ class SelectionList extends StatelessWidget {
           final List<Track> selectionSituation = snapshot.data ?? antiiqState.music.selection.list;
           return Column(
             children: [
-              Divider(
-                color: AntiiQTheme.of(context).colorScheme.secondary,
-                height: 1,
-              ),
               ListHeader(
                 headerTitle: headerTitle,
                 listToCount: selectionSituation,
                 listToShuffle: selectionSituation,
                 sortList: "none",
                 availableSortTypes: const [],
-              ),
-              Divider(
-                color: AntiiQTheme.of(context).colorScheme.secondary,
-                height: 1,
               ),
               Expanded(
                 child: Scrollbar(

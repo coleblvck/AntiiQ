@@ -176,7 +176,9 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                 snapshot.data ?? antiiqState.music.selection.list;
                             return CustomCard(
                               theme:
-                                  AntiiQTheme.of(context).cardThemes.background,
+                                  AntiiQTheme.of(context).cardThemes.background.copyWith(
+                                    margin: const EdgeInsets.all(0)
+                                  ),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0),
@@ -243,8 +245,11 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                       ),
                     )
                   : Container(),
+                  const SizedBox(height: 5.0,),
               CustomCard(
-                theme: AntiiQTheme.of(context).cardThemes.background,
+                theme: AntiiQTheme.of(context).cardThemes.background.copyWith(
+                  margin: const EdgeInsets.all(0)
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(

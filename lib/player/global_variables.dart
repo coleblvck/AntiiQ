@@ -125,3 +125,5 @@ enum ArtFit {
 
 late ArtFit currentCoverArtFit;
 StreamController<ArtFit> coverArtFitStream = StreamController.broadcast();
+
+const double pagePadding = 5.0;
