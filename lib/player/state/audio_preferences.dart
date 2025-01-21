@@ -1,6 +1,6 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
-import 'package:antiiq/player/utilities/user_settings.dart';
+import 'package:antiiq/player/utilities/settings/user_settings.dart';
 import 'package:just_audio/just_audio.dart';
 
 class AudioPreferences {

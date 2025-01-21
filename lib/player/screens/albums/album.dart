@@ -37,56 +37,62 @@ class AlbumItem extends StatelessWidget {
         onTap: () {
           showAlbum(context, album);
         },
-        child: Container(
-          decoration: BoxDecoration(
-              color: AntiiQTheme.of(context).colorScheme.background,
-              backgroundBlendMode: BlendMode.colorDodge,
-              image: DecorationImage(
-                image: FileImage(
-                  File.fromUri(album.albumArt!),
-                ),
-                fit: BoxFit.cover,
-              ),
-              borderRadius: BorderRadius.circular(generalRadius)),
-          padding: EdgeInsets.zero,
-          margin: EdgeInsets.zero,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
+        child: StreamBuilder<ArtFit>(
+          stream: coverArtFitStream.stream,
+          builder: (context, snapshot) {
+            final coverArtFit = snapshot.data ?? currentCoverArtFit;
+            return Container(
+              decoration: BoxDecoration(
+                  color: AntiiQTheme.of(context).colorScheme.background,
+                  backgroundBlendMode: BlendMode.colorDodge,
+                  image: DecorationImage(
+                    image: FileImage(
+                      File.fromUri(album.albumArt!),
+                    ),
+                    fit: coverArtFit == ArtFit.contain?BoxFit.contain: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(generalRadius)),
+              padding: EdgeInsets.zero,
+              margin: EdgeInsets.zero,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
                 children: [
+                  Row(
+                    children: [
+                      CustomCard(
+                        theme: AntiiQTheme.of(context).cardThemes.background,
+                        child: IconButton(
+                          onPressed: () {
+                            doThingsWithAudioSheet(context, album.albumTracks!);
+                          },
+                          icon: Icon(
+                            RemixIcon.menu_4,
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   CustomCard(
                     theme: AntiiQTheme.of(context).cardThemes.background,
-                    child: IconButton(
-                      onPressed: () {
-                        doThingsWithAudioSheet(context, album.albumTracks!);
-                      },
-                      icon: Icon(
-                        RemixIcon.menu_4,
-                        color: AntiiQTheme.of(context).colorScheme.onBackground,
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          title,
+                          subtitle,
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
-              CustomCard(
-                theme: AntiiQTheme.of(context).cardThemes.background,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      title,
-                      subtitle,
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            );
+          }
         ),
       ),
     );

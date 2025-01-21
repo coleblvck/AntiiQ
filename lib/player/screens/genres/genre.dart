@@ -35,53 +35,59 @@ class GenreItem extends StatelessWidget {
         onTap: () {
           showGenre(context, genre);
         },
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: FileImage(
-                File.fromUri(genre.genreTracks![0].mediaItem!.artUri!),
+        child: StreamBuilder<ArtFit>(
+          stream: coverArtFitStream.stream,
+          builder: (context, snapshot) {
+            final coverArtFit = snapshot.data ?? currentCoverArtFit;
+            return Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: FileImage(
+                    File.fromUri(genre.genreTracks![0].mediaItem!.artUri!),
+                  ),
+                  fit: coverArtFit == ArtFit.contain? BoxFit.contain: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.circular(generalRadius),
               ),
-              fit: BoxFit.cover,
-            ),
-            borderRadius: BorderRadius.circular(generalRadius),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
                 children: [
+                  Row(
+                    children: [
+                      CustomCard(
+                        theme: AntiiQTheme.of(context).cardThemes.background,
+                        child: IconButton(
+                          onPressed: () {
+                            doThingsWithAudioSheet(context, genre.genreTracks!);
+                          },
+                          icon: Icon(
+                            RemixIcon.menu_4,
+                            color: AntiiQTheme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   CustomCard(
                     theme: AntiiQTheme.of(context).cardThemes.background,
-                    child: IconButton(
-                      onPressed: () {
-                        doThingsWithAudioSheet(context, genre.genreTracks!);
-                      },
-                      icon: Icon(
-                        RemixIcon.menu_4,
-                        color: AntiiQTheme.of(context).colorScheme.secondary,
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          title,
+                          subtitle,
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
-              CustomCard(
-                theme: AntiiQTheme.of(context).cardThemes.background,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      title,
-                      subtitle,
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            );
+          }
         ),
       ),
     );

@@ -6,7 +6,7 @@ import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:antiiq/player/utilities/user_settings.dart';
+import 'package:antiiq/player/utilities/settings/user_settings.dart';
 
 final AccessWallpaper accessWallpaper = AccessWallpaper();
 

@@ -6,7 +6,7 @@ import 'package:antiiq/player/utilities/file_handling/art_queries.dart';
 import 'package:antiiq/player/utilities/file_handling/intent_handling.dart';
 import 'package:antiiq/player/utilities/initialize.dart';
 import 'package:antiiq/player/utilities/settings/theme_settings.dart';
-import 'package:antiiq/player/utilities/user_settings.dart';
+import 'package:antiiq/player/utilities/settings/user_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

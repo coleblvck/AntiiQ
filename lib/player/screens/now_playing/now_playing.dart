@@ -149,263 +149,271 @@ class NowPlayingFullCard extends StatelessWidget {
                             }
                           }
                         },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color:
-                                AntiiQTheme.of(context).colorScheme.background,
-                            backgroundBlendMode: BlendMode.colorDodge,
-                            image: DecorationImage(
-                              image: FileImage(
-                                File.fromUri(currentTrack.artUri!),
+                        child: StreamBuilder<ArtFit>(
+                          stream: coverArtFitStream.stream,
+                          builder: (context, snapshot) {
+                            final coverArtFit =  snapshot.data ?? currentCoverArtFit;
+                            return Container(
+                              decoration: BoxDecoration(
+                                color:
+                                    AntiiQTheme.of(context).colorScheme.background,
+                                backgroundBlendMode: BlendMode.colorDodge,
+                                image: DecorationImage(
+                                  image: FileImage(
+                                    File.fromUri(currentTrack!.artUri!),
+                                  ),
+                                  fit: coverArtFit == ArtFit.contain? BoxFit.contain: BoxFit.cover,
+                                ),
                               ),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          child: CustomCard(
-                            theme: AntiiQTheme.of(context)
-                                .cardThemes
-                                .backgroundOverlay,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                              child: CustomCard(
+                                theme: AntiiQTheme.of(context)
+                                    .cardThemes
+                                    .backgroundOverlay,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    CustomCard(
-                                      theme: AntiiQTheme.of(context)
-                                          .cardThemes
-                                          .surfaceOverlay,
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          StreamBuilder<LoopMode>(
-                                              stream: audioHandler
-                                                  .audioPlayer.loopModeStream,
-                                              builder: (context, snapshot) {
-                                                if (!snapshot.hasData) {
-                                                  return Container();
-                                                }
-                                                final LoopMode mode =
-                                                    snapshot.data!;
-                                                return mode == LoopMode.all
-                                                    ? IconButton(
-                                                        color: AntiiQTheme.of(
-                                                                context)
-                                                            .colorScheme
-                                                            .primary,
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        onPressed: () {
-                                                          antiiqState.audioSetup
-                                                              .preferences
-                                                              .updateLoopMode(
-                                                                  LoopMode.off);
-                                                        },
-                                                        iconSize: 30,
-                                                        icon: const Icon(
-                                                            RemixIcon.repeat_2),
-                                                      )
-                                                    : mode == LoopMode.one
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CustomCard(
+                                          theme: AntiiQTheme.of(context)
+                                              .cardThemes
+                                              .surfaceOverlay,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              StreamBuilder<LoopMode>(
+                                                  stream: audioHandler
+                                                      .audioPlayer.loopModeStream,
+                                                  builder: (context, snapshot) {
+                                                    if (!snapshot.hasData) {
+                                                      return Container();
+                                                    }
+                                                    final LoopMode mode =
+                                                        snapshot.data!;
+                                                    return mode == LoopMode.all
                                                         ? IconButton(
-                                                            color:
-                                                                AntiiQTheme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary,
+                                                            color: AntiiQTheme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primary,
                                                             padding:
                                                                 EdgeInsets.zero,
                                                             onPressed: () {
                                                               antiiqState.audioSetup
                                                                   .preferences
                                                                   .updateLoopMode(
-                                                                      LoopMode
-                                                                          .all);
+                                                                      LoopMode.off);
                                                             },
                                                             iconSize: 30,
                                                             icon: const Icon(
-                                                                RemixIcon
-                                                                    .repeat_one),
+                                                                RemixIcon.repeat_2),
+                                                          )
+                                                        : mode == LoopMode.one
+                                                            ? IconButton(
+                                                                color:
+                                                                    AntiiQTheme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .primary,
+                                                                padding:
+                                                                    EdgeInsets.zero,
+                                                                onPressed: () {
+                                                                  antiiqState
+                                                                      .audioSetup
+                                                                      .preferences
+                                                                      .updateLoopMode(
+                                                                          LoopMode
+                                                                              .all);
+                                                                },
+                                                                iconSize: 30,
+                                                                icon: const Icon(
+                                                                    RemixIcon
+                                                                        .repeat_one),
+                                                              )
+                                                            : IconButton(
+                                                                color:
+                                                                    AntiiQTheme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .onSurface,
+                                                                padding:
+                                                                    EdgeInsets.zero,
+                                                                onPressed: () {
+                                                                  antiiqState
+                                                                      .audioSetup
+                                                                      .preferences
+                                                                      .updateLoopMode(
+                                                                          LoopMode
+                                                                              .one);
+                                                                },
+                                                                iconSize: 30,
+                                                                icon: const Icon(
+                                                                    RemixIcon
+                                                                        .repeat_2),
+                                                              );
+                                                  }),
+                                              StreamBuilder<bool>(
+                                                  stream: audioHandler.audioPlayer
+                                                      .shuffleModeEnabledStream,
+                                                  builder: (context, snapshot) {
+                                                    final bool enabled =
+                                                        snapshot.data ?? false;
+                                                    return enabled
+                                                        ? IconButton(
+                                                            color: AntiiQTheme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primary,
+                                                            padding:
+                                                                EdgeInsets.zero,
+                                                            onPressed: () {
+                                                              antiiqState.audioSetup
+                                                                  .preferences
+                                                                  .updateShuffleMode(
+                                                                      false);
+                                                            },
+                                                            iconSize: 30,
+                                                            icon: const Icon(
+                                                                RemixIcon.shuffle),
                                                           )
                                                         : IconButton(
-                                                            color:
-                                                                AntiiQTheme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .onSurface,
+                                                            color: AntiiQTheme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .onSurface,
                                                             padding:
                                                                 EdgeInsets.zero,
                                                             onPressed: () {
                                                               antiiqState.audioSetup
                                                                   .preferences
-                                                                  .updateLoopMode(
-                                                                      LoopMode
-                                                                          .one);
+                                                                  .updateShuffleMode(
+                                                                      true);
                                                             },
                                                             iconSize: 30,
                                                             icon: const Icon(
-                                                                RemixIcon
-                                                                    .repeat_2),
+                                                                RemixIcon.shuffle),
                                                           );
-                                              }),
-                                          StreamBuilder<bool>(
-                                              stream: audioHandler.audioPlayer
-                                                  .shuffleModeEnabledStream,
-                                              builder: (context, snapshot) {
-                                                final bool enabled =
-                                                    snapshot.data ?? false;
-                                                return enabled
-                                                    ? IconButton(
-                                                        color: AntiiQTheme.of(
-                                                                context)
-                                                            .colorScheme
-                                                            .primary,
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        onPressed: () {
-                                                          antiiqState.audioSetup
-                                                              .preferences
-                                                              .updateShuffleMode(
-                                                                  false);
-                                                        },
-                                                        iconSize: 30,
-                                                        icon: const Icon(
-                                                            RemixIcon.shuffle),
-                                                      )
-                                                    : IconButton(
-                                                        color: AntiiQTheme.of(
-                                                                context)
-                                                            .colorScheme
-                                                            .onSurface,
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        onPressed: () {
-                                                          antiiqState.audioSetup
-                                                              .preferences
-                                                              .updateShuffleMode(
-                                                                  true);
-                                                        },
-                                                        iconSize: 30,
-                                                        icon: const Icon(
-                                                            RemixIcon.shuffle),
-                                                      );
-                                              }),
-                                        ],
-                                      ),
-                                    ),
-                                    IconButton(
-                                      color: AntiiQTheme.of(context)
-                                          .colorScheme
-                                          .onBackground,
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {
-                                        if (audioHandler
-                                                .antiiqQueue.isNotEmpty &&
-                                            audioHandler
-                                                    .antiiqQueue[audioHandler
-                                                        .audioPlayer
-                                                        .currentIndex!]
-                                                    .extras!["id"] !=
-                                                "no-id") {
-                                          findTrackAndOpenSheet(
-                                            context,
-                                            audioHandler.antiiqQueue[
+                                                  }),
+                                            ],
+                                          ),
+                                        ),
+                                        IconButton(
+                                          color: AntiiQTheme.of(context)
+                                              .colorScheme
+                                              .onBackground,
+                                          padding: EdgeInsets.zero,
+                                          onPressed: () {
+                                            if (audioHandler
+                                                    .antiiqQueue.isNotEmpty &&
                                                 audioHandler
-                                                    .audioPlayer.currentIndex!],
-                                          );
-                                        }
-                                      },
-                                      iconSize: 30,
-                                      icon: const Icon(RemixIcon.menu_4),
+                                                        .antiiqQueue[audioHandler
+                                                            .audioPlayer
+                                                            .currentIndex!]
+                                                        .extras!["id"] !=
+                                                    "no-id") {
+                                              findTrackAndOpenSheet(
+                                                context,
+                                                audioHandler.antiiqQueue[
+                                                    audioHandler
+                                                        .audioPlayer.currentIndex!],
+                                              );
+                                            }
+                                          },
+                                          iconSize: 30,
+                                          icon: const Icon(RemixIcon.menu_4),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        TrackDurationDisplayWidget(
+                                            currentTrack: currentTrack),
+                                        SeekBarBuilder(currentTrack: currentTrack),
+                                        StreamBuilder<PlaybackState>(
+                                          stream: currentPlaybackState(),
+                                          builder: (context, state) {
+                                            bool? playState = state.data?.playing;
+                                            playState ??= false;
+                                            return Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                IconButton(
+                                                  color: AntiiQTheme.of(context)
+                                                      .colorScheme
+                                                      .onBackground,
+                                                  onPressed: () {
+                                                    rewind();
+                                                  },
+                                                  iconSize: 40,
+                                                  icon: const Icon(
+                                                      RemixIcon.arrow_left_double),
+                                                ),
+                                                IconButton(
+                                                  color: AntiiQTheme.of(context)
+                                                      .colorScheme
+                                                      .onBackground,
+                                                  onPressed: () {
+                                                    previous();
+                                                  },
+                                                  iconSize: 40,
+                                                  icon: const Icon(
+                                                      RemixIcon.arrow_left_circle),
+                                                ),
+                                                IconButton(
+                                                  color: AntiiQTheme.of(context)
+                                                      .colorScheme
+                                                      .onBackground,
+                                                  onPressed: () {
+                                                    playState! ? pause() : resume();
+                                                  },
+                                                  iconSize: 40,
+                                                  icon: playState
+                                                      ? const Icon(
+                                                          RemixIcon.pause_circle)
+                                                      : const Icon(
+                                                          RemixIcon.play_circle),
+                                                ),
+                                                IconButton(
+                                                  color: AntiiQTheme.of(context)
+                                                      .colorScheme
+                                                      .onBackground,
+                                                  onPressed: () {
+                                                    next();
+                                                  },
+                                                  iconSize: 40,
+                                                  icon: const Icon(
+                                                      RemixIcon.arrow_right_circle),
+                                                ),
+                                                IconButton(
+                                                  color: AntiiQTheme.of(context)
+                                                      .colorScheme
+                                                      .onBackground,
+                                                  onPressed: () {
+                                                    forward();
+                                                  },
+                                                  iconSize: 40,
+                                                  icon: const Icon(
+                                                      RemixIcon.arrow_right_double),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    TrackDurationDisplayWidget(
-                                        currentTrack: currentTrack),
-                                    SeekBarBuilder(currentTrack: currentTrack),
-                                    StreamBuilder<PlaybackState>(
-                                      stream: currentPlaybackState(),
-                                      builder: (context, state) {
-                                        bool? playState = state.data?.playing;
-                                        playState ??= false;
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            IconButton(
-                                              color: AntiiQTheme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                              onPressed: () {
-                                                rewind();
-                                              },
-                                              iconSize: 40,
-                                              icon: const Icon(
-                                                  RemixIcon.arrow_left_double),
-                                            ),
-                                            IconButton(
-                                              color: AntiiQTheme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                              onPressed: () {
-                                                previous();
-                                              },
-                                              iconSize: 40,
-                                              icon: const Icon(
-                                                  RemixIcon.arrow_left_circle),
-                                            ),
-                                            IconButton(
-                                              color: AntiiQTheme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                              onPressed: () {
-                                                playState! ? pause() : resume();
-                                              },
-                                              iconSize: 40,
-                                              icon: playState
-                                                  ? const Icon(
-                                                      RemixIcon.pause_circle)
-                                                  : const Icon(
-                                                      RemixIcon.play_circle),
-                                            ),
-                                            IconButton(
-                                              color: AntiiQTheme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                              onPressed: () {
-                                                next();
-                                              },
-                                              iconSize: 40,
-                                              icon: const Icon(
-                                                  RemixIcon.arrow_right_circle),
-                                            ),
-                                            IconButton(
-                                              color: AntiiQTheme.of(context)
-                                                  .colorScheme
-                                                  .onBackground,
-                                              onPressed: () {
-                                                forward();
-                                              },
-                                              iconSize: 40,
-                                              icon: const Icon(
-                                                  RemixIcon.arrow_right_double),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                              ),
+                            );
+                          }
                         ),
                       ),
                     ),

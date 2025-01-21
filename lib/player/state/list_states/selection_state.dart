@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/list_states/tracks_state.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
-import 'package:antiiq/player/utilities/user_settings.dart';
+import 'package:antiiq/player/utilities/settings/user_settings.dart';
 
 class SelectionState {
   List<Track> list = [];

@@ -4,7 +4,7 @@ import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/folder_picker.dart';
-import 'package:antiiq/player/utilities/user_settings.dart';
+import 'package:antiiq/player/utilities/settings/user_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:path_provider/path_provider.dart';

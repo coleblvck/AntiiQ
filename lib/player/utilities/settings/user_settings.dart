@@ -30,6 +30,7 @@ class MainBoxKeys {
   static const String dynamicThemeEnabled = "dynamicThemeEnabled";
   static const String dynamicColorBrightness = "dynamicColorBrightness";
   static const String dynamicAmoledEnabled = "dynamicAmoledEnabled";
+  static const String coverArtFit = "coverArtFit";
 }
 
 updateDirectories() async {
@@ -90,6 +91,7 @@ initializeUserSettings() async {
   await initTrackDurationShowSwitch();
   await initQuitType();
   await getStatusBarMode();
+  await getCoverArtFit();
 }
 
 getUserLibraryDirectories() async {
@@ -207,4 +209,24 @@ changeDynamicColorBrightness(String brightness) async {
     await updateDynamicTheme(dynamicColorBrightness);
     broadcastThemeSettings();
   }
+}
+
+getCoverArtFit() async {
+  String coverArtFit = await antiiqState.store.get(MainBoxKeys.coverArtFit, defaultValue: "cover");
+  if (coverArtFit == "contain") {
+    currentCoverArtFit = ArtFit.contain;
+  } else {
+    currentCoverArtFit = ArtFit.cover;
+  }
+}
+
+changeCoverArtFit(String coverArtFit) async {
+  if (coverArtFit == "contain") {
+    currentCoverArtFit = ArtFit.contain;
+    coverArtFitStream.add(ArtFit.contain);
+  } else {
+    currentCoverArtFit = ArtFit.cover;
+    coverArtFitStream.add(ArtFit.cover);
+  }
+  await antiiqState.store.put(MainBoxKeys.coverArtFit, coverArtFit);
 }

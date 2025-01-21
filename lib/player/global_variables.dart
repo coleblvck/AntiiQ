@@ -116,3 +116,12 @@ AntiiQColorScheme? dynamicColorScheme;
 late bool dynamicThemeEnabled;
 
 late Brightness dynamicColorBrightness;
+
+enum ArtFit {
+  contain,
+  cover,
+}
+
+
+late ArtFit currentCoverArtFit;
+StreamController<ArtFit> coverArtFitStream = StreamController.broadcast();

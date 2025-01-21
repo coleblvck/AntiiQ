@@ -1,7 +1,7 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
-import 'package:antiiq/player/utilities/user_settings.dart';
+import 'package:antiiq/player/utilities/settings/user_settings.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
@@ -97,8 +97,9 @@ class _UserInterfaceState extends State<UserInterface> {
                               Switch(
                                 activeTrackColor:
                                     AntiiQTheme.of(context).colorScheme.primary,
-                                activeColor:
-                                    AntiiQTheme.of(context).colorScheme.onPrimary,
+                                activeColor: AntiiQTheme.of(context)
+                                    .colorScheme
+                                    .onPrimary,
                                 value: dynamicThemeEnabled,
                                 onChanged: (value) {
                                   setState(
@@ -116,7 +117,8 @@ class _UserInterfaceState extends State<UserInterface> {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16),
-                              color: AntiiQTheme.of(context).colorScheme.surface,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.surface,
                             ),
                             child: Row(
                               children: [
@@ -558,7 +560,114 @@ class _UserInterfaceState extends State<UserInterface> {
                     ],
                   ),
                 ),
-              )
+              ),
+              SliverToBoxAdapter(
+                child: Divider(
+                  color: AntiiQTheme.of(context).colorScheme.primary,
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.primary,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Cover Art Fit:",
+                            style: AntiiQTheme.of(context)
+                                .textStyles
+                                .onPrimaryText,
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: AntiiQTheme.of(context).colorScheme.surface,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (currentCoverArtFit !=
+                                        ArtFit.cover) {
+                                      changeCoverArtFit("cover");
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Card(
+                                    color: currentCoverArtFit ==
+                                            ArtFit.cover
+                                        ? AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .background
+                                        : Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    surfaceTintColor: Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Cover",
+                                          style: TextStyle(
+                                            color: AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (currentCoverArtFit !=
+                                        ArtFit.contain) {
+                                      changeCoverArtFit("contain");
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Card(
+                                    color: currentCoverArtFit ==
+                                            ArtFit.contain
+                                        ? AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .background
+                                        : Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    surfaceTintColor: Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Contain",
+                                          style: TextStyle(
+                                            color: AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
