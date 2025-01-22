@@ -1,0 +1,3 @@
+- Added setting option for cover art fit
+- UI/UX improvements
+- Swipe sideways on cover art in album display screen to hop across albums

@@ -26,7 +26,7 @@ List<Version> versions = [
   const Version(
     version: "1.4.2",
     title: "Melomaniac",
-    date: "1-JULY-2024",
+    date: "01-JULY-2024",
     changes: [
       "- Improvements and BugFixes",
       "- No need for separate apply and restart when changing UI settings",
