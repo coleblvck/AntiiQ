@@ -35,47 +35,50 @@ class ArtistsList extends StatelessWidget {
           availableSortTypes: artistListSortTypes,
         ),
         Expanded(
-          child: Scrollbar(
-            interactive: true,
-            thickness: 18,
-            radius: const Radius.circular(5),
-            child: StreamBuilder<List<Artist>>(
-              stream: antiiqState.music.artists.flow.stream,
-              builder: (context, snapshot) {
-                final List<Artist> currentArtistStream = snapshot.data ?? antiiqState.music.artists.list;
-                return ListView.builder(
-                  itemExtent: 100,
-                  physics: const BouncingScrollPhysics(),
-                  primary: true,
-                  itemCount: currentArtistStream.length,
-                  itemBuilder: (context, index) {
-                    final Artist thisArtist = currentArtistStream[index];
-                    return ArtistItem(
-                      title: TextScroll(
-                        thisArtist.artistName!,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onBackground,
+          child: CustomCard(
+            theme: AntiiQTheme.of(context).cardThemes.background,
+            child: Scrollbar(
+              interactive: true,
+              thickness: 18,
+              radius: const Radius.circular(5),
+              child: StreamBuilder<List<Artist>>(
+                stream: antiiqState.music.artists.flow.stream,
+                builder: (context, snapshot) {
+                  final List<Artist> currentArtistStream = snapshot.data ?? antiiqState.music.artists.list;
+                  return ListView.builder(
+                    itemExtent: 100,
+                    physics: const BouncingScrollPhysics(),
+                    primary: true,
+                    itemCount: currentArtistStream.length,
+                    itemBuilder: (context, index) {
+                      final Artist thisArtist = currentArtistStream[index];
+                      return ArtistItem(
+                        title: TextScroll(
+                          thisArtist.artistName!,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
+                          ),
+                          velocity: defaultTextScrollvelocity,
+                          delayBefore: delayBeforeScroll,
                         ),
-                        velocity: defaultTextScrollvelocity,
-                        delayBefore: delayBeforeScroll,
-                      ),
-                      subtitle: TextScroll(
-                        "${thisArtist.artistTracks!.length} ${(thisArtist.artistTracks!.length > 1) ? "Songs" : "song"}",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onBackground,
+                        subtitle: TextScroll(
+                          "${thisArtist.artistTracks!.length} ${(thisArtist.artistTracks!.length > 1) ? "Songs" : "song"}",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
+                          ),
+                          velocity: defaultTextScrollvelocity,
+                          delayBefore: delayBeforeScroll,
                         ),
-                        velocity: defaultTextScrollvelocity,
-                        delayBefore: delayBeforeScroll,
-                      ),
-                      leading: getUriImage(thisArtist.artistArt),
-                      artist: thisArtist,
-                      index: index,
-                    );
-                  },
-                );
-              }
+                        leading: getUriImage(thisArtist.artistArt),
+                        artist: thisArtist,
+                        index: index,
+                      );
+                    },
+                  );
+                }
+              ),
             ),
           ),
         ),

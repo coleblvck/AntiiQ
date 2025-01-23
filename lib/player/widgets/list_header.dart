@@ -28,81 +28,93 @@ class ListHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 45,
-      child: CustomCard(
-        theme: AntiiQTheme.of(context).cardThemes.primary,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Text(
-                "$headerTitle: ${listToCount.length}",
-                style: TextStyle(
-                  color: AntiiQTheme.of(context).colorScheme.onPrimary,
-                  fontSize: 15,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+      child: Column(
+        children: [
+          Divider(
+            height: 1,
+            color: AntiiQTheme.of(context).colorScheme.primary,
+          ),
+          SizedBox(
+            height: 45,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    "$headerTitle: ${listToCount.length}",
+                    style: TextStyle(
+                      color: AntiiQTheme.of(context).colorScheme.primary,
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Row(
+                    children: [
+                      StreamBuilder<List<Track>>(
+                          stream: antiiqState.music.selection.flow.stream,
+                          builder: (context, snapshot) {
+                            final List<Track> selectionSituation =
+                                snapshot.data ?? antiiqState.music.selection.list;
+                            return selectionSituation.isNotEmpty
+                                ? IconButton(
+                                    padding: EdgeInsets.zero,
+                                    color:
+                                        AntiiQTheme.of(context).colorScheme.primary,
+                                    iconSize: 15,
+                                    onPressed: () {
+                                      doThingsWithAudioSheet(
+                                        context,
+                                        selectionSituation,
+                                        thisGlobalSelection: true,
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      RemixIcon.list_check_3,
+                                    ),
+                                  )
+                                : Container();
+                          }),
+                      listToShuffle.length > 1
+                          ? IconButton(
+                              padding: EdgeInsets.zero,
+                              color: AntiiQTheme.of(context).colorScheme.primary,
+                              iconSize: 15,
+                              onPressed: () {
+                                shuffleTracks(listToShuffle);
+                              },
+                              icon: const Icon(
+                                RemixIcon.shuffle,
+                              ),
+                            )
+                          : Container(),
+                      availableSortTypes.isNotEmpty
+                          ? IconButton(
+                              padding: EdgeInsets.zero,
+                              color: AntiiQTheme.of(context).colorScheme.primary,
+                              iconSize: 15,
+                              onPressed: () {
+                                showSortModal(context, sortList, availableSortTypes,
+                                    setState: setState);
+                              },
+                              icon: const Icon(RemixIcon.sort_asc),
+                            )
+                          : Container(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Row(
-                children: [
-                  StreamBuilder<List<Track>>(
-                      stream: antiiqState.music.selection.flow.stream,
-                      builder: (context, snapshot) {
-                        final List<Track> selectionSituation =
-                            snapshot.data ?? antiiqState.music.selection.list;
-                        return selectionSituation.isNotEmpty
-                            ? IconButton(
-                                padding: EdgeInsets.zero,
-                                color:
-                                    AntiiQTheme.of(context).colorScheme.onPrimary,
-                                iconSize: 15,
-                                onPressed: () {
-                                  doThingsWithAudioSheet(
-                                    context,
-                                    selectionSituation,
-                                    thisGlobalSelection: true,
-                                  );
-                                },
-                                icon: const Icon(
-                                  RemixIcon.list_check_3,
-                                ),
-                              )
-                            : Container();
-                      }),
-                  listToShuffle.length > 1
-                      ? IconButton(
-                          padding: EdgeInsets.zero,
-                          color: AntiiQTheme.of(context).colorScheme.onPrimary,
-                          iconSize: 15,
-                          onPressed: () {
-                            shuffleTracks(listToShuffle);
-                          },
-                          icon: const Icon(
-                            RemixIcon.shuffle,
-                          ),
-                        )
-                      : Container(),
-                  availableSortTypes.isNotEmpty
-                      ? IconButton(
-                          padding: EdgeInsets.zero,
-                          color: AntiiQTheme.of(context).colorScheme.onPrimary,
-                          iconSize: 15,
-                          onPressed: () {
-                            showSortModal(context, sortList, availableSortTypes,
-                                setState: setState);
-                          },
-                          icon: const Icon(RemixIcon.sort_asc),
-                        )
-                      : Container(),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+          Divider(
+            height: 1,
+            color: AntiiQTheme.of(context).colorScheme.primary,
+          ),
+        ],
       ),
     );
   }

@@ -15,7 +15,7 @@ class CollectionLengthCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      theme: AntiiQTheme.of(context).cardThemes.surface.copyWith(
+      theme: AntiiQTheme.of(context).cardThemes.primary.copyWith(
         margin: const EdgeInsets.all(0)
       ),
       child: Padding(
@@ -25,7 +25,7 @@ class CollectionLengthCard extends StatelessWidget {
           style: TextStyle(
             color: AntiiQTheme.of(context)
                 .colorScheme
-                .primary,
+                .onPrimary,
           ),
         ),
       ),

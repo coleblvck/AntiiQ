@@ -38,42 +38,45 @@ class FavouritesList extends StatelessWidget {
                 availableSortTypes: const [],
               ),
               Expanded(
-                child: Scrollbar(
-                  interactive: true,
-                  thickness: 18,
-                  radius: const Radius.circular(5),
-                  child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    primary: true,
-                    itemExtent: 100,
-                    itemCount: favouritesSituation.length,
-                    itemBuilder: (context, index) {
-                      final Track thisTrack = favouritesSituation[index];
-                      return FavouritesSong(
-                        title: TextScroll(
-                          thisTrack.trackData!.trackName!,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: AntiiQTheme.of(context).colorScheme.onBackground,
+                child: CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.background,
+                  child: Scrollbar(
+                    interactive: true,
+                    thickness: 18,
+                    radius: const Radius.circular(5),
+                    child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      primary: true,
+                      itemExtent: 100,
+                      itemCount: favouritesSituation.length,
+                      itemBuilder: (context, index) {
+                        final Track thisTrack = favouritesSituation[index];
+                        return FavouritesSong(
+                          title: TextScroll(
+                            thisTrack.trackData!.trackName!,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: AntiiQTheme.of(context).colorScheme.onBackground,
+                            ),
+                            velocity: defaultTextScrollvelocity,
+                            delayBefore: delayBeforeScroll,
                           ),
-                          velocity: defaultTextScrollvelocity,
-                          delayBefore: delayBeforeScroll,
-                        ),
-                        subtitle: TextScroll(
-                          thisTrack.trackData!.trackArtistNames ?? "No Artist",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: AntiiQTheme.of(context).colorScheme.onBackground,
+                          subtitle: TextScroll(
+                            thisTrack.trackData!.trackArtistNames ?? "No Artist",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: AntiiQTheme.of(context).colorScheme.onBackground,
+                            ),
+                            velocity: defaultTextScrollvelocity,
+                            delayBefore: delayBeforeScroll,
                           ),
-                          velocity: defaultTextScrollvelocity,
-                          delayBefore: delayBeforeScroll,
-                        ),
-                        leading: getUriImage(thisTrack.mediaItem!.artUri!),
-                        track: thisTrack,
-                        album: favouritesSituation,
-                        index: index,
-                      );
-                    },
+                          leading: getUriImage(thisTrack.mediaItem!.artUri!),
+                          track: thisTrack,
+                          album: favouritesSituation,
+                          index: index,
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
