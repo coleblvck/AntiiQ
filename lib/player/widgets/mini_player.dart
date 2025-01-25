@@ -20,9 +20,11 @@ class MiniPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      theme: AntiiQTheme.of(context).cardThemes.background,
+      theme: AntiiQTheme.of(context).cardThemes.background.copyWith(
+        margin: const EdgeInsets.only(left: 4.0, right: 4.0, top: 4.0)
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(4.0),
         child: StreamBuilder<MediaItem?>(
           stream: currentPlaying(),
           builder: (context, snapshot) {
@@ -72,50 +74,84 @@ class MiniPlayer extends StatelessWidget {
                               TextScroll(
                                 currentTrack.title,
                                 textAlign: TextAlign.left,
-                                style: AntiiQTheme.of(context).textStyles.onBackgroundText,
+                                style: AntiiQTheme.of(context)
+                                    .textStyles
+                                    .onBackgroundText,
                                 velocity: defaultTextScrollvelocity,
                                 delayBefore: delayBeforeScroll,
                               ),
                               TextScroll(
                                 currentTrack.artist as String,
                                 textAlign: TextAlign.left,
-                                style: AntiiQTheme.of(context).textStyles.onBackgroundText,
+                                style: AntiiQTheme.of(context)
+                                    .textStyles
+                                    .onBackgroundText,
                                 velocity: defaultTextScrollvelocity,
                                 delayBefore: delayBeforeScroll,
                               ),
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 5.0,
-                          ),
-                          child: StreamBuilder<PlaybackState>(
-                              stream: currentPlaybackState(),
-                              builder: (context, state) {
-                                bool? playState = state.data?.playing;
-                                playState ??= false;
-                                return GestureDetector(
-                                  onTap: () {
-                                    playState! ? pause() : resume();
-                                  },
-                                  child: playState
-                                      ? Icon(
-                                          RemixIcon.pause,
-                                          size: 40,
+                        const SizedBox(width: 4.0,),
+                        StreamBuilder<bool>(
+                          stream: additionalMiniPlayerControlsStream.stream,
+                          builder: (context, snapshot) {
+                            final miniPlayerControlsEnabled = snapshot.data ?? additionalMiniPlayerControls;
+                            return StreamBuilder<PlaybackState>(
+                                stream: currentPlaybackState(),
+                                builder: (context, state) {
+                                  bool? playState = state.data?.playing;
+                                  playState ??= false;
+                                  return Row(
+                                    children: [
+                                      miniPlayerControlsEnabled ? GestureDetector(
+                                        onTap: () {
+                                          previous();
+                                        },
+                                        child: Icon(
+                                          RemixIcon.arrow_left_s_outline,
                                           color: AntiiQTheme.of(context)
                                               .colorScheme
-                                              .secondary,
-                                        )
-                                      : Icon(
-                                          RemixIcon.play,
-                                          size: 40,
-                                          color: AntiiQTheme.of(context)
-                                              .colorScheme
-                                              .secondary,
+                                              .primary,
+                                          size: 44,
                                         ),
-                                );
-                              }),
+                                      ): Container(),
+                                      GestureDetector(
+                                        onTap: () {
+                                          playState! ? pause() : resume();
+                                        },
+                                        child: playState
+                                            ? Icon(
+                                                RemixIcon.pause,
+                                                size: 44,
+                                                color: AntiiQTheme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                              )
+                                            : Icon(
+                                                RemixIcon.play,
+                                                size: 44,
+                                                color: AntiiQTheme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                              ),
+                                      ),
+                                      miniPlayerControlsEnabled ? GestureDetector(
+                                        onTap: () {
+                                          next();
+                                        },
+                                        child: Icon(
+                                          RemixIcon.arrow_right_s_outline,
+                                          color: AntiiQTheme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          size: 44,
+                                        ),
+                                      ): Container(),
+                                    ],
+                                  );
+                                });
+                          }
                         )
                       ],
                     ),

@@ -36,49 +36,52 @@ class SongsList extends StatelessWidget {
           availableSortTypes: trackListSortTypes,
         ),
         Expanded(
-          child: Scrollbar(
-            interactive: true,
-            thickness: 18,
-            radius: const Radius.circular(5),
-            child: StreamBuilder<List<Track>>(
-              stream: antiiqState.music.tracks.flow.stream,
-              builder: (context, snapshot) {
-                final List<Track> allStreamTracks = snapshot.data ?? antiiqState.music.tracks.list;
-                return ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  primary: true,
-                  itemExtent: 100,
-                  itemCount: allStreamTracks.length,
-                  itemBuilder: (context, index) {
-                    final Track thisTrack = allStreamTracks[index];
-                    final List<MediaItem> allSongItems = allStreamTracks.map((e) => e.mediaItem!).toList();
-                    return SongItem(
-                      title: TextScroll(
-                        thisTrack.trackData!.trackName!,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onBackground,
+          child: CustomCard(
+            theme: AntiiQTheme.of(context).cardThemes.background,
+            child: Scrollbar(
+              interactive: true,
+              thickness: 18,
+              radius: const Radius.circular(5),
+              child: StreamBuilder<List<Track>>(
+                stream: antiiqState.music.tracks.flow.stream,
+                builder: (context, snapshot) {
+                  final List<Track> allStreamTracks = snapshot.data ?? antiiqState.music.tracks.list;
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    primary: true,
+                    itemExtent: 100,
+                    itemCount: allStreamTracks.length,
+                    itemBuilder: (context, index) {
+                      final Track thisTrack = allStreamTracks[index];
+                      final List<MediaItem> allSongItems = allStreamTracks.map((e) => e.mediaItem!).toList();
+                      return SongItem(
+                        title: TextScroll(
+                          thisTrack.trackData!.trackName!,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
+                          ),
+                          velocity: defaultTextScrollvelocity,
+                          delayBefore: delayBeforeScroll,
                         ),
-                        velocity: defaultTextScrollvelocity,
-                        delayBefore: delayBeforeScroll,
-                      ),
-                      subtitle: TextScroll(
-                        thisTrack.trackData!.trackArtistNames ?? "No Artist",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onBackground,
+                        subtitle: TextScroll(
+                          thisTrack.trackData!.trackArtistNames ?? "No Artist",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
+                          ),
+                          velocity: defaultTextScrollvelocity,
+                          delayBefore: delayBeforeScroll,
                         ),
-                        velocity: defaultTextScrollvelocity,
-                        delayBefore: delayBeforeScroll,
-                      ),
-                      leading: getUriImage(thisTrack.mediaItem!.artUri!),
-                      track: thisTrack,
-                      index: index,
-                      allSongItems: allSongItems,
-                    );
-                  },
-                );
-              }
+                        leading: getUriImage(thisTrack.mediaItem!.artUri!),
+                        track: thisTrack,
+                        index: index,
+                        allSongItems: allSongItems,
+                      );
+                    },
+                  );
+                }
+              ),
             ),
           ),
         ),

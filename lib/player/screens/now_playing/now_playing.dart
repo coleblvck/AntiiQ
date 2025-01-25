@@ -71,9 +71,11 @@ class NowPlayingBottomHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 60,
+      height: 48,
       child: CustomCard(
-        theme: AntiiQTheme.of(context).cardThemes.background,
+        theme: AntiiQTheme.of(context).cardThemes.background.copyWith(
+          margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 4)
+        ),
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 10),
           child: Row(

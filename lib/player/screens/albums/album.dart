@@ -183,41 +183,41 @@ showAlbum(context, Album albumToShowFirst) {
                             ),
                           ),
                           SliverFixedExtentList.builder(
-                            itemExtent: 100,
-                            itemCount: album.albumTracks!.length,
-                            itemBuilder: (context, index) {
-                              final thisTrack = album.albumTracks![index];
-                              return AlbumSong(
-                                title: TextScroll(
-                                  thisTrack.trackData!.trackName!,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    color: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .onBackground,
+                              itemExtent: 100,
+                              itemCount: album.albumTracks!.length,
+                              itemBuilder: (context, index) {
+                                final thisTrack = album.albumTracks![index];
+                                return AlbumSong(
+                                  title: TextScroll(
+                                    thisTrack.trackData!.trackName!,
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      color: AntiiQTheme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                    ),
+                                    velocity: defaultTextScrollvelocity,
+                                    delayBefore: delayBeforeScroll,
                                   ),
-                                  velocity: defaultTextScrollvelocity,
-                                  delayBefore: delayBeforeScroll,
-                                ),
-                                subtitle: TextScroll(
-                                  thisTrack.mediaItem!.artist!,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    color: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .onBackground,
+                                  subtitle: TextScroll(
+                                    thisTrack.mediaItem!.artist!,
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      color: AntiiQTheme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                    ),
+                                    velocity: defaultTextScrollvelocity,
+                                    delayBefore: delayBeforeScroll,
                                   ),
-                                  velocity: defaultTextScrollvelocity,
-                                  delayBefore: delayBeforeScroll,
-                                ),
-                                leading:
-                                    getUriImage(thisTrack.mediaItem!.artUri),
-                                track: thisTrack,
-                                album: album,
-                                index: index,
-                              );
-                            },
-                          )
+                                  leading: getUriImage(
+                                      thisTrack.mediaItem!.artUri),
+                                  track: thisTrack,
+                                  album: album,
+                                  index: index,
+                                );
+                              },
+                            ),
                         ],
                       ),
                     );

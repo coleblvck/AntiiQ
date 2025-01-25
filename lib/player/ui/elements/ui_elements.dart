@@ -18,6 +18,7 @@ class CustomCard extends StatelessWidget {
       shadowColor: Colors.black,
       surfaceTintColor: theme.surfaceTintColor ?? Colors.transparent,
       margin: theme.margin ?? const EdgeInsets.all(4.0),
+      clipBehavior: Clip.hardEdge,
       child: child,
     );
   }

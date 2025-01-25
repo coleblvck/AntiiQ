@@ -177,6 +177,34 @@ class _BehaviourState extends State<Behaviour> {
                     ),
                   ),
                 ),
+                CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Show additional mini player controls:",
+                          style:
+                              AntiiQTheme.of(context).textStyles.onSurfaceText,
+                        ),
+                        Switch(
+                          activeTrackColor:
+                              AntiiQTheme.of(context).colorScheme.primary,
+                          activeColor:
+                              AntiiQTheme.of(context).colorScheme.onPrimary,
+                          value: additionalMiniPlayerControls,
+                          onChanged: (value) {
+                            setState(() {
+                              changeAdditionalMiniPlayerControls(value);
+                            });
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ),
                 Divider(
                   color: AntiiQTheme.of(context).colorScheme.primary,
                 ),

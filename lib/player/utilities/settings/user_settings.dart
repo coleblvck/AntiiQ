@@ -31,6 +31,7 @@ class MainBoxKeys {
   static const String dynamicColorBrightness = "dynamicColorBrightness";
   static const String dynamicAmoledEnabled = "dynamicAmoledEnabled";
   static const String coverArtFit = "coverArtFit";
+  static const String additionalMiniPlayerControls = "additionalMiniPlayerControls";
 }
 
 updateDirectories() async {
@@ -92,6 +93,7 @@ initializeUserSettings() async {
   await initQuitType();
   await getStatusBarMode();
   await getCoverArtFit();
+  await getadditionalMiniPlayerControls();
 }
 
 getUserLibraryDirectories() async {
@@ -229,4 +231,14 @@ changeCoverArtFit(String coverArtFit) async {
     coverArtFitStream.add(ArtFit.cover);
   }
   await antiiqState.store.put(MainBoxKeys.coverArtFit, coverArtFit);
+}
+
+getadditionalMiniPlayerControls() async {
+  additionalMiniPlayerControls = await antiiqState.store.get(MainBoxKeys.coverArtFit, defaultValue: true);
+}
+
+changeAdditionalMiniPlayerControls(bool value) async {
+  additionalMiniPlayerControls = value;
+  additionalMiniPlayerControlsStream.add(value);
+  await antiiqState.store.put(MainBoxKeys.additionalMiniPlayerControls, value);
 }

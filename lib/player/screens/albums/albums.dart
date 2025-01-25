@@ -29,48 +29,51 @@ class AlbumsGrid extends StatelessWidget {
           availableSortTypes: albumListSortTypes,
         ),
         Expanded(
-          child: Scrollbar(
-            interactive: true,
-            thickness: 18,
-            radius: const Radius.circular(5),
-            child: StreamBuilder<List<Album>>(
-              stream: antiiqState.music.albums.flow.stream,
-              builder: (context, snapshot) {
-                final List<Album> currentAlbumStream = snapshot.data ?? antiiqState.music.albums.list;
-                return GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  physics: const BouncingScrollPhysics(),
-                  primary: true,
-                  itemCount: currentAlbumStream.length,
-                  itemBuilder: (context, index) {
-                    final Album thisAlbum = currentAlbumStream[index];
-                    return AlbumItem(
-                      title: TextScroll(
-                        thisAlbum.albumName!,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onBackground,
+          child: CustomCard(
+            theme: AntiiQTheme.of(context).cardThemes.background,
+            child: Scrollbar(
+              interactive: true,
+              thickness: 18,
+              radius: const Radius.circular(5),
+              child: StreamBuilder<List<Album>>(
+                stream: antiiqState.music.albums.flow.stream,
+                builder: (context, snapshot) {
+                  final List<Album> currentAlbumStream = snapshot.data ?? antiiqState.music.albums.list;
+                  return GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2),
+                    physics: const BouncingScrollPhysics(),
+                    primary: true,
+                    itemCount: currentAlbumStream.length,
+                    itemBuilder: (context, index) {
+                      final Album thisAlbum = currentAlbumStream[index];
+                      return AlbumItem(
+                        title: TextScroll(
+                          thisAlbum.albumName!,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
+                          ),
+                          velocity: defaultTextScrollvelocity,
+                          delayBefore: delayBeforeScroll,
                         ),
-                        velocity: defaultTextScrollvelocity,
-                        delayBefore: delayBeforeScroll,
-                      ),
-                      subtitle: TextScroll(
-                        thisAlbum.albumArtistName!,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: AntiiQTheme.of(context).colorScheme.onBackground,
+                        subtitle: TextScroll(
+                          thisAlbum.albumArtistName!,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context).colorScheme.onBackground,
+                          ),
+                          velocity: defaultTextScrollvelocity,
+                          delayBefore: delayBeforeScroll,
                         ),
-                        velocity: defaultTextScrollvelocity,
-                        delayBefore: delayBeforeScroll,
-                      ),
-                      leading: getUriImage(thisAlbum.albumArt),
-                      album: thisAlbum,
-                      index: index,
-                    );
-                  },
-                );
-              }
+                        leading: getUriImage(thisAlbum.albumArt),
+                        album: thisAlbum,
+                        index: index,
+                      );
+                    },
+                  );
+                }
+              ),
             ),
           ),
         ),

@@ -127,3 +127,6 @@ late ArtFit currentCoverArtFit;
 StreamController<ArtFit> coverArtFitStream = StreamController.broadcast();
 
 const double pagePadding = 5.0;
+
+late bool additionalMiniPlayerControls;
+StreamController<bool> additionalMiniPlayerControlsStream = StreamController.broadcast();

@@ -183,9 +183,9 @@ class _MainBoxState extends State<MainBox> {
       ),
     );
     //
-    double bottomNavigationBarHeight = 60;
+    double bottomNavigationBarHeight = 56;
     double appBarHeight = 50;
-    double minHeightBox = 50 + bottomNavigationBarHeight;
+    double minHeightBox = 42 + bottomNavigationBarHeight;
     double viewInsetsHeight = MediaQuery.of(context).viewPadding.top +
         MediaQuery.of(context).viewPadding.bottom;
     double maxHeightBox = MediaQuery.of(context).size.height -
@@ -275,14 +275,14 @@ class _MainBoxState extends State<MainBox> {
             ),
             draggableIconColor: AntiiQTheme.of(context).colorScheme.onSurface,
             color: AntiiQTheme.of(context).colorScheme.surface,
-            style: BoxStyle.sheet,
+            style: BoxStyle.none,
             backdrop: Backdrop(
               overlayOpacity: 0.0,
               fading: true,
               overlay: true,
               color: AntiiQTheme.of(context).colorScheme.background,
               body:
-                  !antiiqState.permissions.has ? noAccessToLibraryWidget() : mainBackdrop(),
+                  !antiiqState.permissions.has ? noAccessToLibraryWidget() : const MainBackdrop(),
             ),
             onBoxOpen: () {
               FocusManager.instance.primaryFocus?.unfocus();
