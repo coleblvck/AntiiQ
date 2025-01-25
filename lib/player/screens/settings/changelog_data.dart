@@ -14,6 +14,15 @@ class Version {
 
 List<Version> versions = [
   const Version(
+    version: "1.4.4",
+    title: "Melomaniac",
+    date: "25-JAN-2025",
+    changes: [
+      "- UI improvements",
+      "- Added setting for additional mini player controls",
+    ],
+  ),
+  const Version(
     version: "1.4.3",
     title: "Melomaniac",
     date: "22-JAN-2025",
