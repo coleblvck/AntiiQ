@@ -5,8 +5,8 @@ import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/folder_picker.dart';
 import 'package:antiiq/player/utilities/settings/user_settings.dart';
+import 'package:antiiq/player/widgets/ui/antiiq_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:restart_app/restart_app.dart';
@@ -89,9 +89,8 @@ class _LibraryState extends State<Library> {
               padding: const EdgeInsets.only(right: 20.0),
               child: Text(
                 "Library",
-                style: AntiiQTheme.of(context)
-                    .textStyles
-                    .onBackgroundLargeHeader,
+                style:
+                    AntiiQTheme.of(context).textStyles.onBackgroundLargeHeader,
               ),
             ),
           ],
@@ -196,8 +195,14 @@ class _LibraryState extends State<Library> {
                     ),
                   ),
                 ),*/
+                const SizedBox(
+                  height: 4,
+                ),
                 CustomCard(
-                  theme: AntiiQTheme.of(context).cardThemes.surface,
+                  theme: AntiiQTheme.of(context)
+                      .cardThemes
+                      .surface
+                      .copyWith(margin: EdgeInsets.zero),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -213,55 +218,30 @@ class _LibraryState extends State<Library> {
                         ),
                         SizedBox(
                           height: 20,
-                          child: FlutterSlider(
-                              selectByTap: true,
-                              tooltip: FlutterSliderTooltip(
-                                disabled: true,
-                              ),
-                              handlerHeight: 20,
-                              handlerWidth: 5,
-                              step: const FlutterSliderStep(
-                                  step: 1, isPercentRange: false),
-                              values: [minimumTrackLength.toDouble()],
-                              min: 5,
-                              max: 120,
-                              handler: FlutterSliderHandler(
-                                decoration: BoxDecoration(
-                                    color: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .primary,
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Container(),
-                              ),
-                              foregroundDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(1)),
-                              trackBar: FlutterSliderTrackBar(
-                                inactiveTrackBar: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: AntiiQTheme.of(context)
-                                      .colorScheme
-                                      .primary,
-                                  border: Border.all(
-                                    width: 3,
-                                    color: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .primary,
-                                  ),
-                                ),
-                                activeTrackBar: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  color: AntiiQTheme.of(context)
-                                      .colorScheme
-                                      .secondary,
-                                ),
-                              ),
-                              onDragging: (handlerIndex, lowerValue,
-                                      upperValue) =>
-                                  {
-                                    setState(() {
-                                      setMinimumTrackLength(lowerValue.round());
-                                    })
-                                  }),
+                          child: AntiiQSlider(
+                            value: minimumTrackLength.toDouble(),
+                            min: 5,
+                            max: 120,
+                            step: 1,
+                            activeTrackColor:
+                                AntiiQTheme.of(context).colorScheme.secondary,
+                            inactiveTrackColor:
+                                AntiiQTheme.of(context).colorScheme.primary,
+                            thumbColor:
+                                AntiiQTheme.of(context).colorScheme.onPrimary,
+                            thumbWidth: 30.0,
+                            thumbHeight: 16.0,
+                            thumbBorderRadius: generalRadius / 2,
+                            trackHeight: 20.0,
+                            trackBorderRadius: generalRadius - 6,
+                            orientation: Axis.horizontal,
+                            selectByTap: true,
+                            onChanged: (value) {
+                              setState(() {
+                                setMinimumTrackLength(value.round());
+                              });
+                            },
+                          ),
                         ),
                       ],
                     ),

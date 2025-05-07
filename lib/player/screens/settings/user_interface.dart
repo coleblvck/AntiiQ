@@ -1,12 +1,14 @@
+import 'package:antiiq/home_widget/home_widget_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/settings/user_settings.dart';
+import 'package:antiiq/player/widgets/ui/antiiq_slider.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:antiiq/player/utilities/settings/theme_settings.dart';
+import 'package:home_widget/home_widget.dart';
 
 class UserInterface extends StatefulWidget {
   const UserInterface({
@@ -17,6 +19,33 @@ class UserInterface extends StatefulWidget {
 }
 
 class _UserInterfaceState extends State<UserInterface> {
+  bool _coverArtBackground = true;
+  int _backgroundOpacity = 50;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWidgetSettings();
+  }
+
+  Future<void> _loadWidgetSettings() async {
+    try {
+      final coverArtBackground = await HomeWidget.getWidgetData<bool>('cover_art_background');
+      final backgroundOpacity = await HomeWidget.getWidgetData<int>('background_opacity');
+
+      setState(() {
+        _coverArtBackground = coverArtBackground ?? true;
+        _backgroundOpacity = backgroundOpacity ?? 50;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -60,500 +89,504 @@ class _UserInterfaceState extends State<UserInterface> {
                   height: 20,
                 ),
               ),
-              SliverToBoxAdapter(
-                child: CustomCard(
-                  theme: AntiiQTheme.of(context).cardThemes.background,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text(
-                      "Themes",
+              StatusbarModeSetting(
+                setPageState: setState,
+              ),
+              UiRoundnessSetting(
+                setPageState: setState,
+              ),
+              CoverArtFitSetting(
+                setPageState: setState,
+              ),
+              WidgetSettingsSection(
+                coverArtBackground: _coverArtBackground,
+                backgroundOpacity: _backgroundOpacity,
+                isLoading: _isLoading,
+                onCoverArtBackgroundChanged: (value) {
+                  setState(() {
+                    _coverArtBackground = value;
+                  });
+                },
+                onBackgroundOpacityChanged: (value) {
+                  setState(() {
+                    _backgroundOpacity = value.round();
+                  });
+                },
+              ),
+              const ThemeSettingsTitle(),
+              DynamicThemeSetting(
+                setPageState: setState,
+              ),
+              const SettingsThemeGrid(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class WidgetSettingsSection extends StatelessWidget {
+  final bool coverArtBackground;
+  final int backgroundOpacity;
+  final bool isLoading;
+  final Function(bool) onCoverArtBackgroundChanged;
+  final Function(double) onBackgroundOpacityChanged;
+
+  const WidgetSettingsSection({
+    super.key,
+    required this.coverArtBackground,
+    required this.backgroundOpacity,
+    required this.isLoading,
+    required this.onCoverArtBackgroundChanged,
+    required this.onBackgroundOpacityChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return SliverToBoxAdapter(
+        child: CustomCard(
+          theme: AntiiQTheme.of(context).cardThemes.primary,
+          child: const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return SliverToBoxAdapter(
+      child: CustomCard(
+        theme: AntiiQTheme.of(context).cardThemes.primary,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Widget Settings",
+                  style: AntiiQTheme.of(context)
+                      .textStyles
+                      .onBackgroundLargeHeader
+                      .copyWith(
+                        color: AntiiQTheme.of(context).colorScheme.onPrimary,
+                      ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Cover Art Background",
                       style: AntiiQTheme.of(context)
                           .textStyles
-                          .onBackgroundLargeHeader,
-                      textAlign: TextAlign.center,
+                          .onPrimaryText
+                          .copyWith(fontSize: 16),
                     ),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: CustomCard(
-                  theme: AntiiQTheme.of(context).cardThemes.secondary,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Dynamic Theme",
-                                style: AntiiQTheme.of(context)
-                                    .textStyles
-                                    .onSecondaryText
-                                    .copyWith(fontSize: 20),
-                              ),
-                              Switch(
-                                activeTrackColor:
-                                    AntiiQTheme.of(context).colorScheme.primary,
-                                activeColor: AntiiQTheme.of(context)
-                                    .colorScheme
-                                    .onPrimary,
-                                value: dynamicThemeEnabled,
-                                onChanged: (value) {
-                                  setState(
-                                    () {
-                                      switchDynamicTheme(value);
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color:
-                                  AntiiQTheme.of(context).colorScheme.surface,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (dynamicColorBrightness !=
-                                          Brightness.dark) {
-                                        changeDynamicColorBrightness("dark");
-                                        setState(() {});
-                                      }
-                                    },
-                                    child: Card(
-                                      color: dynamicColorBrightness ==
-                                              Brightness.dark
-                                          ? AntiiQTheme.of(context)
-                                              .colorScheme
-                                              .background
-                                          : Colors.transparent,
-                                      shadowColor: Colors.transparent,
-                                      surfaceTintColor: Colors.transparent,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "Dark",
-                                            style: TextStyle(
-                                              color: AntiiQTheme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (dynamicColorBrightness !=
-                                          Brightness.light) {
-                                        changeDynamicColorBrightness("light");
-                                        setState(() {});
-                                      }
-                                    },
-                                    child: Card(
-                                      color: dynamicColorBrightness ==
-                                              Brightness.light
-                                          ? AntiiQTheme.of(context)
-                                              .colorScheme
-                                              .background
-                                          : Colors.transparent,
-                                      shadowColor: Colors.transparent,
-                                      surfaceTintColor: Colors.transparent,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "Light",
-                                            style: TextStyle(
-                                              color: AntiiQTheme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        CustomCard(
-                          theme: AntiiQTheme.of(context)
-                              .cardThemes
-                              .background
-                              .copyWith(color: Colors.black),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Amoled Dark",
-                                  style: AntiiQTheme.of(context)
-                                      .textStyles
-                                      .onSecondaryText
-                                      .copyWith(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                      ),
-                                ),
-                                Switch(
-                                  activeTrackColor: AntiiQTheme.of(context)
-                                      .colorScheme
-                                      .primary,
-                                  activeColor: AntiiQTheme.of(context)
-                                      .colorScheme
-                                      .onPrimary,
-                                  value: dynamicAmoledEnabled,
-                                  onChanged: (value) {
-                                    setState(
-                                      () {
-                                        switchDynamicAmoled(value);
-                                      },
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                    Switch(
+                      activeTrackColor:
+                          AntiiQTheme.of(context).colorScheme.secondary,
+                      activeColor:
+                          AntiiQTheme.of(context).colorScheme.onSecondary,
+                      value: coverArtBackground,
+                      onChanged: (value) {
+                        onCoverArtBackgroundChanged(value);
+                      },
                     ),
-                  ),
-                ),
-              ),
-              SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1,
-                ),
-                delegate: SliverChildListDelegate(
-                  [
-                    CustomCard(
-                        theme: AntiiQTheme.of(context).cardThemes.primary,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Custom",
-                              style: AntiiQTheme.of(context)
-                                  .textStyles
-                                  .onPrimaryText
-                                  .copyWith(fontSize: 20),
-                            ),
-                            CustomButton(
-                              style:
-                                  AntiiQTheme.of(context).buttonStyles.style3,
-                              function: () {
-                                customColorEditSheet(context);
-                              },
-                              child: const Icon(RemixIcon.magic),
-                            ),
-                          ],
-                        )),
-                    for (String theme in customThemes.keys)
-                      CustomCard(
-                        theme: AntiiQTheme.of(context)
-                            .cardThemes
-                            .background
-                            .copyWith(
-                              color: customThemes[theme]!.background,
-                            ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: CustomCard(
-                            theme: AntiiQTheme.of(context)
-                                .cardThemes
-                                .background
-                                .copyWith(
-                                  color: customThemes[theme]!.surface,
-                                ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    theme,
-                                    style: TextStyle(
-                                      color: customThemes[theme]!.onSurface,
-                                      fontSize: 15,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: 20,
-                                        width: 20,
-                                        color: customThemes[theme]!.primary,
-                                      ),
-                                      Container(
-                                        height: 20,
-                                        width: 20,
-                                        color: customThemes[theme]!.secondary,
-                                      ),
-                                      Container(
-                                        height: 20,
-                                        width: 20,
-                                        color: customThemes[theme]!.surface,
-                                      ),
-                                      Container(
-                                        height: 20,
-                                        width: 20,
-                                        color: customThemes[theme]!.background,
-                                      ),
-                                    ],
-                                  ),
-                                  CustomButton(
-                                    style: ButtonStyles().style1.copyWith(
-                                          backgroundColor:
-                                              WidgetStatePropertyAll(
-                                            customThemes[theme]!.primary,
-                                          ),
-                                          foregroundColor:
-                                              WidgetStatePropertyAll(
-                                            customThemes[theme]!.onPrimary,
-                                          ),
-                                        ),
-                                    function: () {
-                                      changeTheme(theme);
-                                    },
-                                    child: const Text("Apply"),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Divider(
-                  color: AntiiQTheme.of(context).colorScheme.primary,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: CustomCard(
-                  theme: AntiiQTheme.of(context).cardThemes.primary,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Status Bar Mode:",
-                            style: AntiiQTheme.of(context)
-                                .textStyles
-                                .onPrimaryText,
-                          ),
+              const SizedBox(height: 16),
+              CustomCard(
+                theme: AntiiQTheme.of(context).cardThemes.background,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Background Opacity: ${backgroundOpacity.round()}%",
+                        style: AntiiQTheme.of(context).textStyles.onSurfaceText,
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 20,
+                        child: AntiiQSlider(
+                          activeTrackColor:
+                              AntiiQTheme.of(context).colorScheme.secondary,
+                          inactiveTrackColor:
+                              AntiiQTheme.of(context).colorScheme.primary,
+                          thumbColor:
+                              AntiiQTheme.of(context).colorScheme.onPrimary,
+                          thumbWidth: 30.0,
+                          thumbHeight: 16.0,
+                          thumbBorderRadius: generalRadius / 2,
+                          trackHeight: 20.0,
+                          trackBorderRadius: generalRadius - 6,
+                          orientation: Axis.horizontal,
+                          selectByTap: true,
+                          value: backgroundOpacity.toDouble(),
+                          min: 0,
+                          max: 100,
+                          onChanged: (value) {
+                            onBackgroundOpacityChanged(value);
+                          },
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: AntiiQTheme.of(context).colorScheme.surface,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (currentStatusBarMode !=
-                                        StatusBarMode.defaultMode) {
-                                      setStatusBarMode("default");
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Card(
-                                    color: currentStatusBarMode ==
-                                            StatusBarMode.defaultMode
-                                        ? AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .background
-                                        : Colors.transparent,
-                                    shadowColor: Colors.transparent,
-                                    surfaceTintColor: Colors.transparent,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Default",
-                                          style: TextStyle(
-                                            color: AntiiQTheme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (currentStatusBarMode !=
-                                        StatusBarMode.immersiveMode) {
-                                      setStatusBarMode("immersive");
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Card(
-                                    color: currentStatusBarMode ==
-                                            StatusBarMode.immersiveMode
-                                        ? AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .background
-                                        : Colors.transparent,
-                                    shadowColor: Colors.transparent,
-                                    surfaceTintColor: Colors.transparent,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Immersive",
-                                          style: TextStyle(
-                                            color: AntiiQTheme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Divider(
-                  color: AntiiQTheme.of(context).colorScheme.primary,
+              const SizedBox(height: 10),
+              Center(
+                child: CustomButton(
+                  style: AntiiQTheme.of(context).buttonStyles.style2,
+                  function: () {
+                    HomeWidgetManager.updateVisuals(
+                        backgroundOpacity, coverArtBackground);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Widget settings updated',
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                        backgroundColor:
+                            AntiiQTheme.of(context).colorScheme.primary,
+                      ),
+                    );
+                  },
+                  child: const Text("Apply to Widgets"),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: CustomCard(
-                  theme: AntiiQTheme.of(context).cardThemes.surface,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          "UI Roundness",
-                          style: AntiiQTheme.of(context)
-                              .textStyles
-                              .onBackgroundLargeHeader
-                              .copyWith(
-                                color:
-                                    AntiiQTheme.of(context).colorScheme.primary,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PrimaryDividerAdapter extends StatelessWidget {
+  const PrimaryDividerAdapter({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Divider(
+        color: AntiiQTheme.of(context).colorScheme.primary,
+      ),
+    );
+  }
+}
+
+class CoverArtFitSetting extends StatelessWidget {
+  const CoverArtFitSetting({
+    super.key,
+    required this.setPageState,
+  });
+
+  final void Function(void Function()) setPageState;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: CustomCard(
+        theme: AntiiQTheme.of(context).cardThemes.secondary,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Cover Art Fit:",
+                  style: AntiiQTheme.of(context).textStyles.onSecondaryText,
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: AntiiQTheme.of(context).colorScheme.surface,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (currentCoverArtFit != ArtFit.cover) {
+                            changeCoverArtFit("cover");
+                            setPageState(() {});
+                          }
+                        },
+                        child: Card(
+                          color: currentCoverArtFit == ArtFit.cover
+                              ? AntiiQTheme.of(context).colorScheme.background
+                              : Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          surfaceTintColor: Colors.transparent,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Cover",
+                                style: TextStyle(
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .primary,
+                                ),
                               ),
+                            ),
+                          ),
                         ),
                       ),
-                      CustomCard(
-                        theme: AntiiQTheme.of(context).cardThemes.background,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                "Radius: ${generalRadius.round()}",
-                                style: AntiiQTheme.of(context)
-                                    .textStyles
-                                    .onSurfaceText,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (currentCoverArtFit != ArtFit.contain) {
+                            changeCoverArtFit("contain");
+                            setPageState(() {});
+                          }
+                        },
+                        child: Card(
+                          color: currentCoverArtFit == ArtFit.contain
+                              ? AntiiQTheme.of(context).colorScheme.background
+                              : Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          surfaceTintColor: Colors.transparent,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Contain",
+                                style: TextStyle(
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .primary,
+                                ),
                               ),
-                              const SizedBox(
-                                height: 10,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class UiRoundnessSetting extends StatelessWidget {
+  const UiRoundnessSetting({
+    super.key,
+    required this.setPageState,
+  });
+
+  final void Function(void Function()) setPageState;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: CustomCard(
+        theme: AntiiQTheme.of(context).cardThemes.surface,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "UI Roundness",
+                style: AntiiQTheme.of(context)
+                    .textStyles
+                    .onBackgroundLargeHeader
+                    .copyWith(
+                      color: AntiiQTheme.of(context).colorScheme.primary,
+                    ),
+              ),
+            ),
+            CustomCard(
+              theme: AntiiQTheme.of(context).cardThemes.background,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      "Radius: ${generalRadius.round()}",
+                      style: AntiiQTheme.of(context).textStyles.onSurfaceText,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      height: 20,
+                      child: AntiiQSlider(
+                          activeTrackColor:
+                              AntiiQTheme.of(context).colorScheme.secondary,
+                          inactiveTrackColor:
+                              AntiiQTheme.of(context).colorScheme.primary,
+                          thumbColor:
+                              AntiiQTheme.of(context).colorScheme.onPrimary,
+                          thumbWidth: 30.0,
+                          thumbHeight: 16.0,
+                          thumbBorderRadius: generalRadius / 2,
+                          trackHeight: 20.0,
+                          trackBorderRadius: generalRadius - 6,
+                          orientation: Axis.horizontal,
+                          selectByTap: true,
+                          value: generalRadius,
+                          min: 0,
+                          max: 25,
+                          onChanged: (value) => {
+                                setPageState(() {
+                                  setGeneralRadius(value);
+                                })
+                              }),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DynamicThemeSetting extends StatelessWidget {
+  const DynamicThemeSetting({
+    super.key,
+    required this.setPageState,
+  });
+
+  final void Function(void Function()) setPageState;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: CustomCard(
+        theme: AntiiQTheme.of(context).cardThemes.secondary,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Dynamic Theme",
+                      style: AntiiQTheme.of(context)
+                          .textStyles
+                          .onSecondaryText
+                          .copyWith(fontSize: 20),
+                    ),
+                    Switch(
+                      activeTrackColor:
+                          AntiiQTheme.of(context).colorScheme.primary,
+                      activeColor:
+                          AntiiQTheme.of(context).colorScheme.onPrimary,
+                      value: dynamicThemeEnabled,
+                      onChanged: (value) {
+                        setPageState(
+                          () {
+                            switchDynamicTheme(value);
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: AntiiQTheme.of(context).colorScheme.surface,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            if (dynamicColorBrightness != Brightness.dark) {
+                              changeDynamicColorBrightness("dark");
+                              setPageState(() {});
+                            }
+                          },
+                          child: Card(
+                            color: dynamicColorBrightness == Brightness.dark
+                                ? AntiiQTheme.of(context).colorScheme.background
+                                : Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            surfaceTintColor: Colors.transparent,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Dark",
+                                  style: TextStyle(
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                  ),
+                                ),
                               ),
-                              SizedBox(
-                                height: 20,
-                                child: FlutterSlider(
-                                    selectByTap: false,
-                                    tooltip: FlutterSliderTooltip(
-                                      disabled: true,
-                                    ),
-                                    handlerHeight: 20,
-                                    handlerWidth: 5,
-                                    step: const FlutterSliderStep(
-                                        step: 5, isPercentRange: false),
-                                    values: [generalRadius],
-                                    min: 0,
-                                    max: 25,
-                                    handler: FlutterSliderHandler(
-                                      decoration: BoxDecoration(
-                                          color: AntiiQTheme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: Container(),
-                                    ),
-                                    foregroundDecoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(1)),
-                                    trackBar: FlutterSliderTrackBar(
-                                      inactiveTrackBar: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        border: Border.all(
-                                          width: 3,
-                                          color: AntiiQTheme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ),
-                                      ),
-                                      activeTrackBar: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(4),
-                                        color: AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      ),
-                                    ),
-                                    onDragging: (handlerIndex, lowerValue,
-                                            upperValue) =>
-                                        {
-                                          setState(() {
-                                            setGeneralRadius(lowerValue);
-                                          })
-                                        }),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            if (dynamicColorBrightness != Brightness.light) {
+                              changeDynamicColorBrightness("light");
+                              setPageState(() {});
+                            }
+                          },
+                          child: Card(
+                            color: dynamicColorBrightness == Brightness.light
+                                ? AntiiQTheme.of(context).colorScheme.background
+                                : Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            surfaceTintColor: Colors.transparent,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Light",
+                                  style: TextStyle(
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                  ),
+                                ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -561,110 +594,41 @@ class _UserInterfaceState extends State<UserInterface> {
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Divider(
-                  color: AntiiQTheme.of(context).colorScheme.primary,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: CustomCard(
-                  theme: AntiiQTheme.of(context).cardThemes.secondary,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Cover Art Fit:",
-                            style: AntiiQTheme.of(context)
-                                .textStyles
-                                .onSecondaryText,
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: AntiiQTheme.of(context).colorScheme.surface,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (currentCoverArtFit !=
-                                        ArtFit.cover) {
-                                      changeCoverArtFit("cover");
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Card(
-                                    color: currentCoverArtFit ==
-                                            ArtFit.cover
-                                        ? AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .background
-                                        : Colors.transparent,
-                                    shadowColor: Colors.transparent,
-                                    surfaceTintColor: Colors.transparent,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Cover",
-                                          style: TextStyle(
-                                            color: AntiiQTheme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (currentCoverArtFit !=
-                                        ArtFit.contain) {
-                                      changeCoverArtFit("contain");
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Card(
-                                    color: currentCoverArtFit ==
-                                            ArtFit.contain
-                                        ? AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .background
-                                        : Colors.transparent,
-                                    shadowColor: Colors.transparent,
-                                    surfaceTintColor: Colors.transparent,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Contain",
-                                          style: TextStyle(
-                                            color: AntiiQTheme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+              CustomCard(
+                theme: AntiiQTheme.of(context)
+                    .cardThemes
+                    .background
+                    .copyWith(color: Colors.black),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Amoled Dark",
+                        style: AntiiQTheme.of(context)
+                            .textStyles
+                            .onSecondaryText
+                            .copyWith(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                      ),
+                      Switch(
+                        activeTrackColor:
+                            AntiiQTheme.of(context).colorScheme.primary,
+                        activeColor:
+                            AntiiQTheme.of(context).colorScheme.onPrimary,
+                        value: dynamicAmoledEnabled,
+                        onChanged: (value) {
+                          setPageState(
+                            () {
+                              switchDynamicAmoled(value);
+                            },
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -675,6 +639,251 @@ class _UserInterfaceState extends State<UserInterface> {
     );
   }
 }
+
+class StatusbarModeSetting extends StatelessWidget {
+  const StatusbarModeSetting({
+    super.key,
+    required this.setPageState,
+  });
+
+  final void Function(void Function()) setPageState;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: CustomCard(
+        theme: AntiiQTheme.of(context).cardThemes.primary,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Status Bar Mode:",
+                  style: AntiiQTheme.of(context).textStyles.onPrimaryText,
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: AntiiQTheme.of(context).colorScheme.surface,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (currentStatusBarMode !=
+                              StatusBarMode.defaultMode) {
+                            setStatusBarMode("default");
+                            setPageState(() {});
+                          }
+                        },
+                        child: Card(
+                          color: currentStatusBarMode ==
+                                  StatusBarMode.defaultMode
+                              ? AntiiQTheme.of(context).colorScheme.background
+                              : Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          surfaceTintColor: Colors.transparent,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Default",
+                                style: TextStyle(
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (currentStatusBarMode !=
+                              StatusBarMode.immersiveMode) {
+                            setStatusBarMode("immersive");
+                            setPageState(() {});
+                          }
+                        },
+                        child: Card(
+                          color: currentStatusBarMode ==
+                                  StatusBarMode.immersiveMode
+                              ? AntiiQTheme.of(context).colorScheme.background
+                              : Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          surfaceTintColor: Colors.transparent,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Immersive",
+                                style: TextStyle(
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ThemeSettingsTitle extends StatelessWidget {
+  const ThemeSettingsTitle({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: CustomCard(
+        theme: AntiiQTheme.of(context).cardThemes.background,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Text(
+            "App Theming",
+            style: AntiiQTheme.of(context).textStyles.onBackgroundLargeHeader,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsThemeGrid extends StatelessWidget {
+  const SettingsThemeGrid({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverGrid(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 1,
+      ),
+      delegate: SliverChildListDelegate(
+        [
+          CustomCard(
+              theme: AntiiQTheme.of(context).cardThemes.primary,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Custom",
+                    style: AntiiQTheme.of(context)
+                        .textStyles
+                        .onPrimaryText
+                        .copyWith(fontSize: 20),
+                  ),
+                  CustomButton(
+                    style: AntiiQTheme.of(context).buttonStyles.style3,
+                    function: () {
+                      customColorEditSheet(context);
+                    },
+                    child: const Icon(RemixIcon.magic),
+                  ),
+                ],
+              )),
+          for (String theme in customThemes.keys)
+            CustomCard(
+              theme: AntiiQTheme.of(context).cardThemes.background.copyWith(
+                    color: customThemes[theme]!.background,
+                  ),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.background.copyWith(
+                        color: customThemes[theme]!.surface,
+                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          theme,
+                          style: TextStyle(
+                            color: customThemes[theme]!.onSurface,
+                            fontSize: 15,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 20,
+                              width: 20,
+                              color: customThemes[theme]!.primary,
+                            ),
+                            Container(
+                              height: 20,
+                              width: 20,
+                              color: customThemes[theme]!.secondary,
+                            ),
+                            Container(
+                              height: 20,
+                              width: 20,
+                              color: customThemes[theme]!.surface,
+                            ),
+                            Container(
+                              height: 20,
+                              width: 20,
+                              color: customThemes[theme]!.background,
+                            ),
+                          ],
+                        ),
+                        CustomButton(
+                          style: ButtonStyles().style1.copyWith(
+                                backgroundColor: WidgetStatePropertyAll(
+                                  customThemes[theme]!.primary,
+                                ),
+                                foregroundColor: WidgetStatePropertyAll(
+                                  customThemes[theme]!.onPrimary,
+                                ),
+                              ),
+                          function: () {
+                            changeTheme(theme);
+                          },
+                          child: const Text("Apply"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 
 customColorEditSheet(context) {
   showModalBottomSheet(

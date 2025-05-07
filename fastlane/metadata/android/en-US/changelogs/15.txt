@@ -1,0 +1,5 @@
+- Important UI/UX tweaks
+- Homescreen Widget with minor widget tweaks available in app settings
+- Playback history logging
+- Smart Mixes with Queue generation
+- Fruity Purple theme

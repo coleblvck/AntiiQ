@@ -32,10 +32,6 @@ class ListHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6.0),
       child: Column(
         children: [
-          Divider(
-            height: 1,
-            color: AntiiQTheme.of(context).colorScheme.primary,
-          ),
           SizedBox(
             height: 45,
             child: Row(

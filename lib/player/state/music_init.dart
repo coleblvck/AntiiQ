@@ -15,6 +15,7 @@ class MusicInit {
     await music.queue.init(tracks);
     await music.selection.init(tracks);
     await music.favourites.init(tracks);
+    await music.history.init(tracks);
     await _initSort(music);
   }
 

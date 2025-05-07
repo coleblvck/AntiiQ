@@ -1,0 +1,2 @@
+/home/blvck/.blvck/android/AntiiQ/android/app/.cxx/RelWithDebInfo/5e5i6k3k/x86_64/CMakeFiles/edit_cache.dir
+/home/blvck/.blvck/android/AntiiQ/android/app/.cxx/RelWithDebInfo/5e5i6k3k/x86_64/CMakeFiles/rebuild_cache.dir

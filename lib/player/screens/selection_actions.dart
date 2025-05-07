@@ -1,3 +1,4 @@
+import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/albums/album.dart';
 import 'package:antiiq/player/screens/artists/artist.dart';
 import 'package:antiiq/player/screens/genres/genre.dart';
@@ -8,6 +9,8 @@ import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
 import 'package:antiiq/player/utilities/duration_getters.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/utilities/playlist_generator/playlist_generator.dart';
+import 'package:antiiq/player/utilities/playlist_generator/playlist_generator_widgets.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +18,8 @@ import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 findTrackAndOpenSheet(context, MediaItem item) {
-  final Track track =
-      antiiqState.music.tracks.list.firstWhere((track) => track.mediaItem == item);
+  final Track track = antiiqState.music.tracks.list
+      .firstWhere((track) => track.mediaItem == item);
   openSheetFromTrack(context, track);
 }
 
@@ -138,7 +141,8 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                           stream: antiiqState.music.favourites.flow.stream,
                           builder: (context, snapshot) {
                             final List<Track> favouritesSituation =
-                                snapshot.data ?? antiiqState.music.favourites.list;
+                                snapshot.data ??
+                                    antiiqState.music.favourites.list;
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
@@ -156,8 +160,9 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                     ),
                                   ),
                                   IconButton(
-                                    onPressed: () =>
-                                        antiiqState.music.favourites.addOrRemove(tracks[0]),
+                                    onPressed: () => antiiqState
+                                        .music.favourites
+                                        .addOrRemove(tracks[0]),
                                     icon: const Icon(RemixIcon.heart_pulse),
                                     color:
                                         favouritesSituation.contains(tracks[0])
@@ -173,12 +178,13 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                           stream: antiiqState.music.selection.flow.stream,
                           builder: (context, snapshot) {
                             final List<Track> selectionSituation =
-                                snapshot.data ?? antiiqState.music.selection.list;
+                                snapshot.data ??
+                                    antiiqState.music.selection.list;
                             return CustomCard(
-                              theme:
-                                  AntiiQTheme.of(context).cardThemes.background.copyWith(
-                                    margin: const EdgeInsets.all(0)
-                                  ),
+                              theme: AntiiQTheme.of(context)
+                                  .cardThemes
+                                  .background
+                                  .copyWith(margin: const EdgeInsets.all(0)),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0),
@@ -196,8 +202,13 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                       ),
                                     ),
                                     Checkbox(
-                                      checkColor: AntiiQTheme.of(context).colorScheme.primary,
-                                      fillColor: WidgetStatePropertyAll(AntiiQTheme.of(context).colorScheme.surface),
+                                      checkColor: AntiiQTheme.of(context)
+                                          .colorScheme
+                                          .primary,
+                                      fillColor: WidgetStatePropertyAll(
+                                          AntiiQTheme.of(context)
+                                              .colorScheme
+                                              .surface),
                                       value: selectionSituation
                                           .contains(tracks[0]),
                                       onChanged: (value) {
@@ -205,7 +216,8 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                         thisGlobalSelection && value == false
                                             ? Navigator.of(context).pop()
                                             : null;
-                                        antiiqState.music.selection.selectOrDeselect(tracks[0]);
+                                        antiiqState.music.selection
+                                            .selectOrDeselect(tracks[0]);
                                       },
                                     )
                                   ],
@@ -245,11 +257,14 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                       ),
                     )
                   : Container(),
-                  const SizedBox(height: 5.0,),
+              const SizedBox(
+                height: 5.0,
+              ),
               CustomCard(
-                theme: AntiiQTheme.of(context).cardThemes.background.copyWith(
-                  margin: const EdgeInsets.all(0)
-                ),
+                theme: AntiiQTheme.of(context)
+                    .cardThemes
+                    .background
+                    .copyWith(margin: const EdgeInsets.all(0)),
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(
@@ -268,6 +283,17 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                       color: AntiiQTheme.of(context).colorScheme.onSurface,
                     )),
               ),
+              if (tracks.length == 1)
+                SimilarToTrackButton(
+                    track: tracks[0],
+                    onGenerate: (track) async {
+                      await playlistGenerator.generatePlaylist(
+                        type: PlaylistType.similarToTrack,
+                        seedTrack: track,
+                        similarityThreshold: 0.3,
+                        maxTracks: 50,
+                      );
+                    }),
               thisGlobalSelection
                   ? CustomButton(
                       style: ButtonStyles().style2,

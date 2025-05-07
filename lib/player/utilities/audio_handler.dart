@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -30,7 +31,7 @@ class AntiiqAudioHandler extends BaseAudioHandler
   late StreamSubscription<PlaybackEvent> eventSubscription;
   late ConcatenatingAudioSource source;
   int clicks = 0;
-
+  
   initialize() {
     eventSubscription = audioPlayer.playbackEventStream.listen(
       (event) {
@@ -40,14 +41,22 @@ class AntiiqAudioHandler extends BaseAudioHandler
     audioPlayer.currentIndexStream.listen(
       (index) {
         if (index != null) {
-          mediaItem.add(antiiqQueue[index]);
+          final currentItem = antiiqQueue[index];
+          mediaItem.add(currentItem);
           indexOfQueue = index;
+          
           if (addToQueueIndex == index) {
             addToQueueIndex = -1;
           }
         }
       },
     );
+
+    mediaItem.stream.listen((currentItem) {
+      if (currentItem != null) {
+          _addToHistory(currentItem);
+      }
+    });
 
     audioPlayer.processingStateStream.listen(
       (state) {
@@ -118,8 +127,6 @@ class AntiiqAudioHandler extends BaseAudioHandler
         return AudioProcessingState.ready;
       case ProcessingState.completed:
         return AudioProcessingState.completed;
-      default:
-        throw Exception("Invalid state: ${audioPlayer.processingState}");
     }
   }
 
@@ -206,11 +213,25 @@ class AntiiqAudioHandler extends BaseAudioHandler
 
 /* Issues to be figured out
   Future<void> clearQueue() async {
-    if (antiiqQueue.length > 1) {
-      antiiqQueue.removeRange(
-          getNowPlayingQueueIndex(), antiiqQueue.length);
-      source.removeRange(getNowPlayingQueueIndex(), antiiqQueue.length);
-      broadcastState();
+    final currentIndex = audioPlayer.currentIndex;
+    if (currentIndex != null && antiiqQueue.length > 1) {
+      // Remove all items after the current one
+      if (currentIndex < antiiqQueue.length - 1) {
+        antiiqQueue.removeRange(currentIndex + 1, antiiqQueue.length);
+        await source.removeRange(currentIndex + 1, source.length);
+      }
+      
+      // Remove all items before the current one
+      if (currentIndex > 0) {
+        antiiqQueue.removeRange(0, currentIndex);
+        await source.removeRange(0, currentIndex);
+      }
+      
+      // Reset index tracking
+      indexOfQueue = 0;
+      addToQueueIndex = -1;
+      
+      await broadcastState();
     }
   }
   */
@@ -231,8 +252,8 @@ class AntiiqAudioHandler extends BaseAudioHandler
   }
 
   @override
-  Future<void> updateQueue(List<MediaItem> newQueue) async {
-    antiiqQueue = newQueue;
+  Future<void> updateQueue(List<MediaItem> queue) async {
+    antiiqQueue = queue;
     source = ConcatenatingAudioSource(
       children: antiiqQueue
           .map((item) => AudioSource.uri(Uri.parse(item.id)))
@@ -284,5 +305,30 @@ class AntiiqAudioHandler extends BaseAudioHandler
         }
         break;
     }
+  }
+
+
+  void _addToHistory(MediaItem item) {
+    if (antiiqState.music.history.list.isNotEmpty && antiiqState.music.history.list.last.trackData?.trackId == item.extras?["id"]) {
+      print(true);
+      return;
+    }
+    print(false);
+    final Track track = antiiqState.music.tracks.list.where((trk) => trk.trackData?.trackId == item.extras?["id"]).toList()[0];
+    antiiqState.music.history.add(track);
+  }
+  
+  // Method to manually add a track to history
+  Future<void> addTrackToHistory(MediaItem item) async {
+    _addToHistory(item);
+  }
+  
+
+  List<MediaItem> getListenHistory() {
+    return List.from(antiiqState.music.history.list.reversed);
+  }
+  
+  Future<void> clearHistory() async {
+    antiiqState.music.history.clear();
   }
 }

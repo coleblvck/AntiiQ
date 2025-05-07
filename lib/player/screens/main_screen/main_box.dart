@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/main_screen/main_backdrop.dart';
+import 'package:antiiq/player/screens/main_screen/sliding_box.dart';
 import 'package:antiiq/player/screens/now_playing/now_playing.dart';
 import 'package:antiiq/player/screens/queue/queue.dart';
 import 'package:antiiq/player/screens/settings/settings.dart';
@@ -11,9 +12,14 @@ import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/widgets/mini_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_sliding_box/flutter_sliding_box.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
+
+class MainBoxMetrics {
+  static double bottomNavigationBarHeight = 56;
+  static double appBarHeight = 50;
+  static double minHeightBox = 60 + bottomNavigationBarHeight;
+}
 
 class MainBox extends StatefulWidget {
   const MainBox({
@@ -24,7 +30,7 @@ class MainBox extends StatefulWidget {
 }
 
 class _MainBoxState extends State<MainBox> {
-  final BoxController boxController = BoxController();
+  final AntiiQBoxController boxController = AntiiQBoxController();
   final TextEditingController textEditingController = TextEditingController();
 
   late Timer libraryLoadTimer;
@@ -182,16 +188,13 @@ class _MainBoxState extends State<MainBox> {
         statusBarColor: AntiiQTheme.of(context).colorScheme.background,
       ),
     );
-    //
-    double bottomNavigationBarHeight = 56;
-    double appBarHeight = 50;
-    double minHeightBox = 42 + bottomNavigationBarHeight;
+
     double viewInsetsHeight = MediaQuery.of(context).viewPadding.top +
         MediaQuery.of(context).viewPadding.bottom;
     double maxHeightBox = MediaQuery.of(context).size.height -
-        appBarHeight -
+        MainBoxMetrics.appBarHeight -
         viewInsetsHeight -
-        bottomNavigationBarHeight;
+        MainBoxMetrics.bottomNavigationBarHeight;
 
     //
     return PopScope(
@@ -223,7 +226,7 @@ class _MainBoxState extends State<MainBox> {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            toolbarHeight: appBarHeight,
+            toolbarHeight: MainBoxMetrics.appBarHeight,
             backgroundColor: AntiiQTheme.of(context).colorScheme.background,
             title: Text(
               "AntiiQ",
@@ -263,11 +266,10 @@ class _MainBoxState extends State<MainBox> {
               )
             ],
           ),
-          body: SlidingBox(
-            draggable: false,
-            collapsed: true,
+          body: AntiiQSlidingBox(
+            draggable: true,
             controller: boxController,
-            minHeight: minHeightBox,
+            minHeight: MainBoxMetrics.minHeightBox,
             maxHeight: maxHeightBox,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(generalRadius),
@@ -275,15 +277,9 @@ class _MainBoxState extends State<MainBox> {
             ),
             draggableIconColor: AntiiQTheme.of(context).colorScheme.onSurface,
             color: AntiiQTheme.of(context).colorScheme.surface,
-            style: BoxStyle.none,
-            backdrop: Backdrop(
-              overlayOpacity: 0.0,
-              fading: true,
-              overlay: true,
-              color: AntiiQTheme.of(context).colorScheme.background,
-              body:
-                  !antiiqState.permissions.has ? noAccessToLibraryWidget() : const MainBackdrop(),
-            ),
+            backdrop: !antiiqState.permissions.has
+                ? noAccessToLibraryWidget()
+                : const MainBackdrop(),
             onBoxOpen: () {
               FocusManager.instance.primaryFocus?.unfocus();
             },
@@ -295,7 +291,7 @@ class _MainBoxState extends State<MainBox> {
           ),
           bottomNavigationBar: BottomAppBar(
             padding: EdgeInsets.zero,
-            height: bottomNavigationBarHeight,
+            height: MainBoxMetrics.bottomNavigationBarHeight,
             color: AntiiQTheme.of(context).colorScheme.surface,
             surfaceTintColor: Colors.transparent,
             child: CustomCard(

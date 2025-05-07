@@ -3,9 +3,13 @@ allprojects {
         google()
         mavenCentral()
     }
+subprojects {
+    afterEvaluate { project ->
+        // Define the list of plugin names you want to target
+        def targetedPlugins = ['access_wallpaper', 'on_audio_query_android', 'uri_to_file', 'receive_intent'] // Add other plugin names here
 
-    subprojects {
-        afterEvaluate { project ->
+        // Check if the current project is in the targeted list
+        if (targetedPlugins.contains(project.name)) {
             if (project.hasProperty('android')) {
                 project.android {
                     if (namespace == null) {
@@ -30,13 +34,17 @@ allprojects {
                             jvmTarget = javaVersion.toString()
                         }
                     }
-                    println("Setting java version to ${javaVersion.toString()} which is $javaVersion")
-                    println("Setting minSdkVersion to $minimumApiVersion")
-                    println("Setting compileSdkVersion and targetSdkVersion to $androidApiVersion")
+                    println("Setting java version to ${javaVersion.toString()} which is $javaVersion for project ${project.name}")
+                    println("Setting minSdkVersion to $minimumApiVersion for project ${project.name}")
+                    println("Setting compileSdkVersion and targetSdkVersion to $androidApiVersion for project ${project.name}")
                 }
             }
+        } else {
+             // Optional: Add a message for projects that are skipped
+             // println("Skipping Java version configuration for project ${project.name}")
         }
     }
+}
 }
 
 rootProject.buildDir = '../build'

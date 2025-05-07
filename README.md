@@ -40,6 +40,7 @@
 - Search functionality
 - Favourites
 - Persistent Selection
+- Listen history
 - Other subtle features that enhance user experience.
 
 

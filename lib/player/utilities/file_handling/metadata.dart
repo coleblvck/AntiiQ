@@ -20,6 +20,7 @@ class TrackData {
   String? mimeType;
   int? trackDuration;
   int? bitrate;
+  int? bpm;
   Uint8List? albumArt;
   //MemoryImage() or Image.memory()
   TrackData({
@@ -40,6 +41,7 @@ class TrackData {
     this.mimeType,
     this.trackDuration,
     this.bitrate,
+    this.bpm,
     this.albumArt,
   });
 }

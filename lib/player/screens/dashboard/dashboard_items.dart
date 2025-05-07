@@ -67,4 +67,22 @@ dashboardItems(context) => {
           );
         },
       },
+      "history": {
+        "title": "History",
+        "icon": RemixIcon.history,
+        "function": () {
+          mainPageController.jumpToPage(
+            mainPageIndexes["history"] as int,
+          );
+        },
+      },
+      "smartMix": {
+        "title": "Smart Mix",
+        "icon": RemixIcon.radio,
+        "function": () {
+          mainPageController.jumpToPage(
+            mainPageIndexes["smartMix"] as int,
+          );
+        },
+      },
     };

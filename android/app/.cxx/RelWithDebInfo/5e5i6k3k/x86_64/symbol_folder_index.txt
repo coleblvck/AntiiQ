@@ -1,0 +1,1 @@
+/home/blvck/.blvck/android/AntiiQ/build/app/intermediates/cxx/RelWithDebInfo/5e5i6k3k/obj/x86_64

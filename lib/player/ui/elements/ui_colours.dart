@@ -199,6 +199,20 @@ Map<String, AntiiQColorScheme> customThemes = {
     brightness: Brightness.dark,
     colorSchemeType: ColorSchemeType.antiiq,
   ),
+  "Fruity Purple": const AntiiQColorScheme(
+    primary: Color.fromARGB(255, 204, 203, 118),
+    onPrimary: Color.fromARGB(255, 0, 0, 0),
+    secondary: Color.fromARGB(255, 161, 109, 147),
+    onSecondary: Color.fromARGB(255, 255, 255, 255),
+    background: Color.fromARGB(255, 0, 0, 0),
+    onBackground: Color.fromARGB(255, 204, 203, 118),
+    surface: Color.fromARGB(255, 93, 35, 80),
+    onSurface: Color.fromARGB(255, 255, 255, 255),
+    error: Color.fromARGB(199, 248, 0, 0),
+    onError: Color.fromARGB(57, 0, 0, 0),
+    brightness: Brightness.dark,
+    colorSchemeType: ColorSchemeType.antiiq,
+  ),
 };
 
 AntiiQColorScheme currentColorScheme = getColorScheme();

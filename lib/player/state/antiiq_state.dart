@@ -1,3 +1,4 @@
+import 'package:antiiq/home_widget/background_service.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/audio_setup.dart';
 import 'package:antiiq/player/state/music_state.dart';
@@ -51,6 +52,7 @@ class AntiiqState {
     await setDefaultArt();
     await setOrientation();
     await audioSetup.init();
+    setupBackgroundHandler();
     await initReceiveIntent();
     WidgetsBinding.instance.addObserver(
       LifecycleEventHandler(

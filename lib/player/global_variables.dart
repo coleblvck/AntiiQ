@@ -1,19 +1,14 @@
-/*
-
-Name says it all
-
-*/
-
-//Flutter Packages
 import 'dart:async';
 import 'dart:io';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/utilities/audio_handler.dart';
+import 'package:antiiq/player/utilities/playlist_generator/playlist_generator.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 late AntiiqAudioHandler audioHandler;
+final AntiiqPlaylistGenerator playlistGenerator = AntiiqPlaylistGenerator();
 PageController mainPageController = PageController();
 
 late Directory antiiqDirectory;
@@ -32,6 +27,8 @@ var mainPageIndexes = {
   "playlists": 7,
   "favourites": 8,
   "selection": 9,
+  "history": 10,
+  "smartMix": 11,
 };
 
 Velocity defaultTextScrollvelocity =

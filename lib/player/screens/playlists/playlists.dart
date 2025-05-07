@@ -100,8 +100,7 @@ class _PlaylistsState extends State<Playlists> {
                       },
                       icon: Icon(
                         RemixIcon.image,
-                        color:
-                        AntiiQTheme.of(context).colorScheme.primary,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
                     IconButton(
@@ -110,8 +109,7 @@ class _PlaylistsState extends State<Playlists> {
                       },
                       icon: Icon(
                         RemixIcon.check,
-                        color:
-                        AntiiQTheme.of(context).colorScheme.primary,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
                   ],
@@ -199,12 +197,16 @@ class _PlaylistsState extends State<Playlists> {
                                       children: [
                                         TextScroll(
                                           thisTrack.trackData!.trackName!,
-                                          style: AntiiQTheme.of(context).textStyles.onSurfaceText,
+                                          style: AntiiQTheme.of(context)
+                                              .textStyles
+                                              .onSurfaceText,
                                         ),
                                         TextScroll(
                                           thisTrack
                                               .trackData!.trackArtistNames!,
-                                          style: AntiiQTheme.of(context).textStyles.onSurfaceText,
+                                          style: AntiiQTheme.of(context)
+                                              .textStyles
+                                              .onSurfaceText,
                                         ),
                                       ],
                                     ),
@@ -215,8 +217,13 @@ class _PlaylistsState extends State<Playlists> {
                                   child: Checkbox(
                                     value: (selectedTracks.contains(thisTrack)),
                                     onChanged: null,
-                                    checkColor: AntiiQTheme.of(context).colorScheme.primary,
-                                    fillColor: WidgetStatePropertyAll(AntiiQTheme.of(context).colorScheme.surface),
+                                    checkColor: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                    fillColor: WidgetStatePropertyAll(
+                                        AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .surface),
                                   ),
                                 )
                               ],
@@ -250,7 +257,8 @@ class _PlaylistsState extends State<Playlists> {
   playlistCreate() async {
     if (playlistTitleController.text != "") {
       final String name = playlistTitleController.text;
-      await antiiqState.music.playlists.create(name, tracks: selectedTracks, art: art);
+      await antiiqState.music.playlists
+          .create(name, tracks: selectedTracks, art: art);
       playlistTitleController.clear();
       playlistSearchController.clear();
       selectedTracks = [];
@@ -270,15 +278,12 @@ class _PlaylistsState extends State<Playlists> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(
-          height: 40,
-          child: CustomButton(
-            style: ButtonStyles().style3,
-            function: () {
-              playlistCreationSheet();
-            },
-            child: const Text("Create Playlist"),
-          ),
+        CustomButton(
+          style: ButtonStyles().style3,
+          function: () {
+            playlistCreationSheet();
+          },
+          child: const Text("Create Playlist"),
         ),
         Expanded(
           child: GridView.builder(
@@ -287,7 +292,8 @@ class _PlaylistsState extends State<Playlists> {
             ),
             itemCount: antiiqState.music.playlists.list.length,
             itemBuilder: (context, index) {
-              final PlayList thisPlaylist = antiiqState.music.playlists.list[index];
+              final PlayList thisPlaylist =
+                  antiiqState.music.playlists.list[index];
               return PlaylistItem(
                 thisPlaylist: thisPlaylist,
                 mainPageStateSet: setState,

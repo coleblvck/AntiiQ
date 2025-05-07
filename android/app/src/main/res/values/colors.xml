@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary brand colors -->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    
+    <!-- Accent color - modern teal that works well with progress bars -->
+    <color name="colorAccent">#00BFA5</color>
+    
+    <!-- Optional - additional accent variations for different states -->
+    <color name="colorAccentLight">#64FFDA</color>
+    <color name="colorAccentDark">#009688</color>
+    
+    <!-- Common UI colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="light_gray">#E0E0E0</color>
+    <color name="dark_gray">#757575</color>
+    
+    <!-- Status colors -->
+    <color name="success">#4CAF50</color>
+    <color name="error">#F44336</color>
+    <color name="warning">#FFC107</color>
+    <color name="info">#2196F3</color>
+</resources>

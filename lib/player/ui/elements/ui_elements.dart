@@ -69,7 +69,7 @@ class CardThemes {
   );
 }
 
-const double generalCardElevation = 5;
+const double generalCardElevation = 0;
 late double generalRadius;
 
 class CardShapes {
@@ -253,10 +253,14 @@ class CustomProgressIndicator extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return LinearProgressIndicator(
-      value: progress,
-      color: AntiiQTheme.of(context).colorScheme.primary,
-      backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: LinearProgressIndicator(
+        borderRadius: BorderRadius.circular(generalRadius),
+        value: progress,
+        color: AntiiQTheme.of(context).colorScheme.primary,
+        backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
+      ),
     );
   }
 }

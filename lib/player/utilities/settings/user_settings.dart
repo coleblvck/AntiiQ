@@ -20,6 +20,7 @@ class MainBoxKeys {
   static const String interactiveSeekBar = "interactiveSeekBar";
   static const String queueState = "queueState";
   static const String globalSelection = "globalSelection";
+  static const String history = "history";
   static const String favourites = "favourites";
   static const String showTrackDuration = "showTrackDuration";
   static const String generalRadius = "generalRadius";

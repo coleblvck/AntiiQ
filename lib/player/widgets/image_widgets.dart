@@ -10,7 +10,7 @@ Widget getUriImage(uri) {
       builder: (context, snapshot) {
         final coverArtFit = snapshot.data ?? currentCoverArtFit;
         return ClipRRect(
-          borderRadius: BorderRadius.circular(generalRadius),
+          borderRadius: BorderRadius.circular(generalRadius - 6),
           child: AspectRatio(
             aspectRatio: 1,
             child: Image.file(

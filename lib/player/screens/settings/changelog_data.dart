@@ -14,6 +14,28 @@ class Version {
 
 List<Version> versions = [
   const Version(
+    version: "1.5.0",
+    title: "Audiophile",
+    date: "07-MAY-2025",
+    changes: [
+      "- Important UI/UX tweaks",
+      "- Homescreen Widget with minor widget tweaks available in app settings",
+      "- Playback history logging",
+      "- Smart Mixes with Queue generation",
+      "- Fruity Purple theme",
+    ],
+  ),
+  const Version(
+    version: "1.4.3",
+    title: "Melomaniac",
+    date: "22-JAN-2025",
+    changes: [
+      "- Added setting for cover art fit",
+      "- Some UI tweaks",
+      "- Swipe left/right on cover art in album screen to jump to next or previous albums",
+    ],
+  ),
+  const Version(
     version: "1.4.4",
     title: "Melomaniac",
     date: "25-JAN-2025",
