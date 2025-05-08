@@ -1,5 +1,4 @@
 import 'package:antiiq/player/global_variables.dart';
-//Antiiq Packages
 import 'package:antiiq/player/screens/albums/album.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';

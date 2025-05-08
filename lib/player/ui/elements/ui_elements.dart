@@ -161,6 +161,19 @@ class ButtonStyles {
     ),
     textStyle: WidgetStatePropertyAll(TextStyles().onBackgroundText),
   );
+  final ButtonStyle style4 = ButtonStyle(
+    backgroundColor: WidgetStatePropertyAll(currentColorScheme.secondary),
+    foregroundColor: WidgetStatePropertyAll(currentColorScheme.onSecondary),
+    surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+    elevation: const WidgetStatePropertyAll(5),
+    padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 10)),
+    shape: WidgetStatePropertyAll(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(generalRadius),
+      ),
+    ),
+    textStyle: WidgetStatePropertyAll(TextStyles().onBackgroundText),
+  );
 }
 
 class TextStyles {
@@ -172,6 +185,12 @@ class TextStyles {
 
   final TextStyle onPrimaryText = TextStyle(
     color: currentColorScheme.onPrimary,
+    fontFamily: FontFamilies().defaultFont,
+    fontSize: FontSizes().defaultFontSize,
+  );
+
+  final TextStyle secondaryText = TextStyle(
+    color: currentColorScheme.secondary,
     fontFamily: FontFamilies().defaultFont,
     fontSize: FontSizes().defaultFontSize,
   );

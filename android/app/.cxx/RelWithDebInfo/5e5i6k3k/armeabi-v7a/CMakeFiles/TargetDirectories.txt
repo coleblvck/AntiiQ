@@ -1,2 +1,0 @@
-/home/blvck/.blvck/android/AntiiQ/android/app/.cxx/RelWithDebInfo/5e5i6k3k/armeabi-v7a/CMakeFiles/edit_cache.dir
-/home/blvck/.blvck/android/AntiiQ/android/app/.cxx/RelWithDebInfo/5e5i6k3k/armeabi-v7a/CMakeFiles/rebuild_cache.dir

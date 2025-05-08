@@ -54,7 +54,6 @@
 - Translations
 - Landscape mode?
 - Add warning dialogs for actions such as "Delete Playlist"
-- Listen history
 - Embedded lyrics
 - Certain improvements to queue handling.
 - Network Audio

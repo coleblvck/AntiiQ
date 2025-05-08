@@ -262,6 +262,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.28"
+  flutter_reorderable_grid_view:
+    dependency: "direct main"
+    description:
+      name: flutter_reorderable_grid_view
+      sha256: f5db90ae62f8307daef9a884e09ed2d883838592e92185017a4431fe8e78899e
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.0"
   flutter_round_slider:
     dependency: "direct main"
     description:

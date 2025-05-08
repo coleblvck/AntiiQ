@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/albums/album_song.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
-//Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
