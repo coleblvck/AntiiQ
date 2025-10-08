@@ -900,75 +900,80 @@ class _ThemeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentRadius = context.watch<ChaosUIState>().chaosRadius;
     final theme = customThemes[themeName]!;
-    final isActive = currentTheme == themeName && !dynamicThemeEnabled;
 
     return ChaosRotatedStatefulWidget(
-      child: GestureDetector(
-        onTap: () {
-          HapticFeedback.mediumImpact();
-          changeTheme(themeName);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: theme.background,
-            border: Border.all(
-              color: isActive
-                  ? theme.primary
-                  : theme.surface.withValues(alpha: 0.5),
-              width: isActive ? 2 : 1,
-            ),
-            borderRadius: BorderRadius.circular(currentRadius - 2),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(chaosBasePadding * 1.5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  themeName.toUpperCase(),
-                  style: TextStyle(
-                    color: theme.onBackground,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
+      child: StreamBuilder<AntiiQColorScheme>(
+          stream: themeStream.stream,
+          builder: (context, snapshot) {
+            final isActive = currentTheme == themeName && !dynamicThemeEnabled;
+            return GestureDetector(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                changeTheme(themeName);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.background,
+                  border: Border.all(
+                    color: isActive
+                        ? theme.primary
+                        : theme.surface.withValues(alpha: 0.5),
+                    width: isActive ? 2 : 1,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  borderRadius: BorderRadius.circular(currentRadius - 2),
                 ),
-                const Spacer(),
-                Row(
-                  children: [
-                    _ColorBlock(color: theme.primary, size: 16),
-                    const SizedBox(width: 4),
-                    _ColorBlock(color: theme.secondary, size: 16),
-                    const SizedBox(width: 4),
-                    _ColorBlock(color: theme.surface, size: 16),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                if (isActive)
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: theme.primary,
-                      borderRadius: BorderRadius.circular(currentRadius - 8),
-                    ),
-                    child: Text(
-                      'ACTIVE',
-                      style: TextStyle(
-                        color: theme.onPrimary,
-                        fontSize: 8,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(chaosBasePadding * 1.5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        themeName.toUpperCase(),
+                        style: TextStyle(
+                          color: theme.onBackground,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          _ColorBlock(color: theme.primary, size: 16),
+                          const SizedBox(width: 4),
+                          _ColorBlock(color: theme.secondary, size: 16),
+                          const SizedBox(width: 4),
+                          _ColorBlock(color: theme.surface, size: 16),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      if (isActive)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: theme.primary,
+                            borderRadius:
+                                BorderRadius.circular(currentRadius - 8),
+                          ),
+                          child: Text(
+                            'ACTIVE',
+                            style: TextStyle(
+                              color: theme.onPrimary,
+                              fontSize: 8,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-              ],
-            ),
-          ),
-        ),
-      ),
+                ),
+              ),
+            );
+          }),
     );
   }
 }

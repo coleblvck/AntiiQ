@@ -909,8 +909,6 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
       builder: (context, snapshot) {
         final queue = snapshot.data ?? antiiqState.music.queue.state;
 
-        if (queue.isEmpty) return const SizedBox.shrink();
-
         return Positioned(
           bottom: _miniPlayerHeight +
               (chaosBasePadding / 2) -
@@ -918,86 +916,93 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
           left: chaosBasePadding,
           child: Row(
             children: [
-              GestureDetector(
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  final ScrollController scrollController = ScrollController();
-                  _pageManagerController.push(
-                    ChaosQueue(
-                      scrollController: scrollController,
-                    ),
-                    title: 'QUEUE',
-                    scrollController: scrollController,
-                    onPop: () {
-                      scrollController.dispose();
-                    },
-                  );
-                },
-                child: Transform.rotate(
-                  angle: ChaosRotation.calculate(
-                    index: hashCode % 1000,
-                    style: ChaosRotationStyle.fibonacci,
-                    maxAngle: 0.15,
-                  ),
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: AntiiQTheme.of(context).colorScheme.surface,
-                      border: Border.all(
-                        color: AntiiQTheme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(
-                                alpha: (0.3 + (0.2 * _miniPlayerExpandProgress))
-                                    .clamp(0.0, 1.0)),
-                        width: 1 + _miniPlayerExpandProgress,
+              if (queue.isNotEmpty) ...[
+                GestureDetector(
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                    final ScrollController scrollController =
+                        ScrollController();
+                    _pageManagerController.push(
+                      ChaosQueue(
+                        scrollController: scrollController,
                       ),
-                      borderRadius: BorderRadius.circular(radius),
+                      title: 'QUEUE',
+                      scrollController: scrollController,
+                      onPop: () {
+                        scrollController.dispose();
+                      },
+                    );
+                  },
+                  child: Transform.rotate(
+                    angle: ChaosRotation.calculate(
+                      index: hashCode % 1000,
+                      style: ChaosRotationStyle.fibonacci,
+                      maxAngle: 0.15,
                     ),
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: Icon(
-                            RemixIcon.play_list,
-                            color: AntiiQTheme.of(context).colorScheme.primary,
-                            size: 16,
-                          ),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: AntiiQTheme.of(context).colorScheme.surface,
+                        border: Border.all(
+                          color: AntiiQTheme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(
+                                  alpha:
+                                      (0.3 + (0.2 * _miniPlayerExpandProgress))
+                                          .clamp(0.0, 1.0)),
+                          width: 1 + _miniPlayerExpandProgress,
                         ),
-                        Positioned(
-                          right: 3,
-                          top: 3,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 3, vertical: 1),
-                            decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(radius),
+                      ),
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Icon(
+                              RemixIcon.play_list,
                               color:
-                                  AntiiQTheme.of(context).colorScheme.secondary,
-                              borderRadius: BorderRadius.circular(innerRadius),
+                                  AntiiQTheme.of(context).colorScheme.primary,
+                              size: 16,
                             ),
-                            constraints: const BoxConstraints(minWidth: 12),
-                            child: Text(
-                              '${queue.length}',
-                              style: TextStyle(
+                          ),
+                          Positioned(
+                            right: 3,
+                            top: 3,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 3, vertical: 1),
+                              decoration: BoxDecoration(
                                 color: AntiiQTheme.of(context)
                                     .colorScheme
-                                    .onSecondary,
-                                fontSize: 8,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: 'monospace',
+                                    .secondary,
+                                borderRadius:
+                                    BorderRadius.circular(innerRadius),
                               ),
-                              textAlign: TextAlign.center,
+                              constraints: const BoxConstraints(minWidth: 12),
+                              child: Text(
+                                '${queue.length}',
+                                style: TextStyle(
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .onSecondary,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w900,
+                                  fontFamily: 'monospace',
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                width: chaosBasePadding,
-              ),
+                const SizedBox(
+                  width: chaosBasePadding,
+                ),
+              ],
               Consumer<AntiiqAudioHandler>(
                 builder: (context, state, child) {
                   return CustomSwitch(
