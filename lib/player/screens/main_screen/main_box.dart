@@ -189,11 +189,9 @@ class _MainBoxState extends State<MainBox> {
       ),
     );
 
-    double viewInsetsHeight = MediaQuery.of(context).viewPadding.top +
-        MediaQuery.of(context).viewPadding.bottom;
     double maxHeightBox = MediaQuery.of(context).size.height -
         MainBoxMetrics.appBarHeight -
-        viewInsetsHeight -
+        MediaQuery.of(context).padding.vertical -
         MainBoxMetrics.bottomNavigationBarHeight;
 
     //
@@ -214,7 +212,7 @@ class _MainBoxState extends State<MainBox> {
                 ? await showPopDialog() ?? false
                 : await doubleTapPop();
             if (context.mounted && shouldPop) {
-              audioHandler.stop();
+              globalAntiiqAudioHandler.stop();
               SystemNavigator.pop();
             }
           }
@@ -223,123 +221,133 @@ class _MainBoxState extends State<MainBox> {
         }
       },
       child: SafeArea(
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            toolbarHeight: MainBoxMetrics.appBarHeight,
-            backgroundColor: AntiiQTheme.of(context).colorScheme.background,
-            title: Text(
-              "AntiiQ",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AntiiQTheme.of(context).colorScheme.primary,
-              ),
-            ),
-            actions: [
-              IconButton(
-                iconSize: 27,
-                icon: Icon(
-                  RemixIcon.play_list_2,
-                  color: AntiiQTheme.of(context).colorScheme.primary,
+        child: StreamBuilder<bool>(
+            stream: boxController.visibilityStream,
+            initialData: boxController.isCollapsedBodyVisible,
+            builder: (context, snapshot) {
+              return Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: AppBar(
+                  toolbarHeight: MainBoxMetrics.appBarHeight,
+                  backgroundColor:
+                      AntiiQTheme.of(context).colorScheme.background,
+                  shadowColor: Colors.transparent,
+                  foregroundColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  title: Text(
+                    "AntiiQ",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: AntiiQTheme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                      iconSize: 27,
+                      icon: Icon(
+                        RemixIcon.play_list_2,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        showQueue(context);
+                      },
+                    ),
+                    IconButton(
+                      iconSize: 27,
+                      icon: Icon(
+                        RemixIcon.settings_6,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const Settings(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                    )
+                  ],
                 ),
-                onPressed: () {
-                  showQueue(context);
-                },
-              ),
-              IconButton(
-                iconSize: 27,
-                icon: Icon(
-                  RemixIcon.settings_6,
-                  color: AntiiQTheme.of(context).colorScheme.primary,
+                body: AntiiQSlidingBox(
+                  draggable: true,
+                  controller: boxController,
+                  minHeight: MainBoxMetrics.minHeightBox,
+                  maxHeight: maxHeightBox,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(generalRadius),
+                    topRight: Radius.circular(generalRadius),
+                  ),
+                  draggableIconColor:
+                      AntiiQTheme.of(context).colorScheme.onSurface,
+                  color: AntiiQTheme.of(context).colorScheme.surface,
+                  backdrop: !antiiqState.permissions.has
+                      ? noAccessToLibraryWidget()
+                      : const MainBackdrop(),
+                  onBoxOpen: () {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
+                  body: NowPlaying(
+                    pageHeight: maxHeightBox,
+                    boxController: boxController,
+                  ),
+                  collapsedBody: MiniPlayer(boxController: boxController),
                 ),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const Settings(),
-                    ),
-                  );
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-              )
-            ],
-          ),
-          body: AntiiQSlidingBox(
-            draggable: true,
-            controller: boxController,
-            minHeight: MainBoxMetrics.minHeightBox,
-            maxHeight: maxHeightBox,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(generalRadius),
-              topRight: Radius.circular(generalRadius),
-            ),
-            draggableIconColor: AntiiQTheme.of(context).colorScheme.onSurface,
-            color: AntiiQTheme.of(context).colorScheme.surface,
-            backdrop: !antiiqState.permissions.has
-                ? noAccessToLibraryWidget()
-                : const MainBackdrop(),
-            onBoxOpen: () {
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
-            body: NowPlaying(
-              pageHeight: maxHeightBox,
-              boxController: boxController,
-            ),
-            collapsedBody: MiniPlayer(boxController: boxController),
-          ),
-          bottomNavigationBar: BottomAppBar(
-            padding: EdgeInsets.zero,
-            height: MainBoxMetrics.bottomNavigationBarHeight,
-            color: AntiiQTheme.of(context).colorScheme.surface,
-            surfaceTintColor: Colors.transparent,
-            child: CustomCard(
-              theme: AntiiQTheme.of(context).cardThemes.background,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      boxController.closeBox();
-                      mainPageController.jumpToPage(
-                        mainPageIndexes["dashboard"] as int,
-                      );
-                    },
-                    icon: Icon(
-                      RemixIcon.dashboard,
-                      color: AntiiQTheme.of(context).colorScheme.primary,
+                bottomNavigationBar: BottomAppBar(
+                  padding: EdgeInsets.zero,
+                  height: MainBoxMetrics.bottomNavigationBarHeight,
+                  color: AntiiQTheme.of(context).colorScheme.surface,
+                  surfaceTintColor: Colors.transparent,
+                  child: CustomCard(
+                    theme: AntiiQTheme.of(context).cardThemes.background,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            boxController.closeBox();
+                            mainPageController.jumpToPage(
+                              mainPageIndexes["dashboard"] as int,
+                            );
+                          },
+                          icon: Icon(
+                            RemixIcon.dashboard,
+                            color: AntiiQTheme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            boxController.closeBox();
+                            mainPageController.jumpToPage(
+                              mainPageIndexes["equalizer"] as int,
+                            );
+                          },
+                          icon: Icon(
+                            RemixIcon.equalizer,
+                            color: AntiiQTheme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            boxController.closeBox();
+                            mainPageController.jumpToPage(
+                              mainPageIndexes["search"] as int,
+                            );
+                          },
+                          icon: Icon(
+                            RemixIcon.search_eye,
+                            color: AntiiQTheme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      boxController.closeBox();
-                      mainPageController.jumpToPage(
-                        mainPageIndexes["equalizer"] as int,
-                      );
-                    },
-                    icon: Icon(
-                      RemixIcon.equalizer,
-                      color: AntiiQTheme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      boxController.closeBox();
-                      mainPageController.jumpToPage(
-                        mainPageIndexes["search"] as int,
-                      );
-                    },
-                    icon: Icon(
-                      RemixIcon.search_eye,
-                      color: AntiiQTheme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+                ),
+              );
+            }),
       ),
     );
   }

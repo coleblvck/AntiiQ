@@ -1,6 +1,13 @@
 import 'dart:typed_data';
 
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:collection/collection.dart';
+
+Track? findTrackFromMediaItem(MediaItem item) {
+  return antiiqState.music.tracks.list
+      .firstWhereOrNull((track) => track.mediaItem == item);
+}
 
 class TrackData {
   int? trackId;

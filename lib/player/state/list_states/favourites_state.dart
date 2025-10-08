@@ -39,7 +39,7 @@ class FavouritesState {
     await _save();
   }
 
-  init(TracksState tracks) async {
+  Future<void> init(TracksState tracks) async {
     final List<int> favouriteIds =
         await antiiqState.store.get(MainBoxKeys.favourites, defaultValue: <int>[]);
     list = [];

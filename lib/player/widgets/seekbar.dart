@@ -142,7 +142,7 @@ class SeekBarBuilder extends StatelessWidget {
               trackBorderRadius: generalRadius - 6,
               orientation: orientation,
               onChangeEnd: (newPosition) {
-                audioHandler.seek(Duration(milliseconds: newPosition));
+                globalAntiiqAudioHandler.seek(Duration(milliseconds: newPosition));
               },
             ),
           ),

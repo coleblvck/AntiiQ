@@ -13,14 +13,17 @@ import 'package:antiiq/player/utilities/playlist_generator/playlist_generator.da
 import 'package:antiiq/player/utilities/playlist_generator/playlist_generator_widgets.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:text_scroll/text_scroll.dart';
 
-findTrackAndOpenSheet(context, MediaItem item) {
-  final Track track = antiiqState.music.tracks.list
-      .firstWhere((track) => track.mediaItem == item);
-  openSheetFromTrack(context, track);
+findTrackAndOpenSheet(context, MediaItem? item) {
+  if (item != null) {
+    final Track? track = antiiqState.music.tracks.list
+        .firstWhereOrNull((track) => track.mediaItem == item);
+    if (track != null) openSheetFromTrack(context, track);
+  }
 }
 
 openSheetFromTrack(context, Track track) {

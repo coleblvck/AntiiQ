@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:antiiq/player/global_variables.dart';
@@ -9,6 +10,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 class PlaylistsState {
   final PlaylistStore store = PlaylistStore();
   List<PlayList> list = [];
+  StreamController<List<PlayList>> flow = StreamController.broadcast();
+
+  updateFlow() {
+    flow.add(list);
+  }
 
   create(String name, {List<Track> tracks = const [], art}) async {
     final int id = DateTime.now().millisecond;
@@ -20,6 +26,7 @@ class PlaylistsState {
       playlistArt: PlayListArtUtils.getPlaylistArtPath(id),
     );
     list.add(newPlaylist);
+    updateFlow();
     await save(id);
   }
 
@@ -28,6 +35,7 @@ class PlaylistsState {
     await store.dataStore.delete(id);
     await store.nameStore.delete(id);
     list.remove(playlist);
+    updateFlow();
     PlayListArtUtils.deletePlaylistArt(id);
   }
 
@@ -42,6 +50,7 @@ class PlaylistsState {
     if (art != null) {
       await PlayListArtUtils.setPlaylistArt(id, art: art);
     }
+    updateFlow();
     await save(id);
   }
 
@@ -49,6 +58,7 @@ class PlaylistsState {
     PlayList thisPlaylist =
         list.firstWhere((playlist) => playlist.playlistId == id);
     thisPlaylist.playlistTracks = thisPlaylist.playlistTracks! + tracks;
+    updateFlow();
     await save(id);
   }
 
@@ -56,6 +66,7 @@ class PlaylistsState {
     PlayList thisPlaylist =
         list.firstWhere((playlist) => playlist.playlistId == id);
     thisPlaylist.playlistTracks!.removeAt(index);
+    updateFlow();
     await save(id);
   }
 
@@ -72,7 +83,7 @@ class PlaylistsState {
     await store.nameStore.put(id, thisPlaylist.playlistName!);
   }
 
-  init(TracksState allTracks) async {
+  Future<void> init(TracksState allTracks) async {
     list = [];
     List<int> playlistIds = store.dataStore.keys.toList().cast();
     for (int playlistId in playlistIds) {
@@ -85,6 +96,7 @@ class PlaylistsState {
       );
       list.add(thisPlaylist);
     }
+    updateFlow();
   }
 
   Future<List<Track>> _initTracks(List<int> ids, TracksState allTracks) async {

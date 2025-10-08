@@ -4,15 +4,19 @@ import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/main_screen/sliding_box.dart';
 import 'package:antiiq/player/screens/selection_actions.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
-//Antiiq Packages
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
+import 'package:antiiq/player/utilities/audio_handler.dart';
+import 'package:antiiq/player/widgets/cutom_switch.dart';
 import 'package:antiiq/player/widgets/seekbar.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:text_scroll/text_scroll.dart';
+
+/// TODO
+/// I FIND THIS PAGE A LITTLE COMPLICATED, NOT LIKE THAT; BUT I'D RATHER IT DOES NOT SCROLL'.
 
 class NowPlaying extends StatelessWidget {
   final double pageHeight;
@@ -125,46 +129,63 @@ class NowPlayingFullCard extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: LayoutBuilder(builder: (context, constraints) {
-                  final height = constraints.maxHeight;
-                  return height > 280
-                      ? NowPlayingControlCard(currentTrack: currentTrack)
-                      : SingleChildScrollView(
-                          child:
-                              NowPlayingControlCard(currentTrack: currentTrack),
-                        );
-                }),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final double reservedHeightForBottomContent = 160.0;
+                  final double availableHeightForCoverArt =
+                      constraints.maxHeight - reservedHeightForBottomContent;
+                  final double size =
+                      availableHeightForCoverArt < constraints.maxWidth
+                          ? availableHeightForCoverArt
+                          : constraints.maxWidth;
+                  return Align(
+                    alignment: Alignment.topCenter,
+                    child: NowPlayingControlCard(
+                      currentTrack: currentTrack,
+                      calculatedCoverArtSize: size,
+                    ),
+                  );
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 15.0, vertical: 15.0),
+              Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TextScroll(
-                      currentTrack.title,
-                      textAlign: TextAlign.right,
-                      style:
-                          AntiiQTheme.of(context).textStyles.onBackgroundText,
-                      velocity: defaultTextScrollvelocity,
-                      delayBefore: delayBeforeScroll,
-                    ),
-                    TextScroll(
-                      currentTrack.artist!,
-                      textAlign: TextAlign.right,
-                      style:
-                          AntiiQTheme.of(context).textStyles.onBackgroundText,
-                      velocity: defaultTextScrollvelocity,
-                      delayBefore: delayBeforeScroll,
-                    ),
-                    TextScroll(
-                      currentTrack.album!,
-                      textAlign: TextAlign.right,
-                      style:
-                          AntiiQTheme.of(context).textStyles.onBackgroundText,
-                      velocity: defaultTextScrollvelocity,
-                      delayBefore: delayBeforeScroll,
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, top: 15.0, bottom: 0.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextScroll(
+                            currentTrack.title,
+                            textAlign: TextAlign.left,
+                            style: AntiiQTheme.of(context)
+                                .textStyles
+                                .onBackgroundText,
+                            velocity: defaultTextScrollvelocity,
+                            delayBefore: delayBeforeScroll,
+                          ),
+                          TextScroll(
+                            currentTrack.artist!,
+                            textAlign: TextAlign.left,
+                            style: AntiiQTheme.of(context)
+                                .textStyles
+                                .onBackgroundText,
+                            velocity: defaultTextScrollvelocity,
+                            delayBefore: delayBeforeScroll,
+                          ),
+                          TextScroll(
+                            currentTrack.album!,
+                            textAlign: TextAlign.left,
+                            style: AntiiQTheme.of(context)
+                                .textStyles
+                                .onBackgroundText,
+                            velocity: defaultTextScrollvelocity,
+                            delayBefore: delayBeforeScroll,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -181,74 +202,88 @@ class NowPlayingControlCard extends StatelessWidget {
   const NowPlayingControlCard({
     super.key,
     required this.currentTrack,
+    this.calculatedCoverArtSize,
   });
 
   final MediaItem? currentTrack;
+  final double? calculatedCoverArtSize;
 
   @override
   Widget build(BuildContext context) {
+    final antiiQState = context.read<AntiiqState>();
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(generalRadius),
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: GestureDetector(
-            onHorizontalDragEnd: (details) {
-              if (swipeGestures) {
-                if (details.primaryVelocity! < -100) {
-                  next();
-                }
-                if (details.primaryVelocity! > 100) {
-                  previous();
-                }
-              }
-            },
-            child: StreamBuilder<ArtFit>(
-                stream: coverArtFitStream.stream,
-                builder: (context, snapshot) {
-                  final coverArtFit = snapshot.data ?? currentCoverArtFit;
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: AntiiQTheme.of(context).colorScheme.background,
-                      backgroundBlendMode: BlendMode.colorDodge,
-                      image: DecorationImage(
-                        image: FileImage(
-                          File.fromUri(currentTrack!.artUri!),
-                        ),
-                        fit: coverArtFit == ArtFit.contain
-                            ? BoxFit.contain
-                            : BoxFit.cover,
-                      ),
-                    ),
-                    child: CustomCard(
-                      theme:
-                          AntiiQTheme.of(context).cardThemes.backgroundOverlay,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomCard(
-                                theme: AntiiQTheme.of(context)
-                                    .cardThemes
-                                    .surfaceOverlay,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    StreamBuilder<LoopMode>(
-                                        stream: audioHandler
-                                            .audioPlayer.loopModeStream,
-                                        builder: (context, snapshot) {
-                                          if (!snapshot.hasData) {
-                                            return Container();
-                                          }
-                                          final LoopMode mode = snapshot.data!;
-                                          return mode == LoopMode.all
-                                              ? IconButton(
+        child: SizedBox(
+          width: calculatedCoverArtSize,
+          height: calculatedCoverArtSize,
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: StreamBuilder<PlaybackState>(
+                stream:
+                    antiiQState.audioSetup.audioHandler.playbackState.stream,
+                builder: (context, playbackSnapshot) {
+                  final PlaybackState playbackState =
+                      playbackSnapshot.data ?? PlaybackState();
+                  final repeatMode = playbackState.repeatMode;
+                  final shuffleMode = playbackState.shuffleMode;
+                  return GestureDetector(
+                    onHorizontalDragEnd: (details) {
+                      if (swipeGestures) {
+                        if (details.primaryVelocity! < -100) {
+                          next();
+                        }
+                        if (details.primaryVelocity! > 100) {
+                          previous();
+                        }
+                      }
+                    },
+                    child: StreamBuilder<ArtFit>(
+                        stream: coverArtFitStream.stream,
+                        builder: (context, snapshot) {
+                          final coverArtFit =
+                              snapshot.data ?? currentCoverArtFit;
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: AntiiQTheme.of(context)
+                                  .colorScheme
+                                  .background,
+                              backgroundBlendMode: BlendMode.colorDodge,
+                              image: DecorationImage(
+                                image: FileImage(
+                                  File.fromUri(currentTrack!.artUri!),
+                                ),
+                                fit: coverArtFit == ArtFit.contain
+                                    ? BoxFit.contain
+                                    : BoxFit.cover,
+                              ),
+                            ),
+                            child: CustomCard(
+                              theme: AntiiQTheme.of(context)
+                                  .cardThemes
+                                  .backgroundOverlay,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomCard(
+                                        theme: AntiiQTheme.of(context)
+                                            .cardThemes
+                                            .surfaceOverlay,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            switch (repeatMode) {
+                                              AudioServiceRepeatMode.all =>
+                                                IconButton(
                                                   color: AntiiQTheme.of(context)
                                                       .colorScheme
                                                       .primary,
@@ -257,54 +292,15 @@ class NowPlayingControlCard extends StatelessWidget {
                                                     antiiqState
                                                         .audioSetup.preferences
                                                         .updateLoopMode(
-                                                            LoopMode.off);
+                                                            AudioServiceRepeatMode
+                                                                .none);
                                                   },
                                                   iconSize: 30,
                                                   icon: const Icon(
                                                       RemixIcon.repeat_2),
-                                                )
-                                              : mode == LoopMode.one
-                                                  ? IconButton(
-                                                      color: AntiiQTheme.of(
-                                                              context)
-                                                          .colorScheme
-                                                          .primary,
-                                                      padding: EdgeInsets.zero,
-                                                      onPressed: () {
-                                                        antiiqState.audioSetup
-                                                            .preferences
-                                                            .updateLoopMode(
-                                                                LoopMode.all);
-                                                      },
-                                                      iconSize: 30,
-                                                      icon: const Icon(
-                                                          RemixIcon.repeat_one),
-                                                    )
-                                                  : IconButton(
-                                                      color: AntiiQTheme.of(
-                                                              context)
-                                                          .colorScheme
-                                                          .onSurface,
-                                                      padding: EdgeInsets.zero,
-                                                      onPressed: () {
-                                                        antiiqState.audioSetup
-                                                            .preferences
-                                                            .updateLoopMode(
-                                                                LoopMode.one);
-                                                      },
-                                                      iconSize: 30,
-                                                      icon: const Icon(
-                                                          RemixIcon.repeat_2),
-                                                    );
-                                        }),
-                                    StreamBuilder<bool>(
-                                        stream: audioHandler.audioPlayer
-                                            .shuffleModeEnabledStream,
-                                        builder: (context, snapshot) {
-                                          final bool enabled =
-                                              snapshot.data ?? false;
-                                          return enabled
-                                              ? IconButton(
+                                                ),
+                                              AudioServiceRepeatMode.one =>
+                                                IconButton(
                                                   color: AntiiQTheme.of(context)
                                                       .colorScheme
                                                       .primary,
@@ -312,14 +308,15 @@ class NowPlayingControlCard extends StatelessWidget {
                                                   onPressed: () {
                                                     antiiqState
                                                         .audioSetup.preferences
-                                                        .updateShuffleMode(
-                                                            false);
+                                                        .updateLoopMode(
+                                                            AudioServiceRepeatMode
+                                                                .all);
                                                   },
                                                   iconSize: 30,
                                                   icon: const Icon(
-                                                      RemixIcon.shuffle),
-                                                )
-                                              : IconButton(
+                                                      RemixIcon.repeat_one),
+                                                ),
+                                              _ => IconButton(
                                                   color: AntiiQTheme.of(context)
                                                       .colorScheme
                                                       .onSurface,
@@ -327,131 +324,225 @@ class NowPlayingControlCard extends StatelessWidget {
                                                   onPressed: () {
                                                     antiiqState
                                                         .audioSetup.preferences
-                                                        .updateShuffleMode(
-                                                            true);
+                                                        .updateLoopMode(
+                                                            AudioServiceRepeatMode
+                                                                .one);
                                                   },
                                                   iconSize: 30,
                                                   icon: const Icon(
-                                                      RemixIcon.shuffle),
+                                                      RemixIcon.repeat_2),
+                                                ),
+                                            },
+                                            IconButton(
+                                              color: shuffleMode !=
+                                                      AudioServiceShuffleMode
+                                                          .none
+                                                  ? AntiiQTheme.of(context)
+                                                      .colorScheme
+                                                      .primary
+                                                  : AntiiQTheme.of(context)
+                                                      .colorScheme
+                                                      .onSurface,
+                                              padding: EdgeInsets.zero,
+                                              onPressed: () {
+                                                antiiqState
+                                                    .audioSetup.preferences
+                                                    .updateShuffleMode(
+                                                  shuffleMode !=
+                                                          AudioServiceShuffleMode
+                                                              .none
+                                                      ? false
+                                                      : true,
                                                 );
-                                        }),
-                                  ],
-                                ),
-                              ),
-                              IconButton(
-                                color: AntiiQTheme.of(context)
-                                    .colorScheme
-                                    .onBackground,
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  if (audioHandler.antiiqQueue.isNotEmpty &&
-                                      audioHandler
-                                              .antiiqQueue[audioHandler
-                                                  .audioPlayer.currentIndex!]
-                                              .extras!["id"] !=
-                                          "no-id") {
-                                    findTrackAndOpenSheet(
-                                      context,
-                                      audioHandler.antiiqQueue[audioHandler
-                                          .audioPlayer.currentIndex!],
-                                    );
-                                  }
-                                },
-                                iconSize: 30,
-                                icon: const Icon(RemixIcon.menu_4),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              TrackDurationDisplayWidget(
-                                  currentTrack: currentTrack),
-                              SeekBarBuilder(
-                                currentTrack: currentTrack,
-                                activeTrackColor: AntiiQTheme.of(context)
-                                    .colorScheme
-                                    .secondary,
-                                inactiveTrackColor:
-                                    AntiiQTheme.of(context).colorScheme.surface,
-                                thumbColor: AntiiQTheme.of(context)
-                                    .colorScheme
-                                    .primary,
-                              ),
-                              StreamBuilder<PlaybackState>(
-                                stream: currentPlaybackState(),
-                                builder: (context, state) {
-                                  bool? playState = state.data?.playing;
-                                  playState ??= false;
-                                  return Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      IconButton(
-                                        color: AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .onBackground,
-                                        onPressed: () {
-                                          rewind();
-                                        },
-                                        iconSize: 40,
-                                        icon: const Icon(
-                                            RemixIcon.arrow_left_double),
+                                              },
+                                              iconSize: 30,
+                                              icon:
+                                                  const Icon(RemixIcon.shuffle),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      IconButton(
-                                        color: AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .onBackground,
-                                        onPressed: () {
-                                          previous();
-                                        },
-                                        iconSize: 40,
-                                        icon: const Icon(
-                                            RemixIcon.arrow_left_circle),
-                                      ),
-                                      IconButton(
-                                        color: AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .onBackground,
-                                        onPressed: () {
-                                          playState! ? pause() : resume();
-                                        },
-                                        iconSize: 40,
-                                        icon: playState
-                                            ? const Icon(RemixIcon.pause_circle)
-                                            : const Icon(RemixIcon.play_circle),
-                                      ),
-                                      IconButton(
-                                        color: AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .onBackground,
-                                        onPressed: () {
-                                          next();
-                                        },
-                                        iconSize: 40,
-                                        icon: const Icon(
-                                            RemixIcon.arrow_right_circle),
-                                      ),
-                                      IconButton(
-                                        color: AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .onBackground,
-                                        onPressed: () {
-                                          forward();
-                                        },
-                                        iconSize: 40,
-                                        icon: const Icon(
-                                            RemixIcon.arrow_right_double),
+                                      Row(
+                                        children: [
+                                          Consumer<AntiiqAudioHandler>(
+                                            builder: (context, state, child) {
+                                              return CustomSwitch(
+                                                value:
+                                                    state.isEndlessPlayEnabled,
+                                                onChanged: (value) {
+                                                  antiiQState
+                                                      .audioSetup.preferences
+                                                      .setEndlessPlayEnabled(
+                                                    value,
+                                                  );
+                                                },
+                                                width: 60,
+                                                height: 40,
+                                                thumbSize: 20,
+                                                activeIcon: RemixIcon.infinity,
+                                                activeIconColor:
+                                                    AntiiQTheme.of(context)
+                                                        .colorScheme
+                                                        .onSecondary,
+                                                inactiveIcon:
+                                                    RemixIcon.infinity,
+                                                inactiveIconColor:
+                                                    AntiiQTheme.of(context)
+                                                        .colorScheme
+                                                        .onSurface,
+                                                trackPadding: 10,
+                                                trackBorderWidth: 2,
+                                                activeTrackBorderColor:
+                                                    AntiiQTheme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                inactiveTrackBorderColor:
+                                                    AntiiQTheme.of(context)
+                                                        .colorScheme
+                                                        .surface,
+                                                activeTrackColor:
+                                                    AntiiQTheme.of(context)
+                                                        .colorScheme
+                                                        .surface,
+                                                inactiveTrackColor:
+                                                    AntiiQTheme.of(context)
+                                                        .colorScheme
+                                                        .background,
+                                                activeThumbColor:
+                                                    AntiiQTheme.of(context)
+                                                        .colorScheme
+                                                        .secondary,
+                                                inactiveThumbColor:
+                                                    AntiiQTheme.of(context)
+                                                        .colorScheme
+                                                        .surface,
+                                                trackBorderRadius:
+                                                    generalRadius,
+                                                thumbBorderRadius:
+                                                    generalRadius - 6,
+                                                thumbElevation: 1,
+                                              );
+                                            },
+                                          ),
+                                          IconButton(
+                                            color: AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .onBackground,
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {
+                                              findTrackAndOpenSheet(
+                                                context,
+                                                globalAntiiqAudioHandler
+                                                    .currentItem,
+                                              );
+                                            },
+                                            iconSize: 30,
+                                            icon: const Icon(RemixIcon.menu_4),
+                                          ),
+                                        ],
                                       ),
                                     ],
-                                  );
-                                },
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      TrackDurationDisplayWidget(
+                                          currentTrack: currentTrack),
+                                      SeekBarBuilder(
+                                        currentTrack: currentTrack,
+                                        activeTrackColor:
+                                            AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                        inactiveTrackColor:
+                                            AntiiQTheme.of(context)
+                                                .colorScheme
+                                                .surface,
+                                        thumbColor: AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                      StreamBuilder<PlaybackState>(
+                                        stream: currentPlaybackState(),
+                                        builder: (context, state) {
+                                          bool? playState = state.data?.playing;
+                                          playState ??= false;
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              IconButton(
+                                                color: AntiiQTheme.of(context)
+                                                    .colorScheme
+                                                    .onBackground,
+                                                onPressed: () {
+                                                  rewind();
+                                                },
+                                                iconSize: 40,
+                                                icon: const Icon(RemixIcon
+                                                    .arrow_left_double),
+                                              ),
+                                              IconButton(
+                                                color: AntiiQTheme.of(context)
+                                                    .colorScheme
+                                                    .onBackground,
+                                                onPressed: () {
+                                                  previous();
+                                                },
+                                                iconSize: 40,
+                                                icon: const Icon(RemixIcon
+                                                    .arrow_left_circle),
+                                              ),
+                                              IconButton(
+                                                color: AntiiQTheme.of(context)
+                                                    .colorScheme
+                                                    .onBackground,
+                                                onPressed: () {
+                                                  playState!
+                                                      ? pause()
+                                                      : resume();
+                                                },
+                                                iconSize: 40,
+                                                icon: playState
+                                                    ? const Icon(
+                                                        RemixIcon.pause_circle)
+                                                    : const Icon(
+                                                        RemixIcon.play_circle),
+                                              ),
+                                              IconButton(
+                                                color: AntiiQTheme.of(context)
+                                                    .colorScheme
+                                                    .onBackground,
+                                                onPressed: () {
+                                                  next();
+                                                },
+                                                iconSize: 40,
+                                                icon: const Icon(RemixIcon
+                                                    .arrow_right_circle),
+                                              ),
+                                              IconButton(
+                                                color: AntiiQTheme.of(context)
+                                                    .colorScheme
+                                                    .onBackground,
+                                                onPressed: () {
+                                                  forward();
+                                                },
+                                                iconSize: 40,
+                                                icon: const Icon(RemixIcon
+                                                    .arrow_right_double),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                            ),
+                          );
+                        }),
                   );
                 }),
           ),

@@ -1,0 +1,9 @@
+- New/better Queue Management, including long-pressing and dragging to reorder queue items
+- Endless Play toggle for automatically extending queue when playing undisturbed
+- More efficient and responsive playback loading when initializing queue, regardless of list size
+- More efficient/Quicker library initialization on app launch
+- Better Contrast with some error colours
+- Slightly better search with accent and punctuation agnostic querying
+- Other important UI/UX and performance tweaks
+- Chaos UI Mode
+- Several additional themes for analysis

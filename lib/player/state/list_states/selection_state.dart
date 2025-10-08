@@ -37,7 +37,7 @@ class SelectionState {
     updateFlow();
     await _save();
   }
-  init(TracksState tracks) async {
+  Future<void> init(TracksState tracks) async {
     final List<int> selectionIds =
     await antiiqState.store.get(MainBoxKeys.globalSelection, defaultValue: <int>[]);
     list = [];

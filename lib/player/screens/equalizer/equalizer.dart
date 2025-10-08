@@ -16,10 +16,10 @@ class Equalizer extends StatefulWidget {
 }
 
 class _EqualizerState extends State<Equalizer> {
-  final AndroidEqualizer equalizer = audioHandler.equalizer;
+  final AndroidEqualizer equalizer = globalAntiiqAudioHandler.equalizer;
   final AndroidLoudnessEnhancer loudnessEnhancer =
-      audioHandler.loudnessEnhancer;
-  final AudioPlayer audioPlayer = audioHandler.audioPlayer;
+      globalAntiiqAudioHandler.loudnessEnhancer;
+  final AudioPlayer audioPlayer = globalAntiiqAudioHandler.audioPlayer;
 
   @override
   Widget build(BuildContext context) {

@@ -1,22 +1,49 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class AntiiQBoxController {
   bool isBoxClosed = true;
+  bool isCollapsedBodyVisible = true;
   final List<VoidCallback> _listeners = [];
+  
+  final StreamController<bool> _stateStreamController = StreamController<bool>.broadcast();
+  final StreamController<bool> _visibilityStreamController = StreamController<bool>.broadcast();
+  
+  Stream<bool> get stateStream => _stateStreamController.stream;
+  Stream<bool> get visibilityStream => _visibilityStreamController.stream;
+  
+  AntiiQBoxController() {
+    _stateStreamController.add(isBoxClosed);
+    _visibilityStreamController.add(isCollapsedBodyVisible);
+  }
 
   void closeBox() {
     isBoxClosed = true;
+    isCollapsedBodyVisible = true;
     _notifyListeners();
+    _stateStreamController.add(isBoxClosed);
+    _visibilityStreamController.add(isCollapsedBodyVisible);
   }
 
   void openBox() {
     isBoxClosed = false;
+    isCollapsedBodyVisible = false;
     _notifyListeners();
+    _stateStreamController.add(isBoxClosed);
+    _visibilityStreamController.add(isCollapsedBodyVisible);
   }
 
   void toggleBox() {
     isBoxClosed = !isBoxClosed;
+    isCollapsedBodyVisible = isBoxClosed;
     _notifyListeners();
+    _stateStreamController.add(isBoxClosed);
+    _visibilityStreamController.add(isCollapsedBodyVisible);
+  }
+
+  void updateVisibility(bool isCollapsed) {
+    isCollapsedBodyVisible = isCollapsed;
+    _visibilityStreamController.add(isCollapsedBodyVisible);
   }
 
   void addListener(VoidCallback listener) {
@@ -35,6 +62,8 @@ class AntiiQBoxController {
 
   void dispose() {
     _listeners.clear();
+    _stateStreamController.close();
+    _visibilityStreamController.close();
   }
 }
 
@@ -85,12 +114,16 @@ class _AntiiQSlidingBoxState extends State<AntiiQSlidingBox>
   bool _isDragging = false;
   double _currentMinHeight = 0;
   double _currentMaxHeight = 0;
+  StreamSubscription? _stateStreamSubscription;
+  StreamSubscription? _visibilityStreamSubscription;
+  bool _isCollapsedBodyVisible = true;
 
   @override
   void initState() {
     super.initState();
     _currentMinHeight = widget.minHeight;
     _currentMaxHeight = widget.maxHeight;
+    _isCollapsedBodyVisible = widget.controller.isCollapsedBodyVisible;
     
     _controller = AnimationController(
       vsync: this,
@@ -100,6 +133,33 @@ class _AntiiQSlidingBoxState extends State<AntiiQSlidingBox>
     _updateAnimation();
     _handleControllerUpdate();
     widget.controller.addListener(_handleControllerUpdate);
+    
+    _controller.addListener(_handleAnimationChanged);
+    
+    _stateStreamSubscription = widget.controller.stateStream.listen(_handleStateChange);
+    _visibilityStreamSubscription = widget.controller.visibilityStream.listen(_handleVisibilityChange);
+  }
+
+  void _handleAnimationChanged() {
+    final isCollapsed = _controller.value <= 0.5;
+    if (_isCollapsedBodyVisible != isCollapsed) {
+      _isCollapsedBodyVisible = isCollapsed;
+      widget.controller.updateVisibility(isCollapsed);
+    }
+  }
+
+  void _handleStateChange(bool isBoxClosed) {
+    if (isBoxClosed) {
+      _controller.reverse();
+      widget.onBoxClose?.call();
+    } else {
+      _controller.forward();
+      widget.onBoxOpen?.call();
+    }
+  }
+
+  void _handleVisibilityChange(bool isCollapsedVisible) {
+    _isCollapsedBodyVisible = isCollapsedVisible;
   }
 
   void _updateAnimation() {
@@ -115,23 +175,23 @@ class _AntiiQSlidingBoxState extends State<AntiiQSlidingBox>
   void didUpdateWidget(AntiiQSlidingBox oldWidget) {
     super.didUpdateWidget(oldWidget);
     
-    // Check if min or max height has changed
     if (widget.minHeight != _currentMinHeight || widget.maxHeight != _currentMaxHeight) {
       _currentMinHeight = widget.minHeight;
       _currentMaxHeight = widget.maxHeight;
-      
-      // Update the animation with new values
       _updateAnimation();
     }
     
-    // Handle controller listener changes
     if (oldWidget.controller != widget.controller) {
       oldWidget.controller.removeListener(_handleControllerUpdate);
       widget.controller.addListener(_handleControllerUpdate);
       _handleControllerUpdate();
+      
+      _stateStreamSubscription?.cancel();
+      _visibilityStreamSubscription?.cancel();
+      _stateStreamSubscription = widget.controller.stateStream.listen(_handleStateChange);
+      _visibilityStreamSubscription = widget.controller.visibilityStream.listen(_handleVisibilityChange);
     }
     
-    // Handle animation duration changes
     if (oldWidget.animationDuration != widget.animationDuration) {
       _controller.duration = widget.animationDuration;
     }
@@ -149,8 +209,11 @@ class _AntiiQSlidingBoxState extends State<AntiiQSlidingBox>
 
   @override
   void dispose() {
+    _controller.removeListener(_handleAnimationChanged);
     _controller.dispose();
     widget.controller.removeListener(_handleControllerUpdate);
+    _stateStreamSubscription?.cancel();
+    _visibilityStreamSubscription?.cancel();
     super.dispose();
   }
 
@@ -173,11 +236,11 @@ class _AntiiQSlidingBoxState extends State<AntiiQSlidingBox>
     _isDragging = false;
     if (_controller.value > 0.5) {
       _controller.forward();
-      widget.controller.isBoxClosed = false;
+      widget.controller.openBox();
       widget.onBoxOpen?.call();
     } else {
       _controller.reverse();
-      widget.controller.isBoxClosed = true;
+      widget.controller.closeBox();
       widget.onBoxClose?.call();
     }
   }

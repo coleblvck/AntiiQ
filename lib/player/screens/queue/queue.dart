@@ -1,7 +1,5 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/queue/queue_song.dart';
-import 'package:antiiq/player/state/antiiq_state.dart';
-import 'package:antiiq/player/state/list_states/queue_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:audio_service/audio_service.dart';
@@ -37,9 +35,7 @@ showQueue(context) {
 }
 
 class QueuePage extends StatelessWidget {
-  const QueuePage({
-    super.key,
-  });
+  const QueuePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -56,90 +52,135 @@ class QueuePage extends StatelessWidget {
 }
 
 class QueueBottomHeader extends StatelessWidget {
-  const QueueBottomHeader({
-    super.key,
-  });
+  const QueueBottomHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 60,
-      child: CustomCard(
-        theme: AntiiQTheme.of(context).cardThemes.background,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15, right: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Queue",
-                style: TextStyle(
-                  color: AntiiQTheme.of(context).colorScheme.onBackground,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+    return StreamBuilder<List<MediaItem>>(
+      stream: globalAntiiqAudioHandler.queue,
+      builder: (context, snapshot) {
+        final queueLength = snapshot.data?.length ?? 0;
+        
+        return SizedBox(
+          height: 60,
+          child: CustomCard(
+            theme: AntiiQTheme.of(context).cardThemes.background,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Queue",
+                        style: TextStyle(
+                          color: AntiiQTheme.of(context).colorScheme.onBackground,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "$queueLength track${queueLength != 1 ? 's' : ''} up next",
+                        style: TextStyle(
+                          color: AntiiQTheme.of(context)
+                              .colorScheme
+                              .onBackground
+                              .withAlpha(150),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(
+                      RemixIcon.arrow_down_double,
+                      color: AntiiQTheme.of(context).colorScheme.onBackground,
+                    ),
+                  )
+                ],
               ),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: Icon(
-                  RemixIcon.arrow_down_double,
-                  color: AntiiQTheme.of(context).colorScheme.onBackground,
-                ),
-              )
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class QueueCard extends StatelessWidget {
-  const QueueCard({
-    super.key,
-  });
+  const QueueCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final QueueState queue = antiiqState.music.queue;
     return StreamBuilder<List<MediaItem>>(
-        stream: queue.flow.stream,
-        builder: (context, snapshot) {
-          List<MediaItem>? thisQueue = snapshot.data ?? queue.state;
+      stream: globalAntiiqAudioHandler.queue,
+      builder: (context, snapshot) {
+        final thisQueue = snapshot.data ?? [];
+
+        if (thisQueue.isEmpty) {
           return CustomCard(
             theme: AntiiQTheme.of(context).cardThemes.background,
-            child: ListView.builder(
-                controller: ScrollController(),
-                itemCount: thisQueue.length,
-                itemBuilder: (context, index) {
-                  final MediaItem thisTrack = thisQueue[index];
-                  return QueueSongItem(
-                    title: TextScroll(
-                      thisTrack.title,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground,
-                      ),
-                      velocity: defaultTextScrollvelocity,
-                      delayBefore: delayBeforeScroll,
-                    ),
-                    subtitle: TextScroll(
-                      thisTrack.artist ?? "No Artist",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground,
-                      ),
-                      velocity: defaultTextScrollvelocity,
-                      delayBefore: delayBeforeScroll,
-                    ),
-                    leading: getUriImage(thisTrack.artUri!),
-                    item: thisTrack,
-                    index: index,
-                  );
-                }),
+            child: Center(
+              child: Text(
+                "Queue is empty",
+                style: TextStyle(
+                  color: AntiiQTheme.of(context)
+                      .colorScheme
+                      .onBackground
+                      .withAlpha(150),
+                  fontSize: 16,
+                ),
+              ),
+            ),
           );
-        });
+        }
+
+        return CustomCard(
+          theme: AntiiQTheme.of(context).cardThemes.background,
+          child: ReorderableListView.builder(
+            onReorder: (oldIndex, newIndex) async {
+              if (newIndex > oldIndex) {
+                newIndex -= 1;
+              }
+              await globalAntiiqAudioHandler.moveQueueItem(oldIndex, newIndex);
+            },
+            itemCount: thisQueue.length,
+            itemBuilder: (context, index) {
+              final MediaItem thisTrack = thisQueue[index];
+              return QueueSongItem(
+                key: ValueKey(thisTrack.id),
+                title: TextScroll(
+                  thisTrack.title,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: AntiiQTheme.of(context).colorScheme.onBackground,
+                  ),
+                  velocity: defaultTextScrollvelocity,
+                  delayBefore: delayBeforeScroll,
+                ),
+                subtitle: TextScroll(
+                  thisTrack.artist ?? "No Artist",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: AntiiQTheme.of(context).colorScheme.onBackground,
+                  ),
+                  velocity: defaultTextScrollvelocity,
+                  delayBefore: delayBeforeScroll,
+                ),
+                leading: getUriImage(thisTrack.artUri!),
+                item: thisTrack,
+                index: index,
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 }

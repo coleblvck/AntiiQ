@@ -14,6 +14,22 @@ class Version {
 
 List<Version> versions = [
   const Version(
+    version: "1.6.0",
+    title: "Audiophile",
+    date: "08-OCT-2025",
+    changes: [
+      "- New/better Queue Management, including long-pressing and dragging to reorder queue items",
+      "- Endless Play toggle for automatically extending queue when playing undisturbed",
+      "- More efficient and responsive playback loading when initializing queue, regardless of list size",
+      "- More efficient/Quicker library initialization on app launch",
+      "- Better Contrast with some error colours",
+      "- Slightly better search with accent and punctuation agnostic querying",
+      "- Other important UI/UX and performance tweaks",
+      "- Chaos UI Mode",
+      "- Several additional themes for analysis",
+    ],
+  ),
+  const Version(
     version: "1.5.0",
     title: "Audiophile",
     date: "07-MAY-2025",

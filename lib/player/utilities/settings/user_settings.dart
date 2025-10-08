@@ -3,6 +3,7 @@ import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/settings/theme_settings.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class MainBoxKeys {
@@ -35,6 +36,7 @@ class MainBoxKeys {
   static const String additionalMiniPlayerControls =
       "additionalMiniPlayerControls";
   static const String dashboardViewOrder = "dashboardViewOrder";
+  static const String endlessPlayEnabled = "endlessPlayEnabled";
 }
 
 updateDirectories() async {
@@ -75,7 +77,8 @@ updateStatusBarMode() {
 updateStatusBarColors() {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
-      statusBarColor: currentColorScheme.background,
+      statusBarColor:
+          chaosUIEnabled ? Colors.transparent : currentColorScheme.background,
       statusBarIconBrightness: currentColorScheme.brightness == Brightness.dark
           ? Brightness.light
           : Brightness.dark,
@@ -238,8 +241,8 @@ changeCoverArtFit(String coverArtFit) async {
 }
 
 getadditionalMiniPlayerControls() async {
-  additionalMiniPlayerControls =
-      await antiiqState.store.get(MainBoxKeys.coverArtFit, defaultValue: true);
+  additionalMiniPlayerControls = await antiiqState.store
+      .get(MainBoxKeys.additionalMiniPlayerControls, defaultValue: true);
 }
 
 changeAdditionalMiniPlayerControls(bool value) async {

@@ -15,13 +15,13 @@ class QueueState {
   List<MediaItem> get state => _state;
   StreamController<List<MediaItem>> get flow => _flow;
 
-  init(TracksState tracks) async {
+  Future<void> init(TracksState tracks) async {
     await _getInitialState(tracks);
     _initListen();
   }
 
   _initListen() {
-    audioHandler.queue.asBroadcastStream().distinct().listen(_onQueueChange);
+    globalAntiiqAudioHandler.queue.asBroadcastStream().distinct().listen(_onQueueChange);
   }
 
   void _onQueueChange(List<MediaItem> itemList) async {

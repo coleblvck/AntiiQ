@@ -27,23 +27,114 @@ class AntiiqPlaylistGenerator {
   final Random _random = Random();
   final Map<String, List<String>> _genreMappings = {
     'hip hop': ['hiphop', 'hip-hop', 'trap', 'rap', 'grime', 'drill'],
-    'rock': ['alt rock', 'alternative rock', 'hard rock', 'indie rock', 'classic rock', 'prog rock', 'punk rock'],
-    'electronic': ['edm', 'dance', 'house', 'techno', 'dubstep', 'drum and bass', 'drum & bass', 'trance', 'ambient', 'electronica'],
+    'rock': [
+      'alt rock',
+      'alternative rock',
+      'hard rock',
+      'indie rock',
+      'classic rock',
+      'prog rock',
+      'punk rock'
+    ],
+    'electronic': [
+      'edm',
+      'dance',
+      'house',
+      'techno',
+      'dubstep',
+      'drum and bass',
+      'drum & bass',
+      'trance',
+      'ambient',
+      'electronica'
+    ],
     'r&b': ['rnb', 'rhythm and blues', 'soul', 'neo soul', 'contemporary r&b'],
-    'pop': ['pop rock', 'dance pop', 'synth pop', 'k-pop', 'j-pop', 'indie pop', 'dream pop'],
-    'metal': ['heavy metal', 'death metal', 'black metal', 'thrash metal', 'doom metal', 'progressive metal', 'nu metal', 'metalcore'],
-    'jazz': ['smooth jazz', 'bebop', 'fusion', 'swing', 'bossa nova', 'big band', 'contemporary jazz'],
-    'classical': ['orchestra', 'chamber', 'piano', 'symphony', 'baroque', 'romantic', 'opera', 'contemporary classical'],
-    'country': ['americana', 'folk', 'bluegrass', 'country rock', 'alternative country', 'country pop'],
+    'pop': [
+      'pop rock',
+      'dance pop',
+      'synth pop',
+      'k-pop',
+      'j-pop',
+      'indie pop',
+      'dream pop'
+    ],
+    'metal': [
+      'heavy metal',
+      'death metal',
+      'black metal',
+      'thrash metal',
+      'doom metal',
+      'progressive metal',
+      'nu metal',
+      'metalcore'
+    ],
+    'jazz': [
+      'smooth jazz',
+      'bebop',
+      'fusion',
+      'swing',
+      'bossa nova',
+      'big band',
+      'contemporary jazz'
+    ],
+    'classical': [
+      'orchestra',
+      'chamber',
+      'piano',
+      'symphony',
+      'baroque',
+      'romantic',
+      'opera',
+      'contemporary classical'
+    ],
+    'country': [
+      'americana',
+      'folk',
+      'bluegrass',
+      'country rock',
+      'alternative country',
+      'country pop'
+    ],
     'reggae': ['dancehall', 'ska', 'dub', 'reggaeton', 'roots reggae'],
-    'indie': ['indie rock', 'indie pop', 'indie folk', 'indie electronic', 'alternative'],
-    'folk': ['folk rock', 'traditional folk', 'contemporary folk', 'singer-songwriter'],
+    'indie': [
+      'indie rock',
+      'indie pop',
+      'indie folk',
+      'indie electronic',
+      'alternative'
+    ],
+    'folk': [
+      'folk rock',
+      'traditional folk',
+      'contemporary folk',
+      'singer-songwriter'
+    ],
     'blues': ['chicago blues', 'delta blues', 'electric blues', 'blues rock'],
     'funk': ['disco', 'soul', 'r&b', 'jazz-funk'],
     'punk': ['hardcore', 'post-punk', 'pop punk', 'punk rock', 'emo'],
-    'world': ['latin', 'afrobeat', 'celtic', 'flamenco', 'middle eastern', 'asian', 'indian'],
-    'acoustic': ['folk', 'singer-songwriter', 'unplugged', 'acoustic rock', 'acoustic pop'],
-    'instrumental': ['post-rock', 'ambient', 'soundtrack', 'classical', 'lo-fi'],
+    'world': [
+      'latin',
+      'afrobeat',
+      'celtic',
+      'flamenco',
+      'middle eastern',
+      'asian',
+      'indian'
+    ],
+    'acoustic': [
+      'folk',
+      'singer-songwriter',
+      'unplugged',
+      'acoustic rock',
+      'acoustic pop'
+    ],
+    'instrumental': [
+      'post-rock',
+      'ambient',
+      'soundtrack',
+      'classical',
+      'lo-fi'
+    ],
   };
 
   final Map<String, double> _trackWeights = {};
@@ -64,7 +155,7 @@ class AntiiqPlaylistGenerator {
     if (kDebugMode) {
       print('Loading queue with ${queue.length} tracks');
     }
-    await audioHandler.updateQueue(queue);
+    await globalAntiiqAudioHandler.updateQueue(queue);
   }
 
   void clearCache() {
@@ -111,8 +202,7 @@ class AntiiqPlaylistGenerator {
 
           filteredTracks = allTracks
               .where((track) =>
-                  track.mediaItem != null &&
-                  _isGenreMatch(track, genreMatches))
+                  track.mediaItem != null && _isGenreMatch(track, genreMatches))
               .toList();
           break;
 
@@ -122,13 +212,17 @@ class AntiiqPlaylistGenerator {
           final normalizedArtist = _normalizeText(filterValue);
           filteredTracks = allTracks
               .where((track) =>
-                track.mediaItem != null &&
-                track.trackData?.trackArtistNames != null &&
-                (_calculateSimilarity(
-                    _normalizeText(track.trackData!.trackArtistNames!),
-                    normalizedArtist) > 0.7 ||
-                   _normalizeText(track.trackData!.trackArtistNames!).contains(normalizedArtist) ||
-                   normalizedArtist.contains(_normalizeText(track.trackData!.trackArtistNames!))))
+                  track.mediaItem != null &&
+                  track.trackData?.trackArtistNames != null &&
+                  (_calculateSimilarity(
+                              _normalizeText(
+                                  track.trackData!.trackArtistNames!),
+                              normalizedArtist) >
+                          0.7 ||
+                      _normalizeText(track.trackData!.trackArtistNames!)
+                          .contains(normalizedArtist) ||
+                      normalizedArtist.contains(
+                          _normalizeText(track.trackData!.trackArtistNames!))))
               .toList();
           break;
 
@@ -138,13 +232,16 @@ class AntiiqPlaylistGenerator {
           final normalizedAlbum = _normalizeText(filterValue);
           filteredTracks = allTracks
               .where((track) =>
-                track.mediaItem != null &&
-                track.trackData?.albumName != null &&
-                (_calculateSimilarity(
-                  _normalizeText(track.trackData!.albumName!),
-                  normalizedAlbum) > 0.8 ||
-                _normalizeText(track.trackData!.albumName!).contains(normalizedAlbum) ||
-                normalizedAlbum.contains(_normalizeText(track.trackData!.albumName!))))
+                  track.mediaItem != null &&
+                  track.trackData?.albumName != null &&
+                  (_calculateSimilarity(
+                              _normalizeText(track.trackData!.albumName!),
+                              normalizedAlbum) >
+                          0.8 ||
+                      _normalizeText(track.trackData!.albumName!)
+                          .contains(normalizedAlbum) ||
+                      normalizedAlbum.contains(
+                          _normalizeText(track.trackData!.albumName!))))
               .toList();
 
           if (filteredTracks.isNotEmpty) {
@@ -179,12 +276,13 @@ class AntiiqPlaylistGenerator {
               final endYear = int.tryParse(range[1].trim());
 
               if (startYear != null && endYear != null) {
-                filteredTracks = allTracks
-                    .where((track) {
-                      final year = track.trackData?.year;
-                      return track.mediaItem != null && year != null && year >= startYear && year <= endYear;
-                    })
-                    .toList();
+                filteredTracks = allTracks.where((track) {
+                  final year = track.trackData?.year;
+                  return track.mediaItem != null &&
+                      year != null &&
+                      year >= startYear &&
+                      year <= endYear;
+                }).toList();
               }
             }
           } else {
@@ -205,24 +303,26 @@ class AntiiqPlaylistGenerator {
                 return trackYear >= decade && trackYear < decade + 10;
               }
 
-              return trackYear.toString().toLowerCase() == yearValue.toLowerCase();
+              return trackYear.toString().toLowerCase() ==
+                  yearValue.toLowerCase();
             }).toList();
           }
           break;
 
         case PlaylistType.likedShuffle:
-          filteredTracks = antiiqState.music.favourites.list.where((t) => t.mediaItem != null).toList();
+          filteredTracks = antiiqState.music.favourites.list
+              .where((t) => t.mediaItem != null)
+              .toList();
           break;
 
         case PlaylistType.similarToTrack:
           if (seedTrack == null || seedTrack.mediaItem == null) return null;
 
           final scoredTracks = _findSimilarTracks(
-            seedTrack: seedTrack,
-            allTracks: allTracks,
-            weights: weights,
-            similarityThreshold: similarityThreshold
-          );
+              seedTrack: seedTrack,
+              allTracks: allTracks,
+              weights: weights,
+              similarityThreshold: similarityThreshold);
 
           scoredTracks.sort((a, b) => b.value.compareTo(a.value));
 
@@ -234,12 +334,15 @@ class AntiiqPlaylistGenerator {
           if (scoredTracks.length > 20) {
             final remaining = scoredTracks.skip(20).map((e) => e.key).toList();
             final weightedRemainingMediaItems = _applyWeightedShuffle(
-                remaining.where((t) => t.mediaItem != null).map((t) => t.mediaItem!).toList(),
-                maxTracks - selectedTracks.length
-            );
-            final weightedRemainingTracks = allTracks.where((track) =>
-                weightedRemainingMediaItems.any((mi) => mi.id == track.mediaItem?.id)
-            ).toList();
+                remaining
+                    .where((t) => t.mediaItem != null)
+                    .map((t) => t.mediaItem!)
+                    .toList(),
+                maxTracks - selectedTracks.length);
+            final weightedRemainingTracks = allTracks
+                .where((track) => weightedRemainingMediaItems
+                    .any((mi) => mi.id == track.mediaItem?.id))
+                .toList();
             selectedTracks.addAll(weightedRemainingTracks);
           }
 
@@ -249,23 +352,23 @@ class AntiiqPlaylistGenerator {
         case PlaylistType.fromHistory:
           if (playHistory == null || playHistory.isEmpty) return null;
 
-          final recentHistory = playHistory.length > 50 ? playHistory.sublist(0, 50) : playHistory;
+          final recentHistory = playHistory.length > 50
+              ? playHistory.sublist(0, 50)
+              : playHistory;
 
           final historyFeatures = _extractFeaturesFromHistory(recentHistory);
 
           final scoredTracks = _scoreTracksAgainstHistory(
-            allTracks: allTracks,
-            historyFeatures: historyFeatures,
-            weights: weights,
-            playHistory: recentHistory
-          );
+              allTracks: allTracks,
+              historyFeatures: historyFeatures,
+              weights: weights,
+              playHistory: recentHistory);
 
           scoredTracks.sort((a, b) => b.value.compareTo(a.value));
 
           filteredTracks = _ensureDiversity(
-            scoredTracks.map((e) => e.key).toList(),
-            maxTracks: maxTracks
-          );
+              scoredTracks.map((e) => e.key).toList(),
+              maxTracks: maxTracks);
           break;
 
         case PlaylistType.mood:
@@ -273,28 +376,100 @@ class AntiiqPlaylistGenerator {
 
           final mood = filterValue.toLowerCase().trim();
           final Map<String, List<String>> moodGenres = {
-            'happy': ['pop', 'dance', 'disco', 'reggae', 'ska', 'j-pop', 'k-pop', 'power pop'],
-            'sad': ['blues', 'soul', 'ambient', 'slowcore', 'folk', 'indie folk', 'emo', 'dream pop'],
-            'energetic': ['rock', 'punk', 'metal', 'edm', 'techno', 'drum and bass', 'power metal', 'hardcore'],
-            'chill': ['lofi', 'chillout', 'ambient', 'trip hop', 'downtempo', 'smooth jazz', 'acoustic'],
-            'romantic': ['r&b', 'soul', 'jazz', 'soft rock', 'love songs', 'bossa nova', 'adult contemporary'],
-            'angry': ['metal', 'hardcore', 'punk', 'industrial', 'grindcore', 'death metal', 'thrash metal'],
-            'focus': ['classical', 'ambient', 'instrumental', 'post-rock', 'minimal', 'piano', 'soundtrack'],
-            'nostalgic': ['oldies', '80s', '90s', 'classic rock', 'disco', 'synthwave', 'retro'],
-            'epic': ['orchestral', 'soundtrack', 'trailer music', 'epic metal', 'power metal', 'symphonic'],
+            'happy': [
+              'pop',
+              'dance',
+              'disco',
+              'reggae',
+              'ska',
+              'j-pop',
+              'k-pop',
+              'power pop'
+            ],
+            'sad': [
+              'blues',
+              'soul',
+              'ambient',
+              'slowcore',
+              'folk',
+              'indie folk',
+              'emo',
+              'dream pop'
+            ],
+            'energetic': [
+              'rock',
+              'punk',
+              'metal',
+              'edm',
+              'techno',
+              'drum and bass',
+              'power metal',
+              'hardcore'
+            ],
+            'chill': [
+              'lofi',
+              'chillout',
+              'ambient',
+              'trip hop',
+              'downtempo',
+              'smooth jazz',
+              'acoustic'
+            ],
+            'romantic': [
+              'r&b',
+              'soul',
+              'jazz',
+              'soft rock',
+              'love songs',
+              'bossa nova',
+              'adult contemporary'
+            ],
+            'angry': [
+              'metal',
+              'hardcore',
+              'punk',
+              'industrial',
+              'grindcore',
+              'death metal',
+              'thrash metal'
+            ],
+            'focus': [
+              'classical',
+              'ambient',
+              'instrumental',
+              'post-rock',
+              'minimal',
+              'piano',
+              'soundtrack'
+            ],
+            'nostalgic': [
+              'oldies',
+              '80s',
+              '90s',
+              'classic rock',
+              'disco',
+              'synthwave',
+              'retro'
+            ],
+            'epic': [
+              'orchestral',
+              'soundtrack',
+              'trailer music',
+              'epic metal',
+              'power metal',
+              'symphonic'
+            ],
           };
 
           List<String> targetGenres = moodGenres[mood] ?? [];
           if (targetGenres.isEmpty) return null;
 
           final scoredTracks = _getMoodBasedTracks(
-            allTracks: allTracks,
-            targetGenres: targetGenres,
-            mood: mood
-          );
+              allTracks: allTracks, targetGenres: targetGenres, mood: mood);
 
           scoredTracks.sort((a, b) => b.value.compareTo(a.value));
-          filteredTracks = scoredTracks.take(maxTracks).map((e) => e.key).toList();
+          filteredTracks =
+              scoredTracks.take(maxTracks).map((e) => e.key).toList();
           break;
 
         case PlaylistType.tempo:
@@ -302,9 +477,34 @@ class AntiiqPlaylistGenerator {
 
           final tempo = filterValue.toLowerCase().trim();
           final Map<String, List<String>> tempoGenres = {
-            'fast': ['punk', 'metal', 'drum and bass', 'techno', 'hardcore', 'thrash metal', 'speed metal'],
-            'medium': ['rock', 'pop', 'hip hop', 'reggae', 'disco', 'funk', 'alternative'],
-            'slow': ['ambient', 'blues', 'jazz', 'folk', 'classical', 'downtempo', 'trip-hop', 'chillout']
+            'fast': [
+              'punk',
+              'metal',
+              'drum and bass',
+              'techno',
+              'hardcore',
+              'thrash metal',
+              'speed metal'
+            ],
+            'medium': [
+              'rock',
+              'pop',
+              'hip hop',
+              'reggae',
+              'disco',
+              'funk',
+              'alternative'
+            ],
+            'slow': [
+              'ambient',
+              'blues',
+              'jazz',
+              'folk',
+              'classical',
+              'downtempo',
+              'trip-hop',
+              'chillout'
+            ]
           };
 
           Map<String, List<int>> bpmRanges = {
@@ -317,14 +517,14 @@ class AntiiqPlaylistGenerator {
           List<int>? bpmRange = bpmRanges[tempo];
 
           final scoredTracks = _getTempoBasedTracks(
-            allTracks: allTracks,
-            targetGenres: targetGenres,
-            bpmRange: bpmRange,
-            tempo: tempo
-          );
+              allTracks: allTracks,
+              targetGenres: targetGenres,
+              bpmRange: bpmRange,
+              tempo: tempo);
 
           scoredTracks.sort((a, b) => b.value.compareTo(a.value));
-          filteredTracks = scoredTracks.take(maxTracks).map((e) => e.key).toList();
+          filteredTracks =
+              scoredTracks.take(maxTracks).map((e) => e.key).toList();
           break;
 
         case PlaylistType.freshDiscovery:
@@ -332,17 +532,16 @@ class AntiiqPlaylistGenerator {
           break;
 
         case PlaylistType.recentlyAdded:
-          final scoredTracks = allTracks
-              .where((t) => t.mediaItem != null)
-              .map((track) {
-                final random = Random();
-                final score = random.nextDouble();
-                return MapEntry(track, score);
-              })
-              .toList();
+          final scoredTracks =
+              allTracks.where((t) => t.mediaItem != null).map((track) {
+            final random = Random();
+            final score = random.nextDouble();
+            return MapEntry(track, score);
+          }).toList();
 
           scoredTracks.sort((a, b) => b.value.compareTo(a.value));
-          filteredTracks = scoredTracks.take(maxTracks).map((e) => e.key).toList();
+          filteredTracks =
+              scoredTracks.take(maxTracks).map((e) => e.key).toList();
           break;
 
         case PlaylistType.decadesMix:
@@ -350,7 +549,13 @@ class AntiiqPlaylistGenerator {
           break;
 
         case PlaylistType.acousticVibe:
-          final acousticGenres = ['acoustic', 'folk', 'singer-songwriter', 'unplugged', 'classical'];
+          final acousticGenres = [
+            'acoustic',
+            'folk',
+            'singer-songwriter',
+            'unplugged',
+            'classical'
+          ];
 
           final scoredTracks = allTracks
               .where((t) => t.mediaItem != null)
@@ -392,14 +597,14 @@ class AntiiqPlaylistGenerator {
                   }
                 }
 
-
                 return score > 0 ? MapEntry(track, score) : null;
               })
               .nonNulls
               .toList();
 
           scoredTracks.sort((a, b) => b.value.compareTo(a.value));
-          filteredTracks = scoredTracks.take(maxTracks).map((e) => e.key).toList();
+          filteredTracks =
+              scoredTracks.take(maxTracks).map((e) => e.key).toList();
           break;
       }
 
@@ -410,14 +615,16 @@ class AntiiqPlaylistGenerator {
         return null;
       }
 
-      List<MediaItem> finalQueue = filteredTracks.where((t) => t.mediaItem != null).map((t) => t.mediaItem!).toList();
+      List<MediaItem> finalQueue = filteredTracks
+          .where((t) => t.mediaItem != null)
+          .map((t) => t.mediaItem!)
+          .toList();
 
       if (type != PlaylistType.album || shuffleAlbum) {
-         finalQueue = _applyWeightedShuffle(finalQueue, maxTracks);
+        finalQueue = _applyWeightedShuffle(finalQueue, maxTracks);
       } else if (finalQueue.length > maxTracks) {
-         finalQueue = finalQueue.take(maxTracks).toList();
+        finalQueue = finalQueue.take(maxTracks).toList();
       }
-
 
       if (kDebugMode) {
         print('Successfully created playlist with ${finalQueue.length} tracks');
@@ -425,10 +632,9 @@ class AntiiqPlaylistGenerator {
             'First few tracks: ${finalQueue.take(3).map((t) => t.title).join(', ')}');
       }
 
-      await loadQueue(finalQueue);
-
       if (autoPlay) {
-        await audioHandler.play();
+        await loadQueue(finalQueue);
+        await globalAntiiqAudioHandler.play();
       }
 
       return finalQueue;
@@ -472,23 +678,22 @@ class AntiiqPlaylistGenerator {
         matches.addAll(relatedGenres);
       } else {
         for (final related in relatedGenres) {
-           if (_calculateSimilarity(normalizedInput, related) > 0.8) {
-             matches.add(mainGenre);
-             matches.add(related);
-             matches.addAll(relatedGenres);
-             break;
-           }
+          if (_calculateSimilarity(normalizedInput, related) > 0.8) {
+            matches.add(mainGenre);
+            matches.add(related);
+            matches.addAll(relatedGenres);
+            break;
+          }
         }
       }
     });
 
     for (String mainGenre in _genreMappings.keys) {
-       if (_calculateSimilarity(normalizedInput, mainGenre) > 0.8) {
-         matches.add(mainGenre);
-         matches.addAll(_genreMappings[mainGenre] ?? []);
-       }
+      if (_calculateSimilarity(normalizedInput, mainGenre) > 0.8) {
+        matches.add(mainGenre);
+        matches.addAll(_genreMappings[mainGenre] ?? []);
+      }
     }
-
 
     return matches.toList();
   }
@@ -525,10 +730,8 @@ class AntiiqPlaylistGenerator {
 
       for (int j = 0; j < b.length; j++) {
         int cost = (a[i] == b[j]) ? 0 : 1;
-        current[j + 1] = min(
-          min(current[j] + 1, previous[j + 1] + 1),
-          previous[j] + cost
-        );
+        current[j + 1] =
+            min(min(current[j] + 1, previous[j + 1] + 1), previous[j] + cost);
       }
 
       List<int> temp = previous;
@@ -558,15 +761,17 @@ class AntiiqPlaylistGenerator {
         final allTracks = antiiqState.music.tracks.list;
         final artistTracks = allTracks
             .where((t) =>
-              t.mediaItem != null &&
-              t.trackData?.trackArtistNames != null &&
-              t.trackData!.trackArtistNames!.toLowerCase() == artist.toLowerCase() &&
-              t.mediaItem!.id != track.mediaItem!.id)
+                t.mediaItem != null &&
+                t.trackData?.trackArtistNames != null &&
+                t.trackData!.trackArtistNames!.toLowerCase() ==
+                    artist.toLowerCase() &&
+                t.mediaItem!.id != track.mediaItem!.id)
             .map((t) => t.mediaItem!);
 
         for (final otherTrackMediaItem in artistTracks) {
           final existingWeight = _trackWeights[otherTrackMediaItem.id] ?? 0.0;
-          _trackWeights[otherTrackMediaItem.id] = existingWeight + (weight * 0.5);
+          _trackWeights[otherTrackMediaItem.id] =
+              existingWeight + (weight * 0.5);
         }
       }
     }
@@ -617,12 +822,12 @@ class AntiiqPlaylistGenerator {
     }
 
     if (result.length < maxCount) {
-        final remainingOriginal = sourceItems.where((item) => !seen.contains(item.id)).toList();
-        remainingOriginal.shuffle(_random);
-        final needed = maxCount - result.length;
-        result.addAll(remainingOriginal.take(needed));
+      final remainingOriginal =
+          sourceItems.where((item) => !seen.contains(item.id)).toList();
+      remainingOriginal.shuffle(_random);
+      final needed = maxCount - result.length;
+      result.addAll(remainingOriginal.take(needed));
     }
-
 
     return result;
   }
@@ -643,44 +848,49 @@ class AntiiqPlaylistGenerator {
     final seedYear = seedTrack.trackData?.year;
     final seedBpm = seedTrack.trackData?.bpm;
 
-
     final scoredTracks = allTracks
-        .where((t) => t.mediaItem != null && t.mediaItem!.id != seedTrack.mediaItem!.id)
+        .where((t) =>
+            t.mediaItem != null && t.mediaItem!.id != seedTrack.mediaItem!.id)
         .map((track) {
           double score = 0.0;
 
           final trackArtist = track.trackData?.trackArtistNames?.toLowerCase();
           if (seedArtist != null && trackArtist != null) {
-            score += _calculateSimilarity(trackArtist, seedArtist) * (weights['artist'] ?? 0.0);
+            score += _calculateSimilarity(trackArtist, seedArtist) *
+                (weights['artist'] ?? 0.0);
           }
 
           final trackAlbum = track.trackData?.albumName?.toLowerCase();
           if (seedAlbum != null && trackAlbum != null) {
-            score += _calculateSimilarity(trackAlbum, seedAlbum) * (weights['album'] ?? 0.0);
+            score += _calculateSimilarity(trackAlbum, seedAlbum) *
+                (weights['album'] ?? 0.0);
           }
 
           final trackGenre = track.trackData?.genre;
           if (seedGenre != null && trackGenre != null) {
             final genreMatches = _findMatchingGenre(seedGenre.toLowerCase());
             if (_isGenreInList(trackGenre.toLowerCase(), genreMatches)) {
-               score += (weights['genre'] ?? 0.0);
+              score += (weights['genre'] ?? 0.0);
             } else {
-              score += _calculateSimilarity(trackGenre.toLowerCase(), seedGenre.toLowerCase()) * (weights['genre'] ?? 0.0) * 0.5;
+              score += _calculateSimilarity(
+                      trackGenre.toLowerCase(), seedGenre.toLowerCase()) *
+                  (weights['genre'] ?? 0.0) *
+                  0.5;
             }
           }
 
           final trackYear = track.trackData?.year;
           if (seedYear != null && trackYear != null) {
             final yearDiff = (trackYear - seedYear).abs();
-            score += max(0.0, 1.0 - (yearDiff / 10.0)) * (weights['year'] ?? 0.0);
+            score +=
+                max(0.0, 1.0 - (yearDiff / 10.0)) * (weights['year'] ?? 0.0);
           }
 
           final trackBpm = track.trackData?.bpm;
           if (seedBpm != null && trackBpm != null) {
-             final bpmDiff = (trackBpm - seedBpm).abs();
-             score += max(0.0, 1.0 - (bpmDiff / 50.0)) * (weights['bpm'] ?? 0.0);
+            final bpmDiff = (trackBpm - seedBpm).abs();
+            score += max(0.0, 1.0 - (bpmDiff / 50.0)) * (weights['bpm'] ?? 0.0);
           }
-
 
           return score >= similarityThreshold ? MapEntry(track, score) : null;
         })
@@ -699,12 +909,14 @@ class AntiiqPlaylistGenerator {
     for (final track in history) {
       final genre = track.trackData?.genre;
       if (genre != null) {
-        historyGenres[genre.toLowerCase()] = (historyGenres[genre.toLowerCase()] ?? 0) + 1;
+        historyGenres[genre.toLowerCase()] =
+            (historyGenres[genre.toLowerCase()] ?? 0) + 1;
       }
 
       final artist = track.trackData?.trackArtistNames;
       if (artist != null) {
-        historyArtists[artist.toLowerCase()] = (historyArtists[artist.toLowerCase()] ?? 0) + 1;
+        historyArtists[artist.toLowerCase()] =
+            (historyArtists[artist.toLowerCase()] ?? 0) + 1;
       }
 
       final year = track.trackData?.year;
@@ -738,7 +950,9 @@ class AntiiqPlaylistGenerator {
     final historyBpms = historyFeatures['bpms'] as List<int>;
 
     final scoredTracks = allTracks
-        .where((t) => t.mediaItem != null && !playHistory.any((h) => h.mediaItem?.id == t.mediaItem!.id))
+        .where((t) =>
+            t.mediaItem != null &&
+            !playHistory.any((h) => h.mediaItem?.id == t.mediaItem!.id))
         .map((track) {
           double score = 0.0;
 
@@ -750,8 +964,10 @@ class AntiiqPlaylistGenerator {
             for (final entry in historyGenres.entries) {
               final historyGenre = entry.key;
               final count = entry.value;
-              if (cleanGenre == historyGenre || _isGenreInList(historyGenre, matchingGenres)) {
-                score += (weights['genre'] ?? 0.0) * (count / playHistory.length);
+              if (cleanGenre == historyGenre ||
+                  _isGenreInList(historyGenre, matchingGenres)) {
+                score +=
+                    (weights['genre'] ?? 0.0) * (count / playHistory.length);
               }
             }
           }
@@ -762,9 +978,13 @@ class AntiiqPlaylistGenerator {
               final historyArtist = entry.key;
               final count = entry.value;
               if (trackArtist == historyArtist) {
-                score += (weights['artist'] ?? 0.0) * (count / playHistory.length);
+                score +=
+                    (weights['artist'] ?? 0.0) * (count / playHistory.length);
               } else {
-                 score += _calculateSimilarity(trackArtist, historyArtist) * (weights['artist'] ?? 0.0) * 0.5 * (count / playHistory.length);
+                score += _calculateSimilarity(trackArtist, historyArtist) *
+                    (weights['artist'] ?? 0.0) *
+                    0.5 *
+                    (count / playHistory.length);
               }
             }
           }
@@ -776,17 +996,19 @@ class AntiiqPlaylistGenerator {
               final count = entry.value;
 
               final yearDiff = (trackYear - historyYear).abs();
-              score += max(0.0, 1.0 - (yearDiff / 10.0)) * (weights['year'] ?? 0.0) * (count / playHistory.length);
+              score += max(0.0, 1.0 - (yearDiff / 10.0)) *
+                  (weights['year'] ?? 0.0) *
+                  (count / playHistory.length);
             }
           }
 
           final trackBpm = track.trackData?.bpm;
           if (trackBpm != null && historyBpms.isNotEmpty) {
-              final avgHistoryBpm = historyBpms.reduce((a, b) => a + b) / historyBpms.length;
-              final bpmDiff = (trackBpm - avgHistoryBpm).abs();
-              score += max(0.0, 1.0 - (bpmDiff / 50.0)) * (weights['bpm'] ?? 0.0);
+            final avgHistoryBpm =
+                historyBpms.reduce((a, b) => a + b) / historyBpms.length;
+            final bpmDiff = (trackBpm - avgHistoryBpm).abs();
+            score += max(0.0, 1.0 - (bpmDiff / 50.0)) * (weights['bpm'] ?? 0.0);
           }
-
 
           final trackId = track.mediaItem!.id;
           if (_trackWeights.containsKey(trackId)) {
@@ -801,28 +1023,107 @@ class AntiiqPlaylistGenerator {
     return scoredTracks;
   }
 
-
   List<MapEntry<Track, double>> _getMoodBasedTracks({
     required List<Track> allTracks,
     required List<String> targetGenres,
     required String mood,
   }) {
     final Map<String, Map<String, dynamic>> moodFeatures = {
-      'happy': {'bpmRange': [90, 140], 'titleKeywords': ['happy', 'joy', 'fun', 'smile', 'good', 'upbeat']},
-      'sad': {'bpmRange': [60, 90], 'titleKeywords': ['sad', 'cry', 'tears', 'blue', 'alone', 'lost', 'melancholy']},
-      'energetic': {'bpmRange': [120, 180], 'titleKeywords': ['energy', 'power', 'jump', 'run', 'fire', 'fast', 'workout']},
-      'chill': {'bpmRange': [60, 100], 'titleKeywords': ['chill', 'relax', 'calm', 'peace', 'dream', 'ambient', 'lounge']},
-      'romantic': {'bpmRange': [70, 110], 'titleKeywords': ['love', 'heart', 'romance', 'kiss', 'touch', 'sweet', 'together']},
-      'angry': {'bpmRange': [110, 160], 'titleKeywords': ['anger', 'rage', 'fight', 'hate', 'fury', 'aggression', 'metal']},
-      'focus': {'bpmRange': [70, 110], 'titleKeywords': ['focus', 'study', 'work', 'instrumental', 'minimal', 'ambient']},
-      'nostalgic': {'bpmRange': [80, 130], 'titleKeywords': ['oldies', 'retro', 'classic', 'vintage', 'memory']},
-      'epic': {'bpmRange': [100, 150], 'titleKeywords': ['epic', 'heroic', 'grand', 'orchestral', 'soundtrack', 'trailer']},
+      'happy': {
+        'bpmRange': [90, 140],
+        'titleKeywords': ['happy', 'joy', 'fun', 'smile', 'good', 'upbeat']
+      },
+      'sad': {
+        'bpmRange': [60, 90],
+        'titleKeywords': [
+          'sad',
+          'cry',
+          'tears',
+          'blue',
+          'alone',
+          'lost',
+          'melancholy'
+        ]
+      },
+      'energetic': {
+        'bpmRange': [120, 180],
+        'titleKeywords': [
+          'energy',
+          'power',
+          'jump',
+          'run',
+          'fire',
+          'fast',
+          'workout'
+        ]
+      },
+      'chill': {
+        'bpmRange': [60, 100],
+        'titleKeywords': [
+          'chill',
+          'relax',
+          'calm',
+          'peace',
+          'dream',
+          'ambient',
+          'lounge'
+        ]
+      },
+      'romantic': {
+        'bpmRange': [70, 110],
+        'titleKeywords': [
+          'love',
+          'heart',
+          'romance',
+          'kiss',
+          'touch',
+          'sweet',
+          'together'
+        ]
+      },
+      'angry': {
+        'bpmRange': [110, 160],
+        'titleKeywords': [
+          'anger',
+          'rage',
+          'fight',
+          'hate',
+          'fury',
+          'aggression',
+          'metal'
+        ]
+      },
+      'focus': {
+        'bpmRange': [70, 110],
+        'titleKeywords': [
+          'focus',
+          'study',
+          'work',
+          'instrumental',
+          'minimal',
+          'ambient'
+        ]
+      },
+      'nostalgic': {
+        'bpmRange': [80, 130],
+        'titleKeywords': ['oldies', 'retro', 'classic', 'vintage', 'memory']
+      },
+      'epic': {
+        'bpmRange': [100, 150],
+        'titleKeywords': [
+          'epic',
+          'heroic',
+          'grand',
+          'orchestral',
+          'soundtrack',
+          'trailer'
+        ]
+      },
     };
 
     final moodFeature = moodFeatures[mood];
     final List<int>? bpmRange = moodFeature?['bpmRange'];
     final List<String>? titleKeywords = moodFeature?['titleKeywords'];
-
 
     return allTracks
         .where((t) => t.mediaItem != null)
@@ -848,15 +1149,14 @@ class AntiiqPlaylistGenerator {
           }
 
           if (trackBpm != null && bpmRange != null) {
-             if (trackBpm >= bpmRange[0] && trackBpm <= bpmRange[1]) {
-               score = max(score, 0.9);
-             } else {
-               final distanceFromRange = min(
-                 (trackBpm - bpmRange[1]).abs(),
-                 (trackBpm - bpmRange[0]).abs()
-               );
-               score = max(score, 0.7 * max(0.0, 1.0 - (distanceFromRange / 50.0)));
-             }
+            if (trackBpm >= bpmRange[0] && trackBpm <= bpmRange[1]) {
+              score = max(score, 0.9);
+            } else {
+              final distanceFromRange = min((trackBpm - bpmRange[1]).abs(),
+                  (trackBpm - bpmRange[0]).abs());
+              score =
+                  max(score, 0.7 * max(0.0, 1.0 - (distanceFromRange / 50.0)));
+            }
           }
 
           if (trackTitle != null && titleKeywords != null) {
@@ -869,13 +1169,11 @@ class AntiiqPlaylistGenerator {
             }
           }
 
-
           return score > 0 ? MapEntry(track, score) : null;
         })
         .nonNulls
         .toList();
   }
-
 
   List<MapEntry<Track, double>> _getTempoBasedTracks({
     required List<Track> allTracks,
@@ -893,11 +1191,10 @@ class AntiiqPlaylistGenerator {
             if (trackBpm >= bpmRange[0] && trackBpm <= bpmRange[1]) {
               score = max(score, 1.0);
             } else {
-              final distanceFromRange = min(
-                (trackBpm - bpmRange[1]).abs(),
-                (trackBpm - bpmRange[0]).abs()
-              );
-              score = max(score, 0.8 * max(0.0, 1.0 - (distanceFromRange / 50.0)));
+              final distanceFromRange = min((trackBpm - bpmRange[1]).abs(),
+                  (trackBpm - bpmRange[0]).abs());
+              score =
+                  max(score, 0.8 * max(0.0, 1.0 - (distanceFromRange / 50.0)));
             }
           }
 
@@ -923,10 +1220,16 @@ class AntiiqPlaylistGenerator {
             final title = _normalizeText(track.mediaItem!.title);
 
             if (tempo == 'fast' &&
-                (title.contains('fast') || title.contains('speed') || title.contains('rush') || title.contains('upbeat'))) {
+                (title.contains('fast') ||
+                    title.contains('speed') ||
+                    title.contains('rush') ||
+                    title.contains('upbeat'))) {
               score = max(score, 0.8);
             } else if (tempo == 'slow' &&
-                     (title.contains('slow') || title.contains('ballad') || title.contains('chill') || title.contains('lounge'))) {
+                (title.contains('slow') ||
+                    title.contains('ballad') ||
+                    title.contains('chill') ||
+                    title.contains('lounge'))) {
               score = max(score, 0.8);
             }
           }
@@ -958,7 +1261,8 @@ class AntiiqPlaylistGenerator {
 
       tracksByDecade[decade]!.shuffle(_random);
 
-      final decadeTracks = tracksByDecade[decade]!.take(tracksPerDecade).toList();
+      final decadeTracks =
+          tracksByDecade[decade]!.take(tracksPerDecade).toList();
       result.addAll(decadeTracks);
 
       if (result.length >= maxTracks) break;
@@ -976,7 +1280,8 @@ class AntiiqPlaylistGenerator {
     return result;
   }
 
-  List<Track> _getDiscoveryTracks(List<Track> allTracks, List<Track>? playHistory) {
+  List<Track> _getDiscoveryTracks(
+      List<Track> allTracks, List<Track>? playHistory) {
     final Map<String, int> playCount = {};
 
     if (playHistory != null && playHistory.isNotEmpty) {
@@ -988,28 +1293,27 @@ class AntiiqPlaylistGenerator {
       }
     }
 
-    final scoredTracks = allTracks
-        .where((t) => t.mediaItem != null)
-        .map((track) {
-          final playedCount = playCount[track.mediaItem!.id] ?? 0;
+    final scoredTracks =
+        allTracks.where((t) => t.mediaItem != null).map((track) {
+      final playedCount = playCount[track.mediaItem!.id] ?? 0;
 
-          double score;
-          if (playedCount == 0) {
-            score = 1.0;
-          } else {
-            score = exp(-playedCount / 5);
-          }
+      double score;
+      if (playedCount == 0) {
+        score = 1.0;
+      } else {
+        score = exp(-playedCount / 5);
+      }
 
-          return MapEntry(track, score);
-        })
-        .toList();
+      return MapEntry(track, score);
+    }).toList();
 
     scoredTracks.sort((a, b) => b.value.compareTo(a.value));
 
     return scoredTracks.map((e) => e.key).toList();
   }
 
-  List<Track> _ensureDiversity(List<Track> candidateTracks, {required int maxTracks}) {
+  List<Track> _ensureDiversity(List<Track> candidateTracks,
+      {required int maxTracks}) {
     if (candidateTracks.length <= maxTracks) return candidateTracks;
 
     final selectedTracks = <Track>[];
@@ -1057,14 +1361,15 @@ class AntiiqPlaylistGenerator {
     }
 
     if (selectedTracks.length < maxTracks) {
-      final remainingPool = candidateTracks.where((t) => !selectedTracks.contains(t)).toList();
+      final remainingPool =
+          candidateTracks.where((t) => !selectedTracks.contains(t)).toList();
       remainingPool.shuffle(_random);
-      selectedTracks.addAll(remainingPool.take(maxTracks - selectedTracks.length));
+      selectedTracks
+          .addAll(remainingPool.take(maxTracks - selectedTracks.length));
     }
 
     return selectedTracks;
   }
-
 
   List<String> getAvailableGenres() {
     final genres = <String>{};
@@ -1081,7 +1386,8 @@ class AntiiqPlaylistGenerator {
     final artists = <String>{};
     final allTracks = antiiqState.music.tracks.list;
     for (var track in allTracks) {
-      if (track.trackData?.trackArtistNames != null && track.trackData!.trackArtistNames!.isNotEmpty) {
+      if (track.trackData?.trackArtistNames != null &&
+          track.trackData!.trackArtistNames!.isNotEmpty) {
         artists.add(track.trackData!.trackArtistNames!);
       }
     }
@@ -1092,7 +1398,8 @@ class AntiiqPlaylistGenerator {
     final albums = <String>{};
     final allTracks = antiiqState.music.tracks.list;
     for (var track in allTracks) {
-      if (track.trackData?.albumName != null && track.trackData!.albumName!.isNotEmpty) {
+      if (track.trackData?.albumName != null &&
+          track.trackData!.albumName!.isNotEmpty) {
         albums.add(track.trackData!.albumName!);
       }
     }
@@ -1112,7 +1419,17 @@ class AntiiqPlaylistGenerator {
   }
 
   List<String> getAvailableMoods() {
-    return ['happy', 'sad', 'energetic', 'chill', 'romantic', 'angry', 'focus', 'nostalgic', 'epic'];
+    return [
+      'happy',
+      'sad',
+      'energetic',
+      'chill',
+      'romantic',
+      'angry',
+      'focus',
+      'nostalgic',
+      'epic'
+    ];
   }
 
   List<String> getAvailableTempos() {
@@ -1124,10 +1441,14 @@ class AntiiqPlaylistGenerator {
   }
 
   void addGenreMapping(String mainGenre, List<String> relatedGenres) {
-    _genreMappings[mainGenre.toLowerCase()] = relatedGenres.map((g) => g.toLowerCase()).toList();
+    _genreMappings[mainGenre.toLowerCase()] =
+        relatedGenres.map((g) => g.toLowerCase()).toList();
   }
 
   List<MediaItem> tracksToMediaItems(List<Track> tracks) {
-    return tracks.where((t) => t.mediaItem != null).map((t) => t.mediaItem!).toList();
+    return tracks
+        .where((t) => t.mediaItem != null)
+        .map((t) => t.mediaItem!)
+        .toList();
   }
 }

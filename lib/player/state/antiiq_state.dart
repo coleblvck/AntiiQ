@@ -16,7 +16,7 @@ import 'package:path_provider/path_provider.dart';
 
 late AntiiqState antiiqState;
 
-class AntiiqState {
+class AntiiqState extends ChangeNotifier {
   final AudioSetup audioSetup;
   final MusicState music;
   final PermissionsState permissions;
@@ -31,7 +31,7 @@ class AntiiqState {
     required Boxes boxes,
   }) : _boxes = boxes;
 
-  static Future create() async {
+  static Future<AntiiqState> create() async {
     final state = AntiiqState._create(
       audioSetup: AudioSetup(),
       music: MusicState(),
@@ -39,7 +39,8 @@ class AntiiqState {
       boxes: Boxes(),
     );
     antiiqState = state;
-    await antiiqState._init();
+    await state._init();
+    return state;
   }
 
   _init() async {

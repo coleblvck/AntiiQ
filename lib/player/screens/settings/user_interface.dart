@@ -1,3 +1,4 @@
+import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:antiiq/home_widget/home_widget_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
@@ -6,6 +7,7 @@ import 'package:antiiq/player/utilities/settings/user_settings.dart';
 import 'package:antiiq/player/widgets/ui/antiiq_slider.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 import 'package:antiiq/player/utilities/settings/theme_settings.dart';
 import 'package:home_widget/home_widget.dart';
@@ -31,8 +33,10 @@ class _UserInterfaceState extends State<UserInterface> {
 
   Future<void> _loadWidgetSettings() async {
     try {
-      final coverArtBackground = await HomeWidget.getWidgetData<bool>('cover_art_background');
-      final backgroundOpacity = await HomeWidget.getWidgetData<int>('background_opacity');
+      final coverArtBackground =
+          await HomeWidget.getWidgetData<bool>('cover_art_background');
+      final backgroundOpacity =
+          await HomeWidget.getWidgetData<int>('background_opacity');
 
       setState(() {
         _coverArtBackground = coverArtBackground ?? true;
@@ -88,6 +92,9 @@ class _UserInterfaceState extends State<UserInterface> {
                 child: SizedBox(
                   height: 20,
                 ),
+              ),
+              ChaosUIStatusSetting(
+                setPageState: setState,
               ),
               StatusbarModeSetting(
                 setPageState: setState,
@@ -147,7 +154,7 @@ class WidgetSettingsSection extends StatelessWidget {
     if (isLoading) {
       return SliverToBoxAdapter(
         child: CustomCard(
-          theme: AntiiQTheme.of(context).cardThemes.primary,
+          theme: AntiiQTheme.of(context).cardThemes.surface,
           child: const Center(
             child: Padding(
               padding: EdgeInsets.all(16.0),
@@ -160,58 +167,46 @@ class WidgetSettingsSection extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: CustomCard(
-        theme: AntiiQTheme.of(context).cardThemes.primary,
+        theme: AntiiQTheme.of(context).cardThemes.surface,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "Widget Settings",
-                  style: AntiiQTheme.of(context)
-                      .textStyles
-                      .onBackgroundLargeHeader
-                      .copyWith(
-                        color: AntiiQTheme.of(context).colorScheme.onPrimary,
-                      ),
+                  "Widget Settings:",
+                  style: AntiiQTheme.of(context).textStyles.onSurfaceText,
                 ),
               ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Cover Art Background",
-                      style: AntiiQTheme.of(context)
-                          .textStyles
-                          .onPrimaryText
-                          .copyWith(fontSize: 16),
-                    ),
-                    Switch(
-                      activeTrackColor:
-                          AntiiQTheme.of(context).colorScheme.secondary,
-                      activeColor:
-                          AntiiQTheme.of(context).colorScheme.onSecondary,
-                      value: coverArtBackground,
-                      onChanged: (value) {
-                        onCoverArtBackgroundChanged(value);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
               CustomCard(
                 theme: AntiiQTheme.of(context).cardThemes.background,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Cover Art Background",
+                            style: AntiiQTheme.of(context)
+                                .textStyles
+                                .onBackgroundText,
+                          ),
+                          Switch(
+                            activeTrackColor:
+                                AntiiQTheme.of(context).colorScheme.secondary,
+                            activeColor:
+                                AntiiQTheme.of(context).colorScheme.onSecondary,
+                            value: coverArtBackground,
+                            onChanged: onCoverArtBackgroundChanged,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
                       Text(
                         "Background Opacity: ${backgroundOpacity.round()}%",
                         style: AntiiQTheme.of(context).textStyles.onSurfaceText,
@@ -236,36 +231,34 @@ class WidgetSettingsSection extends StatelessWidget {
                           value: backgroundOpacity.toDouble(),
                           min: 0,
                           max: 100,
-                          onChanged: (value) {
-                            onBackgroundOpacityChanged(value);
-                          },
+                          onChanged: onBackgroundOpacityChanged,
                         ),
+                      ),
+                      const SizedBox(height: 16),
+                      CustomButton(
+                        style: AntiiQTheme.of(context).buttonStyles.style2,
+                        function: () {
+                          HomeWidgetManager.updateVisuals(
+                              backgroundOpacity, coverArtBackground);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Widget settings updated',
+                                style: TextStyle(
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .onPrimary,
+                                ),
+                              ),
+                              backgroundColor:
+                                  AntiiQTheme.of(context).colorScheme.primary,
+                            ),
+                          );
+                        },
+                        child: const Text("Apply to Widgets"),
                       ),
                     ],
                   ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Center(
-                child: CustomButton(
-                  style: AntiiQTheme.of(context).buttonStyles.style2,
-                  function: () {
-                    HomeWidgetManager.updateVisuals(
-                        backgroundOpacity, coverArtBackground);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Widget settings updated',
-                          style: TextStyle(
-                            color: AntiiQTheme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                        backgroundColor:
-                            AntiiQTheme.of(context).colorScheme.primary,
-                      ),
-                    );
-                  },
-                  child: const Text("Apply to Widgets"),
                 ),
               ),
             ],
@@ -640,6 +633,179 @@ class DynamicThemeSetting extends StatelessWidget {
   }
 }
 
+class ChaosUIStatusSetting extends StatelessWidget {
+  const ChaosUIStatusSetting({
+    super.key,
+    required this.setPageState,
+  });
+
+  final void Function(void Function()) setPageState;
+
+  @override
+  Widget build(BuildContext context) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    return SliverToBoxAdapter(
+      child: CustomCard(
+        theme: AntiiQTheme.of(context).cardThemes.primary,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "UI Mode:",
+                  style: AntiiQTheme.of(context).textStyles.onPrimaryText,
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: AntiiQTheme.of(context).colorScheme.surface,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          chaosUIState.setChaosUIStatus(false);
+                        },
+                        child: Card(
+                          color: !chaosUIState.chaosUIStatus
+                              ? AntiiQTheme.of(context).colorScheme.background
+                              : Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          surfaceTintColor: Colors.transparent,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Classic",
+                                style: TextStyle(
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (!chaosUIState.chaosUIStatus) {
+                            _showChaosUIConfirmationDialog(
+                                context, chaosUIState);
+                          } else {
+                            chaosUIState.setChaosUIStatus(false);
+                          }
+                        },
+                        child: Card(
+                          color: chaosUIState.chaosUIStatus
+                              ? AntiiQTheme.of(context).colorScheme.background
+                              : Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          surfaceTintColor: Colors.transparent,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Chaos",
+                                style: TextStyle(
+                                  color: AntiiQTheme.of(context)
+                                      .colorScheme
+                                      .primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _showChaosUIConfirmationDialog(
+    BuildContext context, ChaosUIState chaosUIState) {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(generalRadius),
+        ),
+        backgroundColor: AntiiQTheme.of(context).colorScheme.surface,
+        title: Text(
+          "Switch to Chaos UI?",
+          style: AntiiQTheme.of(context).textStyles.onSurfaceText.copyWith(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        content: RichText(
+          text: TextSpan(
+            style: AntiiQTheme.of(context).textStyles.onSurfaceText,
+            children: const [
+              TextSpan(
+                  text:
+                      'Chaos UI is an experimental interface with rotated elements, '
+                      'unconventional layouts, and hidden gestures. It prioritizes '
+                      'aesthetics over efficiency.\n\n'),
+              TextSpan(
+                text:
+                    'Not for daily use. Or maybe it is. You can switch back anytime in settings anyway.',
+              ),
+            ],
+          ),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          CustomButton(
+            style: AntiiQTheme.of(context).buttonStyles.style3,
+            function: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              "Cancel",
+              style: TextStyle(
+                color: AntiiQTheme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+          ),
+          CustomButton(
+            style: AntiiQTheme.of(context).buttonStyles.style2,
+            function: () {
+              chaosUIState.setChaosUIStatus(true);
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              "Switch",
+              style: TextStyle(
+                color: AntiiQTheme.of(context).colorScheme.onSecondary,
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 class StatusbarModeSetting extends StatelessWidget {
   const StatusbarModeSetting({
     super.key,
@@ -884,7 +1050,6 @@ class SettingsThemeGrid extends StatelessWidget {
   }
 }
 
-
 customColorEditSheet(context) {
   showModalBottomSheet(
     enableDrag: true,
@@ -967,8 +1132,7 @@ customColorEditSheet(context) {
                 backgroundColor: AntiiQTheme.of(context).colorScheme.primary,
                 content: SizedBox(
                   height: MediaQuery.of(context).size.height -
-                      (MediaQuery.of(context).viewPadding.top +
-                          MediaQuery.of(context).viewPadding.bottom) -
+                      MediaQuery.of(context).padding.vertical -
                       150,
                   child: Column(
                     children: [
@@ -1027,7 +1191,6 @@ customColorEditSheet(context) {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    //One color
                     Expanded(
                       child: Row(
                         children: [

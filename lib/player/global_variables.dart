@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/utilities/audio_handler.dart';
 import 'package:antiiq/player/utilities/playlist_generator/playlist_generator.dart';
@@ -7,7 +8,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-late AntiiqAudioHandler audioHandler;
+AntiiqAudioHandler get globalAntiiqAudioHandler => antiiqState.audioSetup.audioHandler;
 final AntiiqPlaylistGenerator playlistGenerator = AntiiqPlaylistGenerator();
 PageController mainPageController = PageController();
 
@@ -49,11 +50,11 @@ MediaItem currentDefaultSong = MediaItem(
     extras: {"id": 1});
 
 Stream<MediaItem?> currentPlaying() =>
-    audioHandler.mediaItem.asBroadcastStream();
+    globalAntiiqAudioHandler.mediaItem.asBroadcastStream();
 Stream<Duration> currentPosition() => AudioService.position.asBroadcastStream();
 
 Stream<PlaybackState> currentPlaybackState() =>
-    audioHandler.playbackState.asBroadcastStream();
+    globalAntiiqAudioHandler.playbackState.asBroadcastStream();
 
 final OnAudioQuery audioQuery = OnAudioQuery();
 
@@ -106,8 +107,8 @@ enum ColorSchemeType { antiiq, custom, dynamic }
 
 late ColorSchemeType currentColorSchemeType;
 
-Color generalErrorColor = const Color.fromARGB(199, 248, 0, 0);
-Color generalOnErrorColor = const Color.fromARGB(57, 0, 0, 0);
+Color generalErrorColor = const Color.fromARGB(255, 248, 113, 113);
+Color generalOnErrorColor = const Color.fromARGB(255, 0, 0, 0);
 
 AntiiQColorScheme? dynamicColorScheme;
 late bool dynamicThemeEnabled;
@@ -119,11 +120,14 @@ enum ArtFit {
   cover,
 }
 
-
 late ArtFit currentCoverArtFit;
 StreamController<ArtFit> coverArtFitStream = StreamController.broadcast();
 
 const double pagePadding = 5.0;
 
 late bool additionalMiniPlayerControls;
-StreamController<bool> additionalMiniPlayerControlsStream = StreamController.broadcast();
+StreamController<bool> additionalMiniPlayerControlsStream =
+    StreamController.broadcast();
+
+/// TEMPORARY GLOBAL VARIABLE TO CHECK IF CHAOS UI IS ENABLED FOR STATUSBAR COLOR SETTING
+bool chaosUIEnabled = false;

@@ -22,3 +22,18 @@ Widget getUriImage(uri) {
         );
       });
 }
+
+Widget getChaosUriImage(uri) {
+  return StreamBuilder<ArtFit>(
+      stream: coverArtFitStream.stream,
+      builder: (context, snapshot) {
+        final coverArtFit = snapshot.data ?? currentCoverArtFit;
+        return AspectRatio(
+          aspectRatio: 1,
+          child: Image.file(
+            File.fromUri(uri),
+            fit: coverArtFit == ArtFit.contain ? BoxFit.contain : BoxFit.cover,
+          ),
+        );
+      });
+}

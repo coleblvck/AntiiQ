@@ -11,77 +11,63 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:uri_to_file/uri_to_file.dart';
 
-
 playFromList(int index, List<MediaItem> listToPlay) async {
   await handleList(index, listToPlay);
-  await audioHandler.play();
+  await globalAntiiqAudioHandler.play();
 }
 
-Future<void> handleList(
-    int indexOfSong, List<MediaItem> listToPlay) async {
-  queueToLoad =
-      listToPlay.sublist(indexOfSong) + listToPlay.sublist(0, indexOfSong);
-  currentDefaultSong = queueToLoad[0];
-  if (queueToLoad[0].duration == const Duration(milliseconds: 0)) {
-    queueToLoad.removeAt(0);
-  }
-  await loadQueue(queueToLoad);
+Future<void> handleList(int indexOfSong, List<MediaItem> listToPlay) async {
+  queueToLoad = listToPlay; // Keep original list
+  currentDefaultSong = listToPlay[indexOfSong];
+  await loadQueue(queueToLoad, initialIndex: indexOfSong);
 }
 
-Future<void> loadQueue(List<MediaItem> queue) async {
-  await audioHandler.updateQueue(queue);
+Future<void> loadQueue(List<MediaItem> queue, {int initialIndex = 0}) async {
+  await globalAntiiqAudioHandler.updateQueue(queue, initialIndex: initialIndex);
 }
 
 resume() async {
-  await audioHandler.play();
+  await globalAntiiqAudioHandler.play();
 }
 
 pause() async {
-  await audioHandler.pause();
+  await globalAntiiqAudioHandler.pause();
 }
 
 next() async {
-  await audioHandler.skipToNext();
+  await globalAntiiqAudioHandler.skipToNext();
 }
 
 previous() async {
-  await audioHandler.skipToPrevious();
+  await globalAntiiqAudioHandler.skipToPrevious();
 }
 
 forward() async {
-  await audioHandler.fastForward();
+  await globalAntiiqAudioHandler.fastForward();
 }
 
 rewind() async {
-  await audioHandler.rewind();
+  await globalAntiiqAudioHandler.rewind();
 }
 
 playOnlyThis(MediaItem item) async {
   queueToLoad = [item];
   await loadQueue(queueToLoad);
-  await audioHandler.play();
+  await globalAntiiqAudioHandler.play();
 }
 
 playTracks(List<Track> tracks) async {
   queueToLoad = tracks.map((track) => track.mediaItem!).toList();
   await loadQueue(queueToLoad);
-  await audioHandler.play();
+  await globalAntiiqAudioHandler.play();
 }
 
 playTrackNext(MediaItem item) async {
-  if (audioHandler.antiiqQueue.isNotEmpty) {
-    await audioHandler.insertQueueItem(1, item);
-  } else {
-    await playOnlyThis(item);
-  }
+  await globalAntiiqAudioHandler.playTrackNext(item);
 }
 
 addToQueue(item) async {
-  if (audioHandler.antiiqQueue.isNotEmpty) {
-    await audioHandler.addQueueItem(item);
-  } else {
-    await playOnlyThis(item);
-  }
+  await globalAntiiqAudioHandler.addQueueItem(item);
 }
 
 shuffleList(List<MediaItem> list) async {

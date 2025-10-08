@@ -40,8 +40,8 @@ class HomeWidgetManager {
       }
     });
 
-    final mediaItem = audioHandler.mediaItem.value;
-    final state = audioHandler.playbackState.value;
+    final mediaItem = globalAntiiqAudioHandler.mediaItem.value;
+    final state = globalAntiiqAudioHandler.playbackState.value;
     await updateWidgetInfo(
       mediaItem,
       state.playing,
@@ -146,17 +146,17 @@ class HomeWidgetManager {
 
     switch (action) {
       case 'play_pause':
-        if (audioHandler.playbackState.value.playing) {
-          await audioHandler.pause();
+        if (globalAntiiqAudioHandler.playbackState.value.playing) {
+          await globalAntiiqAudioHandler.pause();
         } else {
-          await audioHandler.play();
+          await globalAntiiqAudioHandler.play();
         }
         break;
       case 'previous':
-        await audioHandler.skipToPrevious();
+        await globalAntiiqAudioHandler.skipToPrevious();
         break;
       case 'next':
-        await audioHandler.skipToNext();
+        await globalAntiiqAudioHandler.skipToNext();
         break;
       case 'open_app':
         break;
@@ -164,8 +164,8 @@ class HomeWidgetManager {
   }
 
   static void _setupBackgroundUpdates() {
-    audioHandler.playbackState.listen((state) {
-      final mediaItem = audioHandler.mediaItem.value;
+    globalAntiiqAudioHandler.playbackState.listen((state) {
+      final mediaItem = globalAntiiqAudioHandler.mediaItem.value;
       updateWidgetInfo(
         mediaItem,
         state.playing,
@@ -174,9 +174,9 @@ class HomeWidgetManager {
       );
     });
 
-    audioHandler.mediaItem.listen((item) {
+    globalAntiiqAudioHandler.mediaItem.listen((item) {
       if (item != null) {
-         final state = audioHandler.playbackState.value;
+         final state = globalAntiiqAudioHandler.playbackState.value;
          updateWidgetInfo(
            item,
            state.playing,
@@ -189,8 +189,8 @@ class HomeWidgetManager {
     _positionSubscription?.cancel();
 
     _positionSubscription = AudioService.position.listen((position) {
-      final mediaItem = audioHandler.mediaItem.value;
-      if (mediaItem != null && audioHandler.playbackState.value.playing) {
+      final mediaItem = globalAntiiqAudioHandler.mediaItem.value;
+      if (mediaItem != null && globalAntiiqAudioHandler.playbackState.value.playing) {
         updateWidgetPosition(
           position,
           mediaItem.duration ?? Duration.zero,
