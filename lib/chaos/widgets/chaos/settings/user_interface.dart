@@ -1,6 +1,6 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/chaos/utilities/chaos_rotation.dart';
+import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/home_widget/home_widget_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';

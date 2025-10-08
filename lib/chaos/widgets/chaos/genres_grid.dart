@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/chaos/utilities/chaos_rotation.dart';
+import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/utilities/open_collection.dart';
 import 'package:antiiq/chaos/widgets/track_details_sheet.dart';
 import 'package:antiiq/chaos/page_manager.dart';

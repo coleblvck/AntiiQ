@@ -8,7 +8,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-AntiiqAudioHandler get globalAntiiqAudioHandler => antiiqState.audioSetup.audioHandler;
+AntiiqAudioHandler get globalAntiiqAudioHandler =>
+    antiiqState.audioSetup.audioHandler;
 final AntiiqPlaylistGenerator playlistGenerator = AntiiqPlaylistGenerator();
 PageController mainPageController = PageController();
 
@@ -41,13 +42,14 @@ List<MediaItem> queueToLoad = [];
 late Uri defaultArtUri;
 
 MediaItem currentDefaultSong = MediaItem(
-    id: "",
-    title: "",
-    album: "",
-    artist: "",
-    artUri: defaultArtUri,
-    duration: const Duration(seconds: 100),
-    extras: {"id": 1});
+  id: "",
+  title: "",
+  album: "",
+  artist: "",
+  artUri: defaultArtUri,
+  duration: const Duration(seconds: 100),
+  extras: {"id": 1},
+);
 
 Stream<MediaItem?> currentPlaying() =>
     globalAntiiqAudioHandler.mediaItem.asBroadcastStream();

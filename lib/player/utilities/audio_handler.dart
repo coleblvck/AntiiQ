@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/antiiq_audio/queue_handler.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
@@ -549,4 +550,18 @@ class AntiiqAudioHandler extends BaseAudioHandler
       print('$key: $value');
     });
   }
+
+  // ============================================================================
+  // FALLBACKS
+  // ============================================================================
+
+  MediaItem blankMediaItem = MediaItem(
+    id: "",
+    title: "",
+    album: "",
+    artist: "",
+    artUri: defaultArtUri,
+    duration: const Duration(seconds: 100),
+    extras: {"id": 1},
+  );
 }

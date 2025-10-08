@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:antiiq/chaos/chaos_global_constants.dart';
+import 'package:antiiq/chaos/chaos_ui/chaos_canvas.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/chaos/utilities/chaos_rotation.dart';
-import 'package:antiiq/chaos/widgets/canvas/canvas.dart';
+import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_equalizer.dart';
 import 'package:antiiq/chaos/widgets/chaos/albums_grid.dart';
 import 'package:antiiq/chaos/widgets/chaos/artists_list.dart';
 import 'package:antiiq/chaos/widgets/chaos/bottom_navigation.dart';
+import 'package:antiiq/chaos/widgets/chaos/chaos_header.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_playlist_generator.dart';
 import 'package:antiiq/chaos/widgets/chaos/genres_grid.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_mini_player.dart';
@@ -45,7 +46,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
     with TickerProviderStateMixin {
   late AnimationController _floatController;
   late ChaosPageManagerController _pageManagerController;
-  late TypographyCanvasController _canvasController;
+  late CanvasController _canvasController;
 
   bool isPlayerExpanded = false;
   int selectedNavIndex = 0;
@@ -70,7 +71,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
     _pageManagerController = ChaosPageManagerController();
 
     // Initialize canvas controller with screen size (will be updated in build)
-    _canvasController = TypographyCanvasController(
+    _canvasController = CanvasController(
       canvasSize: const Size(400, 800),
     );
 
@@ -95,7 +96,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
     _canvasController.addListener(_saveCanvasState);
   }
 
-  Future<void> initCanvasDefault(TypographyCanvasController controller) async {
+  Future<void> initCanvasDefault(CanvasController controller) async {
     controller.initializeDefault();
     final screenSize = MediaQuery.of(context).size;
     final centerOffset = Offset(
@@ -458,8 +459,8 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
     super.dispose();
   }
 
-  void _handleTypographyElementTapped(String id) {
-    switch (id) {
+  void _handleTypographyElementTapped(CanvasElement element) {
+    switch (element.id) {
       case 'songs':
         final ScrollController scrollController = ScrollController();
         _pageManagerController.push(
@@ -638,11 +639,11 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
         _pageManagerController.push(
             Center(
               child: Text(
-                id.toUpperCase(),
+                element.id.toUpperCase(),
                 style: const TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
-            title: id.toUpperCase());
+            title: element.id.toUpperCase());
     }
 
     HapticFeedback.mediumImpact();
@@ -695,7 +696,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
       final screenSize = MediaQuery.of(context).size;
       final newSize = screenSize * 2.5;
       if (_canvasController.canvasSize != newSize) {
-        _canvasController = TypographyCanvasController(canvasSize: newSize);
+        _canvasController = CanvasController(canvasSize: newSize);
         _loadCanvasState();
       }
     });
@@ -755,8 +756,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
             Stack(
               children: [
                 // Typography canvas
-                TypographyCanvas(
-                  pageManagerController: _pageManagerController,
+                ChaosCanvas(
                   controller: _canvasController,
                   floatAnimation: _floatController,
                   onElementTapped: _handleTypographyElementTapped,
@@ -764,6 +764,18 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                   canInteract: () {
                     return _pageManagerController.isEmpty;
                   },
+                  overlays: [
+                    CanvasOverlay(
+                      anchor: CanvasOverlayAnchor.custom,
+                      useSafeArea: false,
+                      top: 24 + MediaQuery.of(context).padding.top,
+                      left: 24,
+                      right: 24,
+                      child: ChaosHeader(
+                        pageManagerController: _pageManagerController,
+                      ),
+                    ),
+                  ],
                 ),
 
                 //TODO: Note: App header used to be here
@@ -882,8 +894,8 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                         findTrackAndOpenSheet(context, currentTrack,
                             pageManagerController: _pageManagerController);
                       },
-                      onTrackInfoChanged: (trackInfo) {},
-                      onStateChanged: (state, progress) {},
+                      onTrackInfoChanged: (item, playbackState) {},
+                      onStateChanged: (playerState, progress) {},
                     );
                   }),
             ],

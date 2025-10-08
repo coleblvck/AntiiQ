@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/chaos/utilities/chaos_rotation.dart';
+import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/utilities/folder_picker.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';

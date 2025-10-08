@@ -1,6 +1,6 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
+import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/chaos/utilities/chaos_rotation.dart';
 import 'package:antiiq/chaos/page_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/chaos/widgets/chaos/settings/changelog.dart';
@@ -385,8 +385,10 @@ class _SettingContainer extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(chaosBasePadding * 2),
         decoration: BoxDecoration(
-          color:
-              AntiiQTheme.of(context).colorScheme.surface.withValues(alpha: 0.2),
+          color: AntiiQTheme.of(context)
+              .colorScheme
+              .surface
+              .withValues(alpha: 0.2),
           border: Border.all(
             color: AntiiQTheme.of(context)
                 .colorScheme

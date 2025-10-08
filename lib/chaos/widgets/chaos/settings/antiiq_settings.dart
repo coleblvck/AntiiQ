@@ -1,6 +1,6 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
+import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/chaos/utilities/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/chaos/settings/about.dart';
 import 'package:antiiq/chaos/widgets/chaos/settings/backup_restore.dart';
 import 'package:antiiq/chaos/widgets/chaos/settings/behaviour.dart';

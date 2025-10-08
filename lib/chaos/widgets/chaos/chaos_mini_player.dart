@@ -1,10 +1,11 @@
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/chaos/utilities/chaos_rotation.dart';
+import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_animation_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
+import 'package:antiiq/player/utilities/audio_handler.dart';
 import 'package:antiiq/player/widgets/ui/antiiq_slider.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -54,37 +55,10 @@ class ChaosMiniPlayerAnimationConfig {
   });
 }
 
-class ChaosPlaybackState {
-  final String title;
-  final String artist;
-  final String album;
-  final Duration currentPosition;
-  final Duration totalDuration;
-  final bool isPlaying;
-  final bool isShuffleOn;
-  final AudioServiceRepeatMode repeatMode;
-  final String? albumArtUrl;
-
-  const ChaosPlaybackState({
-    required this.title,
-    required this.artist,
-    required this.album,
-    required this.currentPosition,
-    required this.totalDuration,
-    this.isPlaying = true,
-    this.isShuffleOn = false,
-    this.repeatMode = AudioServiceRepeatMode.none,
-    this.albumArtUrl,
-  });
-
-  double get progressPercent => totalDuration.inMilliseconds > 0
-      ? currentPosition.inMilliseconds / totalDuration.inMilliseconds
-      : 0.0;
-}
-
 class DragGestureData {
   final ChaosMiniPlayerDragDirection direction;
-  final ChaosPlaybackState trackInfo;
+  final MediaItem track;
+  final PlaybackState playbackState;
   final double dragDistance;
   final double threshold;
   final ChaosMiniPlayerState playerState;
@@ -92,7 +66,8 @@ class DragGestureData {
 
   const DragGestureData({
     required this.direction,
-    required this.trackInfo,
+    required this.track,
+    required this.playbackState,
     required this.dragDistance,
     required this.threshold,
     required this.playerState,
@@ -101,7 +76,10 @@ class DragGestureData {
 }
 
 typedef DragGestureCallback = void Function(DragGestureData data);
-typedef TrackInfoCallback = void Function(ChaosPlaybackState trackInfo);
+typedef TrackInfoCallback = void Function(
+  MediaItem track,
+  PlaybackState playbackState,
+);
 
 class ChaosMiniPlayerController extends ChangeNotifier {
   _ChaosMiniPlayerState? _state;
@@ -264,7 +242,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
     _dragController.reset();
   }
 
-  void _handlePanUpdate(DragUpdateDetails details, MediaItem? currentTrack) {
+  void _handlePanUpdate(DragUpdateDetails details, MediaItem currentTrack) {
     if (!_isDragging || _isSeekbarDragging) return;
 
     _currentDragOffset = details.localPosition - _dragStartPosition;
@@ -301,19 +279,14 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
       HapticFeedback.mediumImpact();
       widget.chaosAnimationManager?.triggerGlitch();
 
-      currentTrack ??= currentDefaultSong;
-
-      final trackInfo = ChaosPlaybackState(
-        title: currentTrack.title,
-        artist: currentTrack.artist ?? '',
-        album: currentTrack.album ?? '',
-        currentPosition: Duration.zero,
-        totalDuration: currentTrack.duration ?? Duration.zero,
-      );
+      final antiiQState = context.read<AntiiqState>();
+      final playbackState =
+          antiiQState.audioSetup.audioHandler.playbackState.value;
 
       final dragData = DragGestureData(
         direction: direction,
-        trackInfo: trackInfo,
+        track: currentTrack,
+        playbackState: playbackState,
         dragDistance: dragDistance,
         threshold: direction == ChaosMiniPlayerDragDirection.left ||
                 direction == ChaosMiniPlayerDragDirection.right
@@ -362,14 +335,16 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
   Widget build(BuildContext context) {
     final currentRadius = context.watch<ChaosUIState>().chaosRadius;
     final antiiQState = context.read<AntiiqState>();
+    final antiiQAudioHandler = context.read<AntiiqAudioHandler>();
 
     return StreamBuilder<MediaItem?>(
-      stream: currentPlaying(),
+      stream: antiiQAudioHandler.mediaItem.stream,
       builder: (context, trackSnapshot) {
-        final currentTrack = trackSnapshot.data ?? currentDefaultSong;
+        final currentTrack =
+            trackSnapshot.data ?? antiiQAudioHandler.blankMediaItem;
 
         return StreamBuilder<Duration>(
-          stream: currentPosition(),
+          stream: antiiQAudioHandler.audioPlayer.positionStream,
           builder: (context, positionSnapshot) {
             final position = positionSnapshot.data ?? Duration.zero;
 
@@ -379,20 +354,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
                 final playbackState = playbackSnapshot.data ?? PlaybackState();
                 final shuffleMode =
                     playbackState.shuffleMode != AudioServiceShuffleMode.none;
-
                 final repeatMode = playbackState.repeatMode;
-
-                final trackInfo = ChaosPlaybackState(
-                  title: currentTrack.title.toUpperCase(),
-                  artist: (currentTrack.artist ?? '').toUpperCase(),
-                  album: (currentTrack.album ?? '').toUpperCase(),
-                  currentPosition: position,
-                  totalDuration: currentTrack.duration ?? Duration.zero,
-                  isPlaying: playbackState.playing,
-                  isShuffleOn: shuffleMode,
-                  repeatMode: repeatMode,
-                  albumArtUrl: currentTrack.artUri?.toString(),
-                );
 
                 return _DragLayer(
                   dragOffset: _currentDragOffset,
@@ -403,7 +365,6 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
                     builder: (context, child) {
                       final expandProgress = _expandController.value;
 
-                      // Notify height changes after frame builds
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         if (mounted) {
                           _notifyHeightIfChanged();
@@ -465,18 +426,18 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
                               children: [
                                 _buildCollapsedContent(
                                   expandProgress,
-                                  trackInfo,
                                   currentTrack,
+                                  playbackState,
                                   shuffleMode,
                                   repeatMode,
                                 ),
                                 if (expandProgress < 0.3)
                                   _buildCollapsedProgressIndicator(
-                                      expandProgress, trackInfo, currentTrack),
+                                      expandProgress, currentTrack, position),
                                 if (expandProgress > 0.1) ...[
                                   SizedBox(height: 16 * expandProgress),
                                   _buildExpandedSeekbar(
-                                      expandProgress, trackInfo, currentTrack),
+                                      expandProgress, currentTrack),
                                   SizedBox(height: 16 * expandProgress),
                                   _buildControls(
                                       expandProgress, repeatMode, shuffleMode),
@@ -499,8 +460,8 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
 
   Widget _buildCollapsedContent(
       double expandProgress,
-      ChaosPlaybackState trackInfo,
       MediaItem currentTrack,
+      PlaybackState playbackState,
       bool shuffleMode,
       AudioServiceRepeatMode repeatMode) {
     return Row(
@@ -515,7 +476,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
           ),
         ),
         SizedBox(width: 16 + (8 * expandProgress)),
-        Expanded(child: _buildTrackInfo(expandProgress, trackInfo)),
+        Expanded(child: _buildTrackInfo(expandProgress, currentTrack)),
         if (expandProgress < 0.3) ...[
           _buildCompactStateIndicators(shuffleMode, repeatMode),
           const SizedBox(width: 8),
@@ -526,19 +487,25 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
           maxAngle: 0.2,
           child: _buildMainControl(
             expandProgress,
-            trackInfo,
+            playbackState,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildCollapsedProgressIndicator(double expandProgress,
-      ChaosPlaybackState trackInfo, MediaItem currentTrack) {
+  Widget _buildCollapsedProgressIndicator(
+      double expandProgress, MediaItem currentTrack, Duration position) {
     return StreamBuilder<bool>(
       stream: interactiveSeekbarStream.stream,
       builder: (context, snapshot) {
         final isInteractive = snapshot.data ?? interactiveMiniPlayerSeekbar;
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _notifyHeightIfChanged();
+          }
+        });
 
         return Padding(
           padding: const EdgeInsets.only(top: 8.0),
@@ -551,8 +518,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
     );
   }
 
-  Widget _buildExpandedSeekbar(double expandProgress,
-      ChaosPlaybackState trackInfo, MediaItem currentTrack) {
+  Widget _buildExpandedSeekbar(double expandProgress, MediaItem currentTrack) {
     return StreamBuilder<bool>(
         stream: trackDurationDisplayStream.stream,
         builder: (context, snapshot) {
@@ -570,11 +536,11 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
   Widget _buildInteractiveSeekbar(MediaItem currentTrack,
       {bool displayProgressRow = true}) {
     final chaosUIState = context.watch<ChaosUIState>();
-    final antiiQState = context.watch<AntiiqState>();
     final radius = chaosUIState.getAdjustedRadius(6);
+    final antiiQAudioHandler = context.read<AntiiqAudioHandler>();
 
     return StreamBuilder<Duration>(
-      stream: antiiQState.audioSetup.audioHandler.audioPlayer.positionStream,
+      stream: antiiQAudioHandler.audioPlayer.positionStream,
       builder: (context, snapshot) {
         final currentPosition = snapshot.data ?? Duration.zero;
         final totalDuration = currentTrack.duration ?? Duration.zero;
@@ -613,7 +579,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
                 },
                 onChangeEnd: (value) {
                   final seekPosition = Duration(milliseconds: value.toInt());
-                  globalAntiiqAudioHandler.seek(seekPosition);
+                  antiiQAudioHandler.seek(seekPosition);
                   setState(() => _isSeekbarDragging = false);
                   HapticFeedback.selectionClick();
                   widget.chaosAnimationManager?.triggerGlitch();
@@ -863,7 +829,18 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
     );
   }
 
-  Widget _buildTrackInfo(double expandProgress, ChaosPlaybackState trackInfo) {
+  Widget _buildTrackInfo(double expandProgress, MediaItem currentTrack) {
+    final title = (currentTrack.title.isEmpty ? 'NO TITLE' : currentTrack.title)
+        .toUpperCase();
+    final artist = (currentTrack.artist?.isEmpty ?? true
+            ? 'UNKNOWN ARTIST'
+            : currentTrack.artist!)
+        .toUpperCase();
+    final album = (currentTrack.album?.isEmpty ?? true
+            ? 'UNKNOWN ALBUM'
+            : currentTrack.album!)
+        .toUpperCase();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -890,7 +867,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
               child: Transform.rotate(
                 angle: -0.025 + (expandProgress * 0.008),
                 child: Text(
-                  trackInfo.title.isEmpty ? 'NO TITLE' : trackInfo.title,
+                  title,
                   maxLines: expandProgress > 0.3 ? 3 : 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -920,7 +897,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
         Transform.rotate(
           angle: 0.012 - (expandProgress * 0.006),
           child: Text(
-            trackInfo.artist.isEmpty ? 'UNKNOWN ARTIST' : trackInfo.artist,
+            artist,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -942,7 +919,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
               child: Transform.rotate(
                 angle: -0.01,
                 child: Text(
-                  trackInfo.album.isEmpty ? 'UNKNOWN ALBUM' : trackInfo.album,
+                  album,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -959,8 +936,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
     );
   }
 
-  Widget _buildMainControl(
-      double expandProgress, ChaosPlaybackState trackInfo) {
+  Widget _buildMainControl(double expandProgress, PlaybackState playbackState) {
     final currentRadius = context.watch<ChaosUIState>().chaosRadius;
     return AnimatedBuilder(
       animation: widget.chaosAnimationManager?.glitchController ??
@@ -978,7 +954,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
           offset: glitchOffset,
           child: InkWell(
             onTap: () {
-              if (trackInfo.isPlaying) {
+              if (playbackState.playing) {
                 pause();
               } else {
                 resume();
@@ -1002,7 +978,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
                 borderRadius: BorderRadius.circular(currentRadius - 4),
               ),
               child: Icon(
-                trackInfo.isPlaying ? Icons.pause : Icons.play_arrow,
+                playbackState.playing ? Icons.pause : Icons.play_arrow,
                 color: AntiiQTheme.of(context).colorScheme.secondary,
                 size: 14 + (4 * expandProgress),
               ),
@@ -1117,60 +1093,6 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
           ),
         );
       },
-    );
-  }
-}
-
-class CollapsedProgressBar extends StatelessWidget {
-  final ChaosPlaybackState trackInfo;
-  const CollapsedProgressBar({
-    required this.trackInfo,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Transform.rotate(
-        angle: -0.008,
-        child: Container(
-          height: 2,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: AntiiQTheme.of(context)
-                  .colorScheme
-                  .primary
-                  .withValues(alpha: 0.2),
-              width: 0.5,
-            ),
-          ),
-          child: Stack(
-            children: [
-              Container(
-                color: AntiiQTheme.of(context)
-                    .colorScheme
-                    .surface
-                    .withValues(alpha: 0.3),
-              ),
-              FractionallySizedBox(
-                widthFactor: trackInfo.progressPercent,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AntiiQTheme.of(context).colorScheme.secondary,
-                    border: Border(
-                      right: BorderSide(
-                        color: AntiiQTheme.of(context).colorScheme.primary,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
