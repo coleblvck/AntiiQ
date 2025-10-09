@@ -14,63 +14,58 @@ class ChaosHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 24 + MediaQuery.of(context).padding.top,
-      left: 24,
-      right: 24,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'ANTIIQ',
-                style: TextStyle(
-                  color: AntiiQTheme.of(context).colorScheme.primary,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 4,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'ANTIIQ',
+              style: TextStyle(
+                color: AntiiQTheme.of(context).colorScheme.primary,
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 4,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Container(
+                  width: 25,
+                  height: 2,
+                  color: AntiiQTheme.of(context)
+                      .colorScheme
+                      .primary
+                      .withValues(alpha: 0.6),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Container(
-                    width: 25,
-                    height: 2,
-                    color: AntiiQTheme.of(context)
-                        .colorScheme
-                        .primary
-                        .withValues(alpha: 0.6),
-                  ),
-                  const SizedBox(width: 4),
-                  Container(
-                    width: 10,
-                    height: 2,
-                    color: AntiiQTheme.of(context)
-                        .colorScheme
-                        .secondary
-                        .withValues(alpha: 0.6),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              _buildHelpButton(context),
-              const SizedBox(width: 12),
-              _buildHeaderButton(Icons.settings_outlined, context, () {
-                pageManagerController.push(
-                  const AntiiQSettings(),
-                  title: "Settings",
-                );
-              }),
-            ],
-          ),
-        ],
-      ),
+                const SizedBox(width: 4),
+                Container(
+                  width: 10,
+                  height: 2,
+                  color: AntiiQTheme.of(context)
+                      .colorScheme
+                      .secondary
+                      .withValues(alpha: 0.6),
+                ),
+              ],
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            _buildHelpButton(context),
+            const SizedBox(width: 12),
+            _buildHeaderButton(Icons.settings_outlined, context, () {
+              pageManagerController.push(
+                const AntiiQSettings(),
+                title: "Settings",
+              );
+            }),
+          ],
+        ),
+      ],
     );
   }
 

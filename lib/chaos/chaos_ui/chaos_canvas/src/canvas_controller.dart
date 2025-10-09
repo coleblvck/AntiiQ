@@ -5,23 +5,69 @@ import 'package:antiiq/chaos/chaos_ui/chaos_canvas/models/canvas_element.dart';
 import 'package:flutter/material.dart';
 
 class CanvasController extends ChangeNotifier {
-  final Size canvasSize;
+  Size _canvasSize;
+  Size get canvasSize => _canvasSize;
   final List<CanvasElement> _elements = [];
   final List<CanvasElement> _floatingNumbers = [];
 
-  late final Rect dragBounds;
+  late Rect dragBounds;
 
   String? _selectedId;
   bool _editMode = false;
 
-  CanvasController({required this.canvasSize}) {
-    // Drag area is 80% of canvas, centered
-    final inset = canvasSize.width * 0.1;
+  CanvasController({required Size canvasSize}) : _canvasSize = canvasSize {
+    _updateDragBounds();
+  }
+
+  void _updateDragBounds() {
+    final inset = _canvasSize.width * 0.1;
     dragBounds = Rect.fromLTRB(
       inset,
       inset,
-      canvasSize.width - inset,
-      canvasSize.height - inset,
+      _canvasSize.width - inset,
+      _canvasSize.height - inset,
+    );
+  }
+
+  void updateCanvasSize(Size newSize, {bool scaleElements = false}) {
+    if (_canvasSize == newSize) return;
+    final oldSize = _canvasSize;
+
+    _canvasSize = newSize;
+    _updateDragBounds();
+
+    if (scaleElements) {
+      _scaleElementPositions(oldSize, newSize);
+    }
+
+    notifyListeners();
+  }
+
+  void _scaleElementPositions(Size oldSize, Size newSize) {
+    final scaleX = newSize.width / oldSize.width;
+    final scaleY = newSize.height / oldSize.height;
+
+    for (var i = 0; i < _elements.length; i++) {
+      _elements[i] = _elements[i].copyWith(
+        position: Offset(
+          _elements[i].position.dx * scaleX,
+          _elements[i].position.dy * scaleY,
+        ),
+      );
+    }
+
+    for (var i = 0; i < _floatingNumbers.length; i++) {
+      _floatingNumbers[i] = _floatingNumbers[i].copyWith(
+        position: Offset(
+          _floatingNumbers[i].position.dx * scaleX,
+          _floatingNumbers[i].position.dy * scaleY,
+        ),
+      );
+    }
+
+    _panOffset = Offset(
+      _panOffset.dx * scaleX,
+      _panOffset.dy * scaleY,
     );
   }
 
@@ -193,7 +239,7 @@ class CanvasController extends ChangeNotifier {
         id: 'songs',
         title: 'SONGS',
         value: '1247',
-        position: Offset(canvasSize.width * 0.40, canvasSize.height * 0.38),
+        position: Offset(_canvasSize.width * 0.40, _canvasSize.height * 0.38),
         rotation: -12 * math.pi / 180,
         fontSize: 72,
         color: Colors.white,
@@ -202,7 +248,7 @@ class CanvasController extends ChangeNotifier {
         id: 'albums',
         title: 'ALBUMS',
         value: '89',
-        position: Offset(canvasSize.width * 0.60, canvasSize.height * 0.40),
+        position: Offset(_canvasSize.width * 0.60, _canvasSize.height * 0.40),
         rotation: 45 * math.pi / 180,
         fontSize: 64,
         color: const Color(0xFFD9B483),
@@ -211,7 +257,7 @@ class CanvasController extends ChangeNotifier {
         id: 'artists',
         title: 'ARTISTS',
         value: '156',
-        position: Offset(canvasSize.width * 0.35, canvasSize.height * 0.45),
+        position: Offset(_canvasSize.width * 0.35, _canvasSize.height * 0.45),
         rotation: -8 * math.pi / 180,
         fontSize: 68,
         color: const Color(0xFF8BA785),
@@ -220,7 +266,7 @@ class CanvasController extends ChangeNotifier {
         id: 'genres',
         title: 'GENRES',
         value: '23',
-        position: Offset(canvasSize.width * 0.60, canvasSize.height * 0.48),
+        position: Offset(_canvasSize.width * 0.60, _canvasSize.height * 0.48),
         rotation: 22 * math.pi / 180,
         fontSize: 56,
         color: Colors.red,
@@ -229,7 +275,7 @@ class CanvasController extends ChangeNotifier {
         id: 'playlists',
         title: 'PLAYLISTS',
         value: '12',
-        position: Offset(canvasSize.width * 0.36, canvasSize.height * 0.52),
+        position: Offset(_canvasSize.width * 0.36, _canvasSize.height * 0.52),
         rotation: -35 * math.pi / 180,
         fontSize: 48,
         color: Colors.blue,
@@ -238,7 +284,7 @@ class CanvasController extends ChangeNotifier {
         id: 'favourites',
         title: 'FAVOURITES',
         value: '78',
-        position: Offset(canvasSize.width * 0.58, canvasSize.height * 0.54),
+        position: Offset(_canvasSize.width * 0.58, _canvasSize.height * 0.54),
         rotation: 15 * math.pi / 180,
         fontSize: 52,
         color: Colors.pink,
@@ -247,7 +293,7 @@ class CanvasController extends ChangeNotifier {
         id: 'history',
         title: 'HISTORY',
         value: '456',
-        position: Offset(canvasSize.width * 0.64, canvasSize.height * 0.60),
+        position: Offset(_canvasSize.width * 0.64, _canvasSize.height * 0.60),
         rotation: -18 * math.pi / 180,
         fontSize: 60,
         color: Colors.orange,
@@ -256,7 +302,7 @@ class CanvasController extends ChangeNotifier {
         id: 'smartmix',
         title: 'SMART MIX',
         value: '∞',
-        position: Offset(canvasSize.width * 0.40, canvasSize.height * 0.59),
+        position: Offset(_canvasSize.width * 0.40, _canvasSize.height * 0.59),
         rotation: 8 * math.pi / 180,
         fontSize: 60,
         color: Colors.purple,
@@ -265,7 +311,7 @@ class CanvasController extends ChangeNotifier {
         id: 'selection',
         title: 'SELECTION',
         value: '∞',
-        position: Offset(canvasSize.width * 0.48, canvasSize.height * 0.65),
+        position: Offset(_canvasSize.width * 0.48, _canvasSize.height * 0.65),
         rotation: -4 * math.pi / 180,
         fontSize: 56,
         color: Colors.deepOrange,
@@ -279,7 +325,7 @@ class CanvasController extends ChangeNotifier {
         id: 'float_1',
         title: '1247',
         value: '1247',
-        position: Offset(canvasSize.width * 0.78, canvasSize.height * 0.34),
+        position: Offset(_canvasSize.width * 0.78, _canvasSize.height * 0.34),
         rotation: -5 * math.pi / 180,
         fontSize: 28,
         color: const Color(0xFFD9B483).withValues(alpha: 0.7),
@@ -290,7 +336,7 @@ class CanvasController extends ChangeNotifier {
         id: 'float_2',
         title: '89',
         value: '89',
-        position: Offset(canvasSize.width * 0.26, canvasSize.height * 0.43),
+        position: Offset(_canvasSize.width * 0.26, _canvasSize.height * 0.43),
         rotation: 12 * math.pi / 180,
         fontSize: 28,
         color: Colors.white.withValues(alpha: 0.6),
@@ -301,7 +347,7 @@ class CanvasController extends ChangeNotifier {
         id: 'float_3',
         title: '156',
         value: '156',
-        position: Offset(canvasSize.width * 0.74, canvasSize.height * 0.56),
+        position: Offset(_canvasSize.width * 0.74, _canvasSize.height * 0.56),
         rotation: -8 * math.pi / 180,
         fontSize: 28,
         color: const Color(0xFF8BA785).withValues(alpha: 0.7),
@@ -312,7 +358,7 @@ class CanvasController extends ChangeNotifier {
         id: 'float_4',
         title: '23',
         value: '23',
-        position: Offset(canvasSize.width * 0.48, canvasSize.height * 0.36),
+        position: Offset(_canvasSize.width * 0.48, _canvasSize.height * 0.36),
         rotation: 18 * math.pi / 180,
         fontSize: 24,
         color: Colors.red.withValues(alpha: 0.5),
@@ -323,7 +369,7 @@ class CanvasController extends ChangeNotifier {
         id: 'float_5',
         title: '12',
         value: '12',
-        position: Offset(canvasSize.width * 0.68, canvasSize.height * 0.44),
+        position: Offset(_canvasSize.width * 0.68, _canvasSize.height * 0.44),
         rotation: -15 * math.pi / 180,
         fontSize: 26,
         color: Colors.blue.withValues(alpha: 0.6),
@@ -334,7 +380,7 @@ class CanvasController extends ChangeNotifier {
         id: 'float_6',
         title: '78',
         value: '78',
-        position: Offset(canvasSize.width * 0.30, canvasSize.height * 0.50),
+        position: Offset(_canvasSize.width * 0.30, _canvasSize.height * 0.50),
         rotation: 8 * math.pi / 180,
         fontSize: 25,
         color: Colors.pink.withValues(alpha: 0.55),
@@ -345,7 +391,7 @@ class CanvasController extends ChangeNotifier {
         id: 'float_7',
         title: '456',
         value: '456',
-        position: Offset(canvasSize.width * 0.70, canvasSize.height * 0.64),
+        position: Offset(_canvasSize.width * 0.70, _canvasSize.height * 0.64),
         rotation: -12 * math.pi / 180,
         fontSize: 27,
         color: Colors.orange.withValues(alpha: 0.6),
@@ -356,7 +402,7 @@ class CanvasController extends ChangeNotifier {
         id: 'float_8',
         title: '∞',
         value: '∞',
-        position: Offset(canvasSize.width * 0.50, canvasSize.height * 0.63),
+        position: Offset(_canvasSize.width * 0.50, _canvasSize.height * 0.63),
         rotation: 20 * math.pi / 180,
         fontSize: 30,
         color: Colors.purple.withValues(alpha: 0.5),
@@ -367,7 +413,7 @@ class CanvasController extends ChangeNotifier {
         id: 'float_9',
         title: '1247',
         value: '1247',
-        position: Offset(canvasSize.width * 0.24, canvasSize.height * 0.58),
+        position: Offset(_canvasSize.width * 0.24, _canvasSize.height * 0.58),
         rotation: -6 * math.pi / 180,
         fontSize: 22,
         color: Colors.white.withValues(alpha: 0.4),
@@ -378,7 +424,7 @@ class CanvasController extends ChangeNotifier {
         id: 'float_10',
         title: '89',
         value: '89',
-        position: Offset(canvasSize.width * 0.82, canvasSize.height * 0.48),
+        position: Offset(_canvasSize.width * 0.82, _canvasSize.height * 0.48),
         rotation: 14 * math.pi / 180,
         fontSize: 23,
         color: const Color(0xFFD9B483).withValues(alpha: 0.55),

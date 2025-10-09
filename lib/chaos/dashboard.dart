@@ -47,6 +47,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
   late AnimationController _floatController;
   late ChaosPageManagerController _pageManagerController;
   late CanvasController _canvasController;
+  bool _canvasInitialized = false;
 
   bool isPlayerExpanded = false;
   int selectedNavIndex = 0;
@@ -62,7 +63,6 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
   void initState() {
     super.initState();
 
-    // Initialize controllers
     _floatController = AnimationController(
       duration: const Duration(seconds: 8),
       vsync: this,
@@ -70,42 +70,37 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
 
     _pageManagerController = ChaosPageManagerController();
 
-    // Initialize canvas controller with screen size (will be updated in build)
     _canvasController = CanvasController(
       canvasSize: const Size(400, 800),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _loadCanvasState().then((_) {
-        if (antiiqState.permissions.has) {
-          initData();
-        }
-      });
+      if (antiiqState.permissions.has) {
+        initData();
+      }
     });
   }
 
-  Future<void> _loadCanvasState() async {
-    _canvasController.removeListener(_saveCanvasState);
+  Future<void> _initializeCanvas() async {
+    final screenSize = MediaQuery.of(context).size;
+    final canvasSize = screenSize * 2.5;
+
+    _canvasController.updateCanvasSize(canvasSize);
+
     final savedState = context.read<ChaosUIState>().canvasState;
     if (savedState != null) {
       _canvasController.fromJsonWithDefaults(savedState);
     } else {
-      initCanvasDefault(_canvasController);
+      _canvasController.initializeDefault();
+
+      final centerOffset = Offset(
+        -(canvasSize.width - screenSize.width) / 2,
+        -(canvasSize.height - screenSize.height) / 2,
+      );
+      _canvasController.setPanOffset(centerOffset);
     }
 
     _canvasController.addListener(_saveCanvasState);
-  }
-
-  Future<void> initCanvasDefault(CanvasController controller) async {
-    controller.initializeDefault();
-    final screenSize = MediaQuery.of(context).size;
-    final centerOffset = Offset(
-      -(screenSize.width * 2.5 - screenSize.width) /
-          2, // -(canvasWidth - screenWidth) / 2
-      -(screenSize.height * 2.5 - screenSize.height) /
-          2, // -(canvasHeight - screenHeight) / 2
-    );
-    controller.setPanOffset(centerOffset);
   }
 
   Future<void> _saveCanvasState() async {
@@ -431,6 +426,10 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _setStatusBarColor();
+    if (!_canvasInitialized) {
+      _initializeCanvas();
+      _canvasInitialized = true;
+    }
 
     final newSize = MediaQuery.of(context).size;
     // Only respond to significant size changes, and preserve state
@@ -691,15 +690,6 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
 
   @override
   Widget build(BuildContext context) {
-    // Update canvas size based on actual screen size
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final screenSize = MediaQuery.of(context).size;
-      final newSize = screenSize * 2.5;
-      if (_canvasController.canvasSize != newSize) {
-        _canvasController = CanvasController(canvasSize: newSize);
-        _loadCanvasState();
-      }
-    });
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
