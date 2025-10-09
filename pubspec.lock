@@ -81,6 +81,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  chaos_ui:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: "4da7a9475db14f4445a5e9b88b2a500333c148f5"
+      url: "https://github.com/coleblvck/chaos_ui.git"
+    source: git
+    version: "0.0.1"
   characters:
     dependency: transitive
     description:
@@ -1022,5 +1031,5 @@ packages:
     source: hosted
     version: "3.1.3"
 sdks:
-  dart: ">=3.7.0 <4.0.0"
+  dart: ">=3.7.2 <4.0.0"
   flutter: ">=3.29.3"

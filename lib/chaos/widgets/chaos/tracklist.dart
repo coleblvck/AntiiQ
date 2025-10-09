@@ -1,5 +1,5 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
-import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
+import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/chaos/tracklist_item.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';

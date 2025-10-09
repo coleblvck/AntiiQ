@@ -61,6 +61,14 @@ dependencies:
   flutter_reorderable_grid_view: ^5.5.0
   provider: ^6.1.5+1
   diacritic: ^0.1.6
+  chaos_ui:
+    git:
+      url: https://github.com/coleblvck/chaos_ui.git
+      ref: main
+
+#dependency_overrides:
+#  chaos_ui:
+#    path: ../chaos_ui
 
 dev_dependencies:
   flutter_test:

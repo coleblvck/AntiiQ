@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:antiiq/chaos/chaos_global_constants.dart';
-import 'package:antiiq/chaos/chaos_ui/chaos_canvas.dart';
+import 'package:chaos_ui/chaos_canvas.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
+import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/chaos/canvas_defaults.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_equalizer.dart';
 import 'package:antiiq/chaos/widgets/chaos/albums_grid.dart';

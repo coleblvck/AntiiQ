@@ -1,5 +1,5 @@
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
+import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_animation_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';

@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:antiiq/chaos/chaos_ui/chaos_canvas.dart';
+import 'package:chaos_ui/chaos_canvas.dart';
 import 'package:flutter/material.dart';
 
 class MusicCanvasDefaults {
