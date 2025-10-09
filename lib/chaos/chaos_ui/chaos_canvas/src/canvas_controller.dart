@@ -1,21 +1,30 @@
 import 'dart:convert';
-import 'dart:math' as math;
 
 import 'package:antiiq/chaos/chaos_ui/chaos_canvas/models/canvas_element.dart';
 import 'package:flutter/material.dart';
 
 class CanvasController extends ChangeNotifier {
+  Size _baseCanvasSize; // Original size (e.g., screenSize * 2.5)
   Size _canvasSize;
   Size get canvasSize => _canvasSize;
+
   final List<CanvasElement> _elements = [];
   final List<CanvasElement> _floatingNumbers = [];
+  late final List<CanvasElement> defaultElements;
+  late final List<CanvasElement> defaultFloatingElements;
 
   late Rect dragBounds;
 
   String? _selectedId;
   bool _editMode = false;
 
-  CanvasController({required Size canvasSize}) : _canvasSize = canvasSize {
+  double _zoomScale = 1.0;
+  double get zoomScale => _zoomScale;
+
+  CanvasController({
+    required Size canvasSize,
+  })  : _baseCanvasSize = canvasSize,
+        _canvasSize = canvasSize {
     _updateDragBounds();
   }
 
@@ -29,17 +38,59 @@ class CanvasController extends ChangeNotifier {
     );
   }
 
-  void updateCanvasSize(Size newSize, {bool scaleElements = false}) {
-    if (_canvasSize == newSize) return;
-    final oldSize = _canvasSize;
+  // Update base canvas size (for orientation changes, screen size changes)
+  void updateBaseCanvasSize(Size newSize, {bool scaleElements = false}) {
+    if (_baseCanvasSize == newSize) return;
+    final oldSize = _baseCanvasSize;
 
-    _canvasSize = newSize;
+    // Update base size
+    _baseCanvasSize = newSize;
+
+    // Recalculate current canvas size with current zoom
+    _canvasSize = Size(
+      _baseCanvasSize.width * _zoomScale,
+      _baseCanvasSize.height * _zoomScale,
+    );
+
     _updateDragBounds();
 
     if (scaleElements) {
-      _scaleElementPositions(oldSize, newSize);
+      _scaleElementPositions(oldSize, _baseCanvasSize);
     }
 
+    notifyListeners();
+  }
+
+  // Set zoom level (for pinch-to-zoom)
+  void setZoomScale(double scale) {
+    _zoomScale = scale.clamp(0.5, 1.0); // Min 50%, Max 300%
+
+    // Scale canvas size with zoom
+    _canvasSize = Size(
+      _baseCanvasSize.width * _zoomScale,
+      _baseCanvasSize.height * _zoomScale,
+    );
+
+    _updateDragBounds();
+    notifyListeners();
+  }
+
+  // Zoom at a specific focal point (for pinch gesture)
+  void zoomAt(double scale, Offset focalPoint) {
+    final oldScale = _zoomScale;
+    _zoomScale = scale.clamp(0.5, 1.0);
+
+    // Scale canvas size
+    _canvasSize = Size(
+      _baseCanvasSize.width * _zoomScale,
+      _baseCanvasSize.height * _zoomScale,
+    );
+
+    // Adjust pan offset so zoom happens at focal point
+    final scaleDelta = _zoomScale / oldScale;
+    _panOffset = focalPoint + (_panOffset - focalPoint) * scaleDelta;
+
+    _updateDragBounds();
     notifyListeners();
   }
 
@@ -76,6 +127,15 @@ class CanvasController extends ChangeNotifier {
   void setPanOffset(Offset offset) {
     _panOffset = offset;
     notifyListeners();
+  }
+
+  /// MUST BE CALLED AFTER SETTING ACTUAL CANVAS SIZE TO BE USED AND BEFORE CALLING initializeDefault OR fromJsonWithDefaults
+  void setCanvasDefaults({
+    required List<CanvasElement> elements,
+    List<CanvasElement> floatingElements = const [],
+  }) {
+    defaultElements = elements;
+    defaultFloatingElements = floatingElements;
   }
 
   List<CanvasElement> get elements => List.unmodifiable(_elements);
@@ -143,6 +203,7 @@ class CanvasController extends ChangeNotifier {
       'elements': _elements.map((e) => e.toJson()).toList(),
       'floatingNumbers': _floatingNumbers.map((e) => e.toJson()).toList(),
       'panOffset': {'dx': _panOffset.dx, 'dy': _panOffset.dy},
+      'zoomScale': _zoomScale,
     };
     return jsonEncode(data);
   }
@@ -168,13 +229,16 @@ class CanvasController extends ChangeNotifier {
         );
       }
 
+      if (data['zoomScale'] != null) {
+        setZoomScale(data['zoomScale']);
+      }
+
       notifyListeners();
     } catch (e) {
-      debugPrint('Error loading typography state: $e');
+      debugPrint('Error loading canvas state: $e');
     }
   }
 
-  // Load from JSON and merge with new defaults
   void fromJsonWithDefaults(String jsonString) {
     try {
       final data = jsonDecode(jsonString);
@@ -202,21 +266,20 @@ class CanvasController extends ChangeNotifier {
         );
       }
 
+      if (data['zoomScale'] != null) {
+        setZoomScale(data['zoomScale']);
+      }
+
       _mergeWithDefaults(loadedElementIds, loadedFloatingIds);
 
       notifyListeners();
     } catch (e) {
-      debugPrint('Error loading typography state: $e');
+      debugPrint('Error loading canvas state: $e');
     }
   }
 
   void _mergeWithDefaults(
       Set<String> loadedElementIds, Set<String> loadedFloatingIds) {
-    // Create default elements to compare against
-    final defaultElements = _createDefaultElements();
-    final defaultFloatingNumbers = _createDefaultFloatingNumbers();
-
-    // Add missing main elements
     for (var defaultElement in defaultElements) {
       if (!loadedElementIds.contains(defaultElement.id)) {
         _elements.add(defaultElement);
@@ -224,8 +287,7 @@ class CanvasController extends ChangeNotifier {
       }
     }
 
-    // Add missing floating numbers
-    for (var defaultFloat in defaultFloatingNumbers) {
+    for (var defaultFloat in defaultFloatingElements) {
       if (!loadedFloatingIds.contains(defaultFloat.id)) {
         _floatingNumbers.add(defaultFloat);
         debugPrint('Added new floating number: ${defaultFloat.id}');
@@ -233,213 +295,12 @@ class CanvasController extends ChangeNotifier {
     }
   }
 
-  List<CanvasElement> _createDefaultElements() {
-    return [
-      CanvasElement(
-        id: 'songs',
-        title: 'SONGS',
-        value: '1247',
-        position: Offset(_canvasSize.width * 0.40, _canvasSize.height * 0.38),
-        rotation: -12 * math.pi / 180,
-        fontSize: 72,
-        color: Colors.white,
-      ),
-      CanvasElement(
-        id: 'albums',
-        title: 'ALBUMS',
-        value: '89',
-        position: Offset(_canvasSize.width * 0.60, _canvasSize.height * 0.40),
-        rotation: 45 * math.pi / 180,
-        fontSize: 64,
-        color: const Color(0xFFD9B483),
-      ),
-      CanvasElement(
-        id: 'artists',
-        title: 'ARTISTS',
-        value: '156',
-        position: Offset(_canvasSize.width * 0.35, _canvasSize.height * 0.45),
-        rotation: -8 * math.pi / 180,
-        fontSize: 68,
-        color: const Color(0xFF8BA785),
-      ),
-      CanvasElement(
-        id: 'genres',
-        title: 'GENRES',
-        value: '23',
-        position: Offset(_canvasSize.width * 0.60, _canvasSize.height * 0.48),
-        rotation: 22 * math.pi / 180,
-        fontSize: 56,
-        color: Colors.red,
-      ),
-      CanvasElement(
-        id: 'playlists',
-        title: 'PLAYLISTS',
-        value: '12',
-        position: Offset(_canvasSize.width * 0.36, _canvasSize.height * 0.52),
-        rotation: -35 * math.pi / 180,
-        fontSize: 48,
-        color: Colors.blue,
-      ),
-      CanvasElement(
-        id: 'favourites',
-        title: 'FAVOURITES',
-        value: '78',
-        position: Offset(_canvasSize.width * 0.58, _canvasSize.height * 0.54),
-        rotation: 15 * math.pi / 180,
-        fontSize: 52,
-        color: Colors.pink,
-      ),
-      CanvasElement(
-        id: 'history',
-        title: 'HISTORY',
-        value: '456',
-        position: Offset(_canvasSize.width * 0.64, _canvasSize.height * 0.60),
-        rotation: -18 * math.pi / 180,
-        fontSize: 60,
-        color: Colors.orange,
-      ),
-      CanvasElement(
-        id: 'smartmix',
-        title: 'SMART MIX',
-        value: '∞',
-        position: Offset(_canvasSize.width * 0.40, _canvasSize.height * 0.59),
-        rotation: 8 * math.pi / 180,
-        fontSize: 60,
-        color: Colors.purple,
-      ),
-      CanvasElement(
-        id: 'selection',
-        title: 'SELECTION',
-        value: '∞',
-        position: Offset(_canvasSize.width * 0.48, _canvasSize.height * 0.65),
-        rotation: -4 * math.pi / 180,
-        fontSize: 56,
-        color: Colors.deepOrange,
-      ),
-    ];
-  }
-
-  List<CanvasElement> _createDefaultFloatingNumbers() {
-    return [
-      CanvasElement(
-        id: 'float_1',
-        title: '1247',
-        value: '1247',
-        position: Offset(_canvasSize.width * 0.78, _canvasSize.height * 0.34),
-        rotation: -5 * math.pi / 180,
-        fontSize: 28,
-        color: const Color(0xFFD9B483).withValues(alpha: 0.7),
-        fontWeight: FontWeight.w100,
-        letterSpacing: 1,
-      ),
-      CanvasElement(
-        id: 'float_2',
-        title: '89',
-        value: '89',
-        position: Offset(_canvasSize.width * 0.26, _canvasSize.height * 0.43),
-        rotation: 12 * math.pi / 180,
-        fontSize: 28,
-        color: Colors.white.withValues(alpha: 0.6),
-        fontWeight: FontWeight.w100,
-        letterSpacing: 1,
-      ),
-      CanvasElement(
-        id: 'float_3',
-        title: '156',
-        value: '156',
-        position: Offset(_canvasSize.width * 0.74, _canvasSize.height * 0.56),
-        rotation: -8 * math.pi / 180,
-        fontSize: 28,
-        color: const Color(0xFF8BA785).withValues(alpha: 0.7),
-        fontWeight: FontWeight.w100,
-        letterSpacing: 1,
-      ),
-      CanvasElement(
-        id: 'float_4',
-        title: '23',
-        value: '23',
-        position: Offset(_canvasSize.width * 0.48, _canvasSize.height * 0.36),
-        rotation: 18 * math.pi / 180,
-        fontSize: 24,
-        color: Colors.red.withValues(alpha: 0.5),
-        fontWeight: FontWeight.w100,
-        letterSpacing: 1,
-      ),
-      CanvasElement(
-        id: 'float_5',
-        title: '12',
-        value: '12',
-        position: Offset(_canvasSize.width * 0.68, _canvasSize.height * 0.44),
-        rotation: -15 * math.pi / 180,
-        fontSize: 26,
-        color: Colors.blue.withValues(alpha: 0.6),
-        fontWeight: FontWeight.w100,
-        letterSpacing: 1,
-      ),
-      CanvasElement(
-        id: 'float_6',
-        title: '78',
-        value: '78',
-        position: Offset(_canvasSize.width * 0.30, _canvasSize.height * 0.50),
-        rotation: 8 * math.pi / 180,
-        fontSize: 25,
-        color: Colors.pink.withValues(alpha: 0.55),
-        fontWeight: FontWeight.w100,
-        letterSpacing: 1,
-      ),
-      CanvasElement(
-        id: 'float_7',
-        title: '456',
-        value: '456',
-        position: Offset(_canvasSize.width * 0.70, _canvasSize.height * 0.64),
-        rotation: -12 * math.pi / 180,
-        fontSize: 27,
-        color: Colors.orange.withValues(alpha: 0.6),
-        fontWeight: FontWeight.w100,
-        letterSpacing: 1,
-      ),
-      CanvasElement(
-        id: 'float_8',
-        title: '∞',
-        value: '∞',
-        position: Offset(_canvasSize.width * 0.50, _canvasSize.height * 0.63),
-        rotation: 20 * math.pi / 180,
-        fontSize: 30,
-        color: Colors.purple.withValues(alpha: 0.5),
-        fontWeight: FontWeight.w100,
-        letterSpacing: 1,
-      ),
-      CanvasElement(
-        id: 'float_9',
-        title: '1247',
-        value: '1247',
-        position: Offset(_canvasSize.width * 0.24, _canvasSize.height * 0.58),
-        rotation: -6 * math.pi / 180,
-        fontSize: 22,
-        color: Colors.white.withValues(alpha: 0.4),
-        fontWeight: FontWeight.w100,
-        letterSpacing: 1,
-      ),
-      CanvasElement(
-        id: 'float_10',
-        title: '89',
-        value: '89',
-        position: Offset(_canvasSize.width * 0.82, _canvasSize.height * 0.48),
-        rotation: 14 * math.pi / 180,
-        fontSize: 23,
-        color: const Color(0xFFD9B483).withValues(alpha: 0.55),
-        fontWeight: FontWeight.w100,
-        letterSpacing: 1,
-      ),
-    ];
-  }
-
   void initializeDefault() {
     _elements.clear();
     _floatingNumbers.clear();
 
-    _elements.addAll(_createDefaultElements());
-    _floatingNumbers.addAll(_createDefaultFloatingNumbers());
+    _elements.addAll(defaultElements);
+    _floatingNumbers.addAll(defaultFloatingElements);
 
     notifyListeners();
   }

@@ -34,16 +34,17 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
   String? _draggedId;
   Offset? _dragStartPosition;
   Offset _dragOffset = Offset.zero;
-  //TODO: Implement? double? _dragStartRotation;
+
+  // Zoom gesture tracking
+  double _lastScale = 1.0;
+  Offset? _lastFocalPoint;
+
   bool get _canInteract => widget.canInteract?.call() ?? true;
 
   @override
   void initState() {
     super.initState();
-    // Initialize local pan offset from controller
     _panOffset = widget.controller.panOffset;
-
-    // Listen for controller updates
     widget.controller.addListener(_syncPanOffset);
   }
 
@@ -54,7 +55,6 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
   }
 
   void _syncPanOffset() {
-    // Only sync if not currently dragging (to avoid fighting user input)
     if (_draggedId == null && !widget.controller.editMode) {
       setState(() {
         _panOffset = widget.controller.panOffset;
@@ -69,6 +69,82 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
       builder: (context, child) {
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
+
+          // Scale gestures for pinch-to-zoom
+          onScaleStart: _canInteract
+              ? (details) {
+                  _lastScale = widget.controller.zoomScale;
+                  _lastFocalPoint = details.focalPoint;
+                }
+              : null,
+
+          onScaleUpdate: _canInteract
+              ? (details) {
+                  if (widget.controller.editMode) {
+                    // In edit mode, disable zoom
+                    if (details.pointerCount == 1 && _draggedId == null) {
+                      // Single finger - pan canvas
+                      final screenSize = MediaQuery.of(context).size;
+                      setState(() {
+                        _panOffset += details.focalPointDelta;
+                        _panOffset = Offset(
+                          _panOffset.dx.clamp(
+                            -(widget.controller.canvasSize.width -
+                                screenSize.width),
+                            0.0,
+                          ),
+                          _panOffset.dy.clamp(
+                            -(widget.controller.canvasSize.height -
+                                screenSize.height),
+                            0.0,
+                          ),
+                        );
+                      });
+                    }
+                  } else {
+                    // Not in edit mode - allow zoom
+                    if (details.scale != 1.0 && details.pointerCount > 1) {
+                      // Pinching - zoom
+                      final newScale = _lastScale * details.scale;
+                      widget.controller.zoomAt(newScale, details.focalPoint);
+
+                      // Sync local pan offset
+                      setState(() {
+                        _panOffset = widget.controller.panOffset;
+                      });
+                    } else if (details.pointerCount == 1) {
+                      // Single finger - pan
+                      final screenSize = MediaQuery.of(context).size;
+                      setState(() {
+                        _panOffset += details.focalPointDelta;
+                        _panOffset = Offset(
+                          _panOffset.dx.clamp(
+                            -(widget.controller.canvasSize.width -
+                                screenSize.width),
+                            0.0,
+                          ),
+                          _panOffset.dy.clamp(
+                            -(widget.controller.canvasSize.height -
+                                screenSize.height),
+                            0.0,
+                          ),
+                        );
+                      });
+                    }
+                  }
+                }
+              : null,
+
+          onScaleEnd: _canInteract
+              ? (details) {
+                  if (_draggedId == null) {
+                    widget.controller.setPanOffset(_panOffset);
+                  }
+                  _lastScale = 1.0;
+                  _lastFocalPoint = null;
+                }
+              : null,
+
           onTapUp: _canInteract
               ? (details) {
                   if (!widget.controller.editMode) {
@@ -80,35 +156,6 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
               ? (details) {
                   if (!widget.controller.editMode) {
                     _handleLongPressOnCanvas(details);
-                  }
-                }
-              : null,
-          onPanUpdate: _canInteract
-              ? (details) {
-                  if (!widget.controller.editMode || _draggedId == null) {
-                    final screenSize = MediaQuery.of(context).size;
-                    setState(() {
-                      _panOffset += details.delta;
-                      _panOffset = Offset(
-                        _panOffset.dx.clamp(
-                          -(widget.controller.canvasSize.width -
-                              screenSize.width),
-                          0.0,
-                        ),
-                        _panOffset.dy.clamp(
-                          -(widget.controller.canvasSize.height -
-                              screenSize.height),
-                          0.0,
-                        ),
-                      );
-                    });
-                  }
-                }
-              : null,
-          onPanEnd: _canInteract
-              ? (details) {
-                  if (_draggedId == null) {
-                    widget.controller.setPanOffset(_panOffset);
                   }
                 }
               : null,
@@ -126,6 +173,7 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
                   editMode: widget.controller.editMode,
                   draggedId: _draggedId,
                   canvasSize: widget.controller.canvasSize,
+                  zoomScale: widget.controller.zoomScale,
                 ),
               ),
 
@@ -149,15 +197,16 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
       final element = widget.controller.elements[i];
       if (element.isHidden) continue;
 
+      // Account for zoom when hit testing
+      final scaledPosition = element.position * widget.controller.zoomScale;
       final floatOffset = _calculateFloatOffset(element);
-      final elementPosition = element.position + _panOffset + floatOffset;
+      final elementPosition = scaledPosition + _panOffset + floatOffset;
 
-      // Create a TextPainter to get actual bounds
       final textPainter = TextPainter(
         text: TextSpan(
           text: element.title,
           style: TextStyle(
-            fontSize: element.fontSize,
+            fontSize: element.fontSize * widget.controller.zoomScale, // Scaled
             fontWeight: element.fontWeight,
             letterSpacing: element.letterSpacing,
           ),
@@ -165,21 +214,17 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
         textDirection: TextDirection.ltr,
       )..layout();
 
-      // Get text bounds (accounting for rotation)
       final textWidth = textPainter.width;
       final textHeight = textPainter.height;
 
-      // Transform tap position to element's local coordinate system
       final dx = tapPosition.dx - elementPosition.dx;
       final dy = tapPosition.dy - elementPosition.dy;
 
-      // Rotate tap position inverse to element rotation
       final cos = math.cos(-element.rotation);
       final sin = math.sin(-element.rotation);
       final localX = dx * cos - dy * sin;
       final localY = dx * sin + dy * cos;
 
-      // Check if tap is within text bounds (with some padding)
       const padding = 10.0;
       if (localX >= -textWidth / 2 - padding &&
           localX <= textWidth / 2 + padding &&
@@ -191,7 +236,6 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
       }
     }
 
-    // No hit
     widget.onCanvasTapped?.call();
   }
 
@@ -222,18 +266,18 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
     final allElements = widget.controller.allElements.reversed.toList();
 
     for (var element in allElements) {
-      if (!includeHidden && element.isHidden) {
-        continue; // Skip hidden only if not in edit mode
-      }
+      if (!includeHidden && element.isHidden) continue;
 
+      // Account for zoom
+      final scaledPosition = element.position * widget.controller.zoomScale;
       final floatOffset = _calculateFloatOffset(element);
-      final elementPosition = element.position + _panOffset + floatOffset;
+      final elementPosition = scaledPosition + _panOffset + floatOffset;
 
       final textPainter = TextPainter(
         text: TextSpan(
           text: element.title,
           style: TextStyle(
-            fontSize: element.fontSize,
+            fontSize: element.fontSize * widget.controller.zoomScale, // Scaled
             fontWeight: element.fontWeight,
             letterSpacing: element.letterSpacing,
           ),
@@ -293,11 +337,13 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
   void _handleEditModePanStart(Offset position) {
     final hitId = _findElementAtPosition(position, includeHidden: true);
     if (hitId != null) {
-      // Dragging an element
       final element =
           widget.controller.allElements.firstWhere((e) => e.id == hitId);
+
+      // Account for zoom
+      final scaledPosition = element.position * widget.controller.zoomScale;
       final floatOffset = _calculateFloatOffset(element);
-      final elementPosition = element.position + _panOffset + floatOffset;
+      final elementPosition = scaledPosition + _panOffset + floatOffset;
 
       setState(() {
         _draggedId = hitId;
@@ -308,9 +354,8 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
         );
       });
     } else {
-      // Panning the canvas - no element hit
       setState(() {
-        _draggedId = null; // Explicitly null means we're panning
+        _draggedId = null;
       });
     }
   }
@@ -321,18 +366,20 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
           widget.controller.allElements.firstWhere((e) => e.id == _draggedId);
       final floatOffset = _calculateFloatOffset(element);
 
+      // Unscale position when dragging (store in base coordinates)
       final newPosition = Offset(
-        details.localPosition.dx -
-            _panOffset.dx -
-            floatOffset.dx -
-            _dragOffset.dx,
-        details.localPosition.dy -
-            _panOffset.dy -
-            floatOffset.dy -
-            _dragOffset.dy,
+        (details.localPosition.dx -
+                _panOffset.dx -
+                floatOffset.dx -
+                _dragOffset.dx) /
+            widget.controller.zoomScale,
+        (details.localPosition.dy -
+                _panOffset.dy -
+                floatOffset.dy -
+                _dragOffset.dy) /
+            widget.controller.zoomScale,
       );
 
-      // Get accurate bounds using TextPainter
       final textPainter = TextPainter(
         text: TextSpan(
           text: element.title,
@@ -345,26 +392,30 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
         textDirection: TextDirection.ltr,
       )..layout();
 
-      // Calculate rotated bounding box dimensions
       final textWidth = textPainter.width;
       final textHeight = textPainter.height;
 
-      // Account for rotation - calculate the axis-aligned bounding box
       final cosAbs = math.cos(element.rotation).abs();
       final sinAbs = math.sin(element.rotation).abs();
       final rotatedWidth = (textWidth * cosAbs + textHeight * sinAbs) / 2;
       final rotatedHeight = (textWidth * sinAbs + textHeight * cosAbs) / 2;
 
-      // Clamp to drag bounds with rotation-aware dimensions
       final bounds = widget.controller.dragBounds;
+      // Scale the bounds by zoom to get the correct constraint space
+      final scaledBounds = Rect.fromLTRB(
+        bounds.left / widget.controller.zoomScale,
+        bounds.top / widget.controller.zoomScale,
+        bounds.right / widget.controller.zoomScale,
+        bounds.bottom / widget.controller.zoomScale,
+      );
       final clampedPosition = Offset(
         newPosition.dx.clamp(
-          bounds.left + rotatedWidth,
-          bounds.right - rotatedWidth,
+          scaledBounds.left + rotatedWidth,
+          scaledBounds.right - rotatedWidth,
         ),
         newPosition.dy.clamp(
-          bounds.top + rotatedHeight,
-          bounds.bottom - rotatedHeight,
+          scaledBounds.top + rotatedHeight,
+          scaledBounds.bottom - rotatedHeight,
         ),
       );
 
@@ -389,7 +440,6 @@ class _ChaosCanvasState extends State<ChaosCanvas> {
 
   void _handleEditModePanEnd(DragEndDetails details) {
     if (_draggedId == null) {
-      // Was panning - sync to controller
       widget.controller.setPanOffset(_panOffset);
     }
 

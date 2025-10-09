@@ -5,6 +5,7 @@ import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui/chaos_canvas.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:antiiq/chaos/chaos_ui/chaos_rotation.dart';
+import 'package:antiiq/chaos/widgets/chaos/canvas_defaults.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_equalizer.dart';
 import 'package:antiiq/chaos/widgets/chaos/albums_grid.dart';
 import 'package:antiiq/chaos/widgets/chaos/artists_list.dart';
@@ -85,7 +86,11 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
     final screenSize = MediaQuery.of(context).size;
     final canvasSize = screenSize * 2.5;
 
-    _canvasController.updateCanvasSize(canvasSize);
+    _canvasController.updateBaseCanvasSize(canvasSize);
+    _canvasController.setCanvasDefaults(
+      elements: MusicCanvasDefaults.createElements(canvasSize),
+      floatingElements: MusicCanvasDefaults.createFloatingNumbers(canvasSize),
+    );
 
     final savedState = context.read<ChaosUIState>().canvasState;
     if (savedState != null) {

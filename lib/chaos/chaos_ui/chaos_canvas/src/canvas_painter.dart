@@ -12,6 +12,7 @@ class CanvasPainter extends CustomPainter {
   final bool editMode;
   final String? draggedId;
   final Size canvasSize;
+  final double zoomScale;
 
   CanvasPainter({
     required this.elements,
@@ -22,6 +23,7 @@ class CanvasPainter extends CustomPainter {
     required this.editMode,
     this.draggedId,
     required this.canvasSize,
+    this.zoomScale = 1.0, // Default zoom
   });
 
   @override
@@ -45,8 +47,6 @@ class CanvasPainter extends CustomPainter {
 
   void _paintDragBoundary(Canvas canvas) {
     final bounds = Rect.fromLTRB(
-      // Adjust for pan offset to keep boundary visible
-      // Use the same bounds from controller
       canvasSize.width * 0.1 + panOffset.dx,
       canvasSize.height * 0.1 + panOffset.dy,
       canvasSize.width * 0.9 + panOffset.dx,
@@ -59,7 +59,6 @@ class CanvasPainter extends CustomPainter {
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.square;
 
-    // Draw dashed border
     const dashWidth = 10.0;
     const dashSpace = 8.0;
 
@@ -116,7 +115,6 @@ class CanvasPainter extends CustomPainter {
       Canvas canvas, CanvasElement element, int index, bool isFloating) {
     canvas.save();
 
-    // Calculate float animation
     final isDragged = element.id == draggedId;
 
     // Calculate float animation (freeze if being dragged)
@@ -126,9 +124,12 @@ class CanvasPainter extends CustomPainter {
         ? math.cos(animationValue * 2 * math.pi + index * 0.8) * 15
         : 0.0;
 
+    // Apply zoom to position (elements scale with canvas)
+    final scaledPosition = element.position * zoomScale;
+
     // Apply position with animation
-    final x = element.position.dx + panOffset.dx;
-    final y = element.position.dy + floatOffset + verticalDrift + panOffset.dy;
+    final x = scaledPosition.dx + panOffset.dx;
+    final y = scaledPosition.dy + floatOffset + verticalDrift + panOffset.dy;
 
     canvas.translate(x, y);
     canvas.rotate(element.rotation);
@@ -143,13 +144,16 @@ class CanvasPainter extends CustomPainter {
       _paintSelectionIndicators(canvas, element);
     }
 
+    // Scale font size with zoom
+    final scaledFontSize = element.fontSize * zoomScale;
+
     // Create text painter
     final textPainter = TextPainter(
       text: TextSpan(
         text: element.title,
         style: TextStyle(
           color: element.color.withValues(alpha: isSelected ? 1.0 : opacity),
-          fontSize: isFloating ? element.fontSize : element.fontSize,
+          fontSize: scaledFontSize, // Use scaled font size
           fontWeight: element.fontWeight,
           letterSpacing: element.letterSpacing,
           shadows: isSelected && !isFloating
@@ -226,6 +230,7 @@ class CanvasPainter extends CustomPainter {
         oldDelegate.editMode != editMode ||
         oldDelegate.draggedId != draggedId ||
         oldDelegate.elements != elements ||
-        oldDelegate.floatingNumbers != floatingNumbers;
+        oldDelegate.floatingNumbers != floatingNumbers ||
+        oldDelegate.zoomScale != zoomScale;
   }
 }
