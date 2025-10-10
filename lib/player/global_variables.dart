@@ -6,7 +6,6 @@ import 'package:antiiq/player/utilities/audio_handler.dart';
 import 'package:antiiq/player/utilities/playlist_generator/playlist_generator.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 
 AntiiqAudioHandler get globalAntiiqAudioHandler =>
     antiiqState.audioSetup.audioHandler;
@@ -58,7 +57,6 @@ Stream<Duration> currentPosition() => AudioService.position.asBroadcastStream();
 Stream<PlaybackState> currentPlaybackState() =>
     globalAntiiqAudioHandler.playbackState.asBroadcastStream();
 
-final OnAudioQuery audioQuery = OnAudioQuery();
 
 //Variables to show library load progress
 int libraryLoadTotal = 1;

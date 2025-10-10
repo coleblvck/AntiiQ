@@ -1,15 +1,14 @@
 //Audio Service
 import 'dart:io';
+import 'dart:typed_data';
 
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/utilities/file_handling/audio_metadata_bridge.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:audio_service/audio_service.dart';
-import 'package:audiotags/audiotags.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:path/path.dart';
-import 'package:uri_to_file/uri_to_file.dart';
+import 'package:flutter/foundation.dart';
 
 playFromList(int index, List<MediaItem> listToPlay) async {
   await handleList(index, listToPlay);
@@ -83,33 +82,39 @@ shuffleTracks(List<Track> list) async {
 }
 
 playFromIntentLink(String link) async {
-  File? file;
-  AudioPlayer thisAudioLoader = AudioPlayer(
-    handleInterruptions: false,
-    androidApplyAudioAttributes: false,
-    handleAudioSessionActivation: false,
-  );
   try {
-    file = await toFile(link);
-    Tag? tag = await AudioTags.read(file.path);
+    // Use AudioMetadataBridge for content URIs
+    final AudioMetadata metadata =
+        await AudioMetadataBridge.getMetadataFromContentUri(link);
+
+    // Try to get artwork
+    Uint8List? artBytes =
+        await AudioMetadataBridge.extractArtworkFromContentUri(link,
+            quality: 90);
+    Uri artUri = defaultArtUri;
+
+    if (artBytes != null) {
+      // Save temp artwork
+      final tempArtPath = "${antiiqDirectory.path}/coverarts/temp_intent.jpeg";
+      File artFile = await File(tempArtPath).create(recursive: true);
+      await artFile.writeAsBytes(artBytes, mode: FileMode.write);
+      artUri = Uri.file(tempArtPath);
+    }
+
     final songItem = MediaItem(
-        id: link,
-        title: tag?.title ?? basename(file.path),
-        artist: tag?.trackArtist ?? "Unknown Artist",
-        album: tag?.album ?? "Unknown Album",
-        artUri: defaultArtUri,
-        duration: tag?.duration != null
-            ? Duration(seconds: tag!.duration!)
-            : await thisAudioLoader.setUrl(link),
-        extras: {
-          "id": "no-id",
-        });
+      id: link,
+      title: metadata.title,
+      artist: metadata.artist,
+      album: metadata.album,
+      artUri: artUri,
+      duration: Duration(milliseconds: metadata.duration),
+      extras: {
+        "id": "no-id",
+      },
+    );
+
     playOnlyThis(songItem);
   } catch (e) {
-    null;
+    debugPrint("Error playing from intent: $e");
   }
-  if (file != null) {
-    file.delete();
-  }
-  thisAudioLoader.dispose();
 }

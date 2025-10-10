@@ -1,20 +1,22 @@
 import 'package:permission_handler/permission_handler.dart';
 import 'package:restart_app/restart_app.dart';
 
-import '../global_variables.dart';
-
 class PermissionsState {
   bool has = false;
 
   checkAndRequest({bool retry = false}) async {
-    has = await audioQuery.checkAndRequest(
-      retryRequest: retry,
-    );
+    await Permission.storage.request();
+    await Permission.audio.request();
+
+    has =
+        await Permission.storage.isGranted || await Permission.audio.isGranted;
+
     await _furtherRequest();
-    retry? Restart.restartApp() : null;
+
+    if (retry) {
+      Restart.restartApp();
+    }
   }
-
-
 
   _furtherRequest() async {
     PermissionStatus status = await Permission.manageExternalStorage.status;

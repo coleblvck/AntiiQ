@@ -1,13 +1,10 @@
 import 'dart:io';
-
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:flutter/services.dart';
 import 'package:mime/mime.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 
 //Cover Art setup
-
 Future<Uint8List> defaultArt() async {
   final art = await rootBundle.load(placeholderAssetImage);
   Uint8List artWork = art.buffer.asUint8List();
@@ -16,7 +13,6 @@ Future<Uint8List> defaultArt() async {
 
 getDefaultArt() async {
   Uint8List art = await defaultArt();
-
   final artFilePath = "${antiiqDirectory.path}/coverarts/defaultart.jpeg";
   File artFile = await File(artFilePath).create(recursive: true);
   await artFile.writeAsBytes(
@@ -29,23 +25,45 @@ getDefaultArt() async {
 
 setDefaultArt() async {
   if (antiiqState.dataIsInitialized) {
-    defaultArtUri =
-        Uri.file("${antiiqDirectory.path}/coverarts/defaultart.jpeg");
+    defaultArtUri = Uri.file("${antiiqDirectory.path}/coverarts/defaultart.jpeg");
   } else {
     defaultArtUri = await getDefaultArt();
   }
 }
 
-Future<Uint8List?> getSongArtBytes(id) async {
-  Uint8List? artwork = await audioQuery.queryArtwork(id, ArtworkType.AUDIO,
-      format: ArtworkFormat.JPEG, size: 350);
-  return artwork;
+// UPDATED: Changed from Map<int, Uri> to Map<String, Uri>
+// Now supports both int keys (legacy) and String keys (new album-based keys)
+Map<String, Uri> albumArtsList = {};
+
+// Helper function to get album art by key (int or String)
+Uri? getAlbumArtByKey(dynamic key) {
+  if (key is int) {
+    return albumArtsList[key.toString()];
+  } else if (key is String) {
+    return albumArtsList[key];
+  }
+  return null;
 }
 
-Future<Uri> getSongArt(id) async {
+// Helper function to set album art by key (int or String)
+void setAlbumArtByKey(dynamic key, Uri uri) {
+  if (key is int) {
+    albumArtsList[key.toString()] = uri;
+  } else if (key is String) {
+    albumArtsList[key] = uri;
+  }
+}
+
+// Legacy functions for backward compatibility with on_audio_query
+Future<Uint8List?> getSongArtBytes(int id) async {
+  // This would need on_audio_query - kept for reference only
+  // You can remove this if not needed
+  return null;
+}
+
+Future<Uri> getSongArt(int id) async {
   Uint8List? art = await getSongArtBytes(id);
   art ??= await defaultArt();
-
   final artFilePath = "${antiiqDirectory.path}/coverarts/songs/$id.jpeg";
   File artFile = await File(artFilePath).create(recursive: true);
   await artFile.writeAsBytes(
@@ -55,35 +73,34 @@ Future<Uri> getSongArt(id) async {
   return Uri.file(artFilePath);
 }
 
-Uri directSongArtPath(id) {
+Uri directSongArtPath(int id) {
   return Uri.file("${antiiqDirectory.path}/coverarts/songs/$id.jpeg");
 }
 
-Future<Uint8List?> getAlbumArtBytes(id) async {
-  Uint8List? artwork = await audioQuery.queryArtwork(id, ArtworkType.ALBUM,
-      format: ArtworkFormat.JPEG, size: 350);
-  return artwork;
+Future<Uint8List?> getAlbumArtBytes(int id) async {
+  // This would need on_audio_query - kept for reference only
+  // You can remove this if not needed
+  return null;
 }
 
-Future<Uri> getAlbumArt(id, pathOfSong) async {
-  final artFilePath = "${antiiqDirectory.path}/coverarts/albums/$id.jpeg";
+Future<Uri> getAlbumArt(dynamic id, String pathOfSong) async {
+  // Support both int (legacy) and String (new) keys
+  final String idString = id is int ? id.toString() : id as String;
+  final artFilePath = "${antiiqDirectory.path}/coverarts/albums/$idString.jpeg";
+  
   if (!antiiqState.dataIsInitialized) {
-    Uint8List? art = await getAlbumArtBytes(id);
+    Uint8List? art = await getAlbumArtBytes(id is int ? id : 0);
     art ??= await getDirectoryArt(pathOfSong) ?? await defaultArt();
-
     File artFile = await File(artFilePath).create(recursive: true);
-
     await artFile.writeAsBytes(
       art,
       mode: FileMode.write,
     );
   } else {
     if (!await File(artFilePath).exists()) {
-      Uint8List? art = await getAlbumArtBytes(id);
+      Uint8List? art = await getAlbumArtBytes(id is int ? id : 0);
       art ??= await defaultArt();
-
       File artFile = await File(artFilePath).create(recursive: true);
-
       await artFile.writeAsBytes(
         art,
         mode: FileMode.write,
@@ -93,11 +110,10 @@ Future<Uri> getAlbumArt(id, pathOfSong) async {
   return Uri.file(artFilePath);
 }
 
-Uri directAlbumArtPath(id) {
-  return Uri.file("${antiiqDirectory.path}/coverarts/albums/$id.jpeg");
+Uri directAlbumArtPath(dynamic id) {
+  final String idString = id is int ? id.toString() : id as String;
+  return Uri.file("${antiiqDirectory.path}/coverarts/albums/$idString.jpeg");
 }
-
-Map<int, Uri> albumArtsList = {};
 
 //ToDo
 setTempArt(Uint8List picture) {}
@@ -110,9 +126,11 @@ Future<Uint8List?> getDirectoryArt(String pathOfSong) async {
   Directory dir = File(pathOfSong).parent;
   Uint8List? artToReturn;
   List<FileSystemEntity> allDirFiles = getAllDirectoryFiles(dir);
+  
   for (FileSystemEntity dirFile in allDirFiles) {
     if (dirFile is File) {
-      if (lookupMimeType(dirFile.path) != null && lookupMimeType(dirFile.path)!.contains("image")) {
+      if (lookupMimeType(dirFile.path) != null && 
+          lookupMimeType(dirFile.path)!.contains("image")) {
         artToReturn = await dirFile.readAsBytes();
         break;
       }

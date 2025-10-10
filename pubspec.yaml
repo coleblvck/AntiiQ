@@ -33,7 +33,6 @@ dependencies:
     sdk: flutter
 
   remix_icon_icons: ^1.0.1
-  on_audio_query: ^2.9.0
   audio_service: ^0.18.12
   just_audio: ^0.9.35
   path_provider: ^2.1.1
@@ -48,7 +47,6 @@ dependencies:
   filesystem_picker: ^4.0.0
   receive_intent: ^0.2.5
   uri_to_file: ^1.0.0
-  audiotags: ^1.4.0
   path: any
   fluttertoast: ^8.2.6
   mime: ^1.0.5
