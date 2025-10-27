@@ -1,4 +1,5 @@
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_animation_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
@@ -96,6 +97,8 @@ class ChaosMiniPlayerController extends ChangeNotifier {
   bool get isExpanded => currentState == ChaosMiniPlayerState.expanded;
   bool get isCollapsed => currentState == ChaosMiniPlayerState.collapsed;
 
+  double get collapsedHeight => _state?._collapsedHeight ?? 0.0;
+
   double get currentHeight => _state?._currentHeight ?? 0.0;
   double get expansionProgress => _state?._expandController.value ?? 0.0;
 }
@@ -103,7 +106,7 @@ class ChaosMiniPlayerController extends ChangeNotifier {
 class ChaosMiniPlayer extends StatefulWidget {
   final ChaosMiniPlayerAnimationConfig animationConfig;
   final Function(ChaosMiniPlayerState state, double progress)? onStateChanged;
-  final Function(double height)? onHeightChanged;
+  final Function(double height, double collapsedHeight)? onHeightChanged;
   final Function(ChaosMiniPlayerController controller)? onControllerReady;
   final ChaosAnimationManager? chaosAnimationManager;
   final DragGestureCallback? onLeftDrag;
@@ -158,11 +161,18 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
     return renderBox?.size.height ?? 0.0;
   }
 
+  double _collapsedHeight = 0.0;
+
   void _notifyHeightIfChanged() {
     final currentHeight = _currentHeight;
     if ((currentHeight - _lastReportedHeight).abs() > 0.5) {
       _lastReportedHeight = currentHeight;
-      widget.onHeightChanged?.call(currentHeight);
+
+      if (_currentState == ChaosMiniPlayerState.collapsed) {
+        _collapsedHeight = currentHeight;
+      }
+
+      widget.onHeightChanged?.call(currentHeight, _collapsedHeight);
     }
   }
 
@@ -464,12 +474,14 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
       PlaybackState playbackState,
       bool shuffleMode,
       AudioServiceRepeatMode repeatMode) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     return Row(
       children: [
         ChaosRotatedStatefulWidget(
           index: hashCode % 2000,
           style: ChaosRotationStyle.fibonacci,
-          maxAngle: 0.2,
+          maxAngle: getAnglePercentage(0.2, chaosLevel),
           child: _buildAlbumArt(
             expandProgress,
             currentTrack,
@@ -484,7 +496,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
         ChaosRotatedStatefulWidget(
           index: hashCode % 100,
           style: ChaosRotationStyle.fibonacci,
-          maxAngle: 0.2,
+          maxAngle: getAnglePercentage(0.2, chaosLevel),
           child: _buildMainControl(
             expandProgress,
             playbackState,
@@ -536,6 +548,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
   Widget _buildInteractiveSeekbar(MediaItem currentTrack,
       {bool displayProgressRow = true}) {
     final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     final radius = chaosUIState.getAdjustedRadius(6);
     final antiiQAudioHandler = context.read<AntiiqAudioHandler>();
 
@@ -553,7 +566,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
         return Column(
           children: [
             ChaosRotatedWidget(
-              angle: -0.025,
+              angle: getAnglePercentage(-0.025, chaosLevel),
               child: AntiiQSlider(
                 value: currentPosition.inMilliseconds.toDouble(),
                 min: 0,
@@ -591,8 +604,8 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Transform.rotate(
-                    angle: -0.018,
+                  ChaosRotatedStatefulWidget(
+                    angle: getAnglePercentage(-0.018, chaosLevel),
                     child: Text(
                       '$currentMinutes:${currentSeconds.toString().padLeft(2, '0')}',
                       style: TextStyle(
@@ -607,8 +620,8 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
                       ),
                     ),
                   ),
-                  Transform.rotate(
-                    angle: 0.025,
+                  ChaosRotatedStatefulWidget(
+                    angle: getAnglePercentage(0.025, chaosLevel),
                     child: Text(
                       '$totalMinutes:${totalSeconds.toString().padLeft(2, '0')}',
                       style: TextStyle(
@@ -634,6 +647,8 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
 
   Widget _buildStaticProgressBar(MediaItem currentTrack) {
     final antiiQState = context.watch<AntiiqState>();
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
 
     return StreamBuilder<Duration>(
       stream: antiiQState.audioSetup.audioHandler.audioPlayer.positionStream,
@@ -645,8 +660,8 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
             ? currentPosition.inMilliseconds / totalDuration.inMilliseconds
             : 0.0;
 
-        return Transform.rotate(
-          angle: -0.025,
+        return ChaosRotatedStatefulWidget(
+          angle: getAnglePercentage(-0.025, chaosLevel),
           child: Container(
             height: 3,
             decoration: BoxDecoration(
@@ -830,6 +845,8 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
   }
 
   Widget _buildTrackInfo(double expandProgress, MediaItem currentTrack) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     final title = (currentTrack.title.isEmpty ? 'NO TITLE' : currentTrack.title)
         .toUpperCase();
     final artist = (currentTrack.artist?.isEmpty ?? true
@@ -864,8 +881,9 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
 
             return Transform.translate(
               offset: glitchOffset,
-              child: Transform.rotate(
-                angle: -0.025 + (expandProgress * 0.008),
+              child: ChaosRotatedStatefulWidget(
+                angle: getAnglePercentage(
+                    -0.025 + (expandProgress * 0.008), chaosLevel),
                 child: Text(
                   title,
                   maxLines: expandProgress > 0.3 ? 3 : 1,
@@ -894,8 +912,9 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
           },
         ),
         const SizedBox(height: 2),
-        Transform.rotate(
-          angle: 0.012 - (expandProgress * 0.006),
+        ChaosRotatedStatefulWidget(
+          angle:
+              getAnglePercentage(0.012 - (expandProgress * 0.006), chaosLevel),
           child: Text(
             artist,
             maxLines: 1,
@@ -916,8 +935,8 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
             opacity: ((expandProgress - 0.3) / 0.7).clamp(0.0, 1.0),
             child: Padding(
               padding: const EdgeInsets.only(top: 4),
-              child: Transform.rotate(
-                angle: -0.01,
+              child: ChaosRotatedStatefulWidget(
+                angle: getAnglePercentage(-0.01, chaosLevel),
                 child: Text(
                   album,
                   maxLines: 2,
@@ -991,15 +1010,37 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
 
   Widget _buildControls(double expandProgress,
       AudioServiceRepeatMode repeatMode, bool shuffleModeEnabled) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     final antiiQState = context.read<AntiiqState>();
     final controls = [
-      (Icons.skip_previous, -0.025, false, () => previous()),
-      (Icons.replay_10, 0.018, false, () => rewind()),
-      (Icons.forward_30, -0.012, false, () => forward()),
-      (Icons.skip_next, 0.022, false, () => next()),
+      (
+        Icons.skip_previous,
+        getAnglePercentage(-0.025, chaosLevel),
+        false,
+        () => previous()
+      ),
+      (
+        Icons.replay_10,
+        getAnglePercentage(0.018, chaosLevel),
+        false,
+        () => rewind()
+      ),
+      (
+        Icons.forward_30,
+        getAnglePercentage(-0.012, chaosLevel),
+        false,
+        () => forward()
+      ),
+      (
+        Icons.skip_next,
+        getAnglePercentage(0.022, chaosLevel),
+        false,
+        () => next()
+      ),
       (
         Icons.shuffle,
-        -0.02,
+        getAnglePercentage(-0.02, chaosLevel),
         shuffleModeEnabled,
         () {
           antiiQState.audioSetup.preferences
@@ -1011,7 +1052,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
                 repeatMode == AudioServiceRepeatMode.all)
             ? RemixIcon.repeat
             : RemixIcon.repeat_one,
-        0.015,
+        getAnglePercentage(0.015, chaosLevel),
         repeatMode == AudioServiceRepeatMode.none ? false : true,
         () {
           final nextMode = switch (repeatMode) {
@@ -1055,7 +1096,7 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
 
         return Transform.translate(
           offset: glitchOffset,
-          child: Transform.rotate(
+          child: ChaosRotatedStatefulWidget(
             angle: rotation,
             child: InkWell(
               onTap: () {

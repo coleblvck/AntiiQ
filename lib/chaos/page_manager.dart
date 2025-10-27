@@ -1,5 +1,7 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/alpha.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/track_details_sheet.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
@@ -216,8 +218,9 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
   @override
   Widget build(BuildContext context) {
     if (widget.controller.isEmpty) return const SizedBox.shrink();
-
-    final radius = context.watch<ChaosUIState>().chaosRadius;
+    final chaosUIState = context.watch<ChaosUIState>();
+    final radius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
 
     return AnimatedBuilder(
       animation: _scaleAnimation,
@@ -229,7 +232,7 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
               color: AntiiQTheme.of(context)
                   .colorScheme
                   .background
-                  .withValues(alpha: 0.9),
+                  .withValues(alpha: getAlphaPercentage(0.9, chaosLevel)),
               border: Border.all(
                 color: AntiiQTheme.of(context)
                     .colorScheme
@@ -274,6 +277,8 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
     final title = page.title ?? 'OVERLAY';
     final innerRadius = (radius - 2);
     final hasControls = page.hasControls;
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -293,12 +298,10 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
           Row(
             children: [
               // Back/Close button
-              Transform.rotate(
-                angle: ChaosRotation.calculate(
-                  index: hashCode % 100,
-                  style: ChaosRotationStyle.random,
-                  maxAngle: 0.1,
-                ),
+              ChaosRotatedStatefulWidget(
+                index: hashCode % 100,
+                style: ChaosRotationStyle.random,
+                maxAngle: getAnglePercentage(0.1, chaosLevel),
                 child: GestureDetector(
                   onTap: _handleBackPress,
                   child: Container(
@@ -374,12 +377,10 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
                   child: Row(
                     children: [
                       Expanded(
-                        child: Transform.rotate(
-                          angle: ChaosRotation.calculate(
-                            index: hashCode % 200,
-                            style: ChaosRotationStyle.random,
-                            maxAngle: 0.1,
-                          ),
+                        child: ChaosRotatedStatefulWidget(
+                          index: hashCode % 200,
+                          style: ChaosRotationStyle.random,
+                          maxAngle: getAnglePercentage(0.1, chaosLevel),
                           child: Text(
                             title.toUpperCase(),
                             style: TextStyle(
@@ -396,12 +397,10 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
                       ),
                       if (page.listToCount != null) ...[
                         const SizedBox(width: chaosBasePadding),
-                        Transform.rotate(
-                          angle: ChaosRotation.calculate(
-                            index: hashCode % 300,
-                            style: ChaosRotationStyle.random,
-                            maxAngle: 0.1,
-                          ),
+                        ChaosRotatedStatefulWidget(
+                          index: hashCode % 300,
+                          style: ChaosRotationStyle.random,
+                          maxAngle: getAnglePercentage(0.1, chaosLevel),
                           child: Text(
                             '${page.listToCount.length}',
                             style: TextStyle(
@@ -460,6 +459,8 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
   }
 
   Widget _buildControls(ChaosPageManagerPage page, double radius) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -472,12 +473,10 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
 
             return Padding(
               padding: const EdgeInsets.only(left: 6),
-              child: Transform.rotate(
-                angle: ChaosRotation.calculate(
-                  index: hashCode % 400,
-                  style: ChaosRotationStyle.random,
-                  maxAngle: 0.1,
-                ),
+              child: ChaosRotatedStatefulWidget(
+                index: hashCode % 400,
+                style: ChaosRotationStyle.random,
+                maxAngle: getAnglePercentage(0.1, chaosLevel),
                 child: GestureDetector(
                   onTap: () {
                     HapticFeedback.lightImpact();
@@ -514,12 +513,10 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
         if (page.listToShuffle != null && page.listToShuffle!.length > 1)
           Padding(
             padding: const EdgeInsets.only(left: 6),
-            child: Transform.rotate(
-              angle: ChaosRotation.calculate(
-                index: hashCode % 500,
-                style: ChaosRotationStyle.random,
-                maxAngle: 0.1,
-              ),
+            child: ChaosRotatedStatefulWidget(
+              index: hashCode % 500,
+              style: ChaosRotationStyle.random,
+              maxAngle: getAnglePercentage(0.1, chaosLevel),
               child: GestureDetector(
                 onTap: () {
                   HapticFeedback.lightImpact();
@@ -554,12 +551,10 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
             page.availableSortTypes!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(left: 6),
-            child: Transform.rotate(
-              angle: ChaosRotation.calculate(
-                index: hashCode % 600,
-                style: ChaosRotationStyle.random,
-                maxAngle: 0.1,
-              ),
+            child: ChaosRotatedStatefulWidget(
+              index: hashCode % 600,
+              style: ChaosRotationStyle.random,
+              maxAngle: getAnglePercentage(0.1, chaosLevel),
               child: GestureDetector(
                 onTap: () {
                   HapticFeedback.lightImpact();

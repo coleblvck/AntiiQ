@@ -1,5 +1,6 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/home_widget/home_widget_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
@@ -70,9 +71,13 @@ class _UserInterfaceState extends State<UserInterface>
       slivers: [
         _SectionHeader(title: 'UI MODE', glitchController: _glitchController),
         _UIModeSetting(setPageState: setState),
+        _ChaosLevelSetting(),
+        _SectionHeader(
+            title: 'DASHBOARD MODE', glitchController: _glitchController),
+        _DashboardModeSetting(),
         _SectionHeader(title: 'GENERAL', glitchController: _glitchController),
         _StatusBarModeSetting(setPageState: setState),
-        _UiRoundnessSetting(setPageState: setState),
+        _UiRoundnessSetting(),
         _CoverArtFitSetting(setPageState: setState),
         _SectionHeader(title: 'WIDGET', glitchController: _glitchController),
         _WidgetSettingsSection(
@@ -319,6 +324,39 @@ class _UIModeSetting extends StatelessWidget {
   }
 }
 
+class _DashboardModeSetting extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final canvasEnabled = chaosUIState.canvasEnabled;
+    return SliverToBoxAdapter(
+      child: _SettingContainer(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'CANVAS',
+              style: TextStyle(
+                color: AntiiQTheme.of(context).colorScheme.onBackground,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1,
+              ),
+            ),
+            _ChaosSwitch(
+              value: canvasEnabled,
+              onChanged: (value) async {
+                HapticFeedback.lightImpact();
+                await chaosUIState.setCanvasEnabled(value);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _StatusBarModeSetting extends StatelessWidget {
   final void Function(void Function()) setPageState;
 
@@ -448,10 +486,6 @@ class _CoverArtFitSetting extends StatelessWidget {
 }
 
 class _UiRoundnessSetting extends StatelessWidget {
-  final void Function(void Function()) setPageState;
-
-  const _UiRoundnessSetting({required this.setPageState});
-
   @override
   Widget build(BuildContext context) {
     final chaosState = context.read<ChaosUIState>();
@@ -522,6 +556,88 @@ class _UiRoundnessSetting extends StatelessWidget {
                 onChanged: (value) {
                   HapticFeedback.selectionClick();
                   chaosState.setChaosRadius(value);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ChaosLevelSetting extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final chaosState = context.watch<ChaosUIState>();
+    final currentRadius = chaosState.chaosRadius;
+    final currentLevel = chaosState.chaosLevel;
+    return SliverToBoxAdapter(
+      child: _SettingContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'CHAOS LEVEL',
+                  style: TextStyle(
+                    color: AntiiQTheme.of(context)
+                        .colorScheme
+                        .onBackground
+                        .withValues(alpha: 0.6),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 2,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: chaosBasePadding,
+                      vertical: chaosBasePadding / 2),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AntiiQTheme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.5),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(currentRadius - 4),
+                  ),
+                  child: Text(
+                    currentLevel.toStringAsFixed(2),
+                    style: TextStyle(
+                      color: AntiiQTheme.of(context).colorScheme.primary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 24,
+              child: AntiiQSlider(
+                activeTrackColor: AntiiQTheme.of(context).colorScheme.primary,
+                inactiveTrackColor: AntiiQTheme.of(context).colorScheme.surface,
+                thumbColor: AntiiQTheme.of(context).colorScheme.onBackground,
+                thumbWidth: 24.0,
+                thumbHeight: 24.0,
+                thumbBorderRadius: currentRadius - 4,
+                trackHeight: 24.0,
+                trackBorderRadius: currentRadius - 4,
+                orientation: Axis.horizontal,
+                selectByTap: true,
+                value: currentLevel,
+                min: 0,
+                max: 1,
+                onChanged: (value) {
+                  HapticFeedback.selectionClick();
+                  chaosState.setChaosLevel(value);
                 },
               ),
             ),
@@ -843,8 +959,11 @@ class _SettingsThemeGrid extends StatelessWidget {
 class _CustomThemeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final currentRadius = context.watch<ChaosUIState>().chaosRadius;
+    final chaosUIState = context.watch<ChaosUIState>();
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     return ChaosRotatedStatefulWidget(
+      maxAngle: getAnglePercentage(0.1, chaosLevel),
       child: GestureDetector(
         onTap: () {
           HapticFeedback.mediumImpact();
@@ -898,10 +1017,13 @@ class _ThemeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentRadius = context.watch<ChaosUIState>().chaosRadius;
+    final chaosUIState = context.watch<ChaosUIState>();
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     final theme = customThemes[themeName]!;
 
     return ChaosRotatedStatefulWidget(
+      maxAngle: getAnglePercentage(0.1, chaosLevel),
       child: StreamBuilder<AntiiQColorScheme>(
           stream: themeStream.stream,
           builder: (context, snapshot) {
@@ -1009,8 +1131,11 @@ class _SettingContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentRadius = context.watch<ChaosUIState>().chaosRadius;
+    final chaosUIState = context.watch<ChaosUIState>();
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     return ChaosRotatedStatefulWidget(
+      maxAngle: getAnglePercentage(0.1, chaosLevel),
       child: Container(
         margin: const EdgeInsets.only(
             left: chaosBasePadding,

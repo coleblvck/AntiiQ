@@ -95,7 +95,10 @@ class AntiiqAudioHandler extends BaseAudioHandler
 
     // Update media item
     mediaItem.add(item);
+    _onTrackStarted(item);
   }
+
+  void _onTrackStarted(MediaItem item) {}
 
   @override
   Future<void> stopPlayer() async {

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:antiiq/chaos/chaos_global_constants.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:antiiq/chaos/utilities/folder_picker.dart';
@@ -489,8 +490,10 @@ class _SettingContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     final outerRadius = chaosUIState.getAdjustedRadius(2);
     return ChaosRotatedStatefulWidget(
+      maxAngle: getAnglePercentage(0.1, chaosLevel),
       child: Container(
         padding: const EdgeInsets.all(chaosBasePadding * 2),
         decoration: BoxDecoration(

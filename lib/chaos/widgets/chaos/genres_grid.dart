@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/utilities/open_collection.dart';
 import 'package:antiiq/chaos/widgets/track_details_sheet.dart';
@@ -25,6 +26,8 @@ class GenresGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     return StreamBuilder<List<Genre>>(
       stream: antiiqState.music.genres.flow.stream,
       builder: (context, snapshot) {
@@ -48,11 +51,11 @@ class GenresGrid extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemCount: genres.length,
               itemBuilder: (context, index) {
-                return Transform.rotate(
+                return ChaosRotatedStatefulWidget(
                     angle: ChaosRotation.calculate(
                       index: index + 10,
                       style: ChaosRotationStyle.fibonacci,
-                      maxAngle: 0.05,
+                      maxAngle: getAnglePercentage(0.05, chaosLevel),
                     ),
                     child: _GenreGridItem(genre: genres[index]));
               },

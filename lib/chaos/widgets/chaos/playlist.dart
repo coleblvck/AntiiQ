@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/track_details_sheet.dart';
 import 'package:antiiq/chaos/page_manager.dart';
@@ -265,15 +266,16 @@ class _ChaosPlaylistCardState extends State<ChaosPlaylistCard>
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
-    final radius = chaosUIState.chaosRadius;
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     //final innerRadius = chaosUIState.getAdjustedRadius(2);
 
     final rotation = (widget.index % 5 - 2) * 0.02;
 
     return GestureDetector(
       onTap: _openPlaylist,
-      child: Transform.rotate(
-        angle: rotation,
+      child: ChaosRotatedStatefulWidget(
+        angle: getAnglePercentage(rotation, chaosLevel),
         child: AnimatedBuilder(
           animation: _glitchController,
           builder: (context, child) {
@@ -296,10 +298,10 @@ class _ChaosPlaylistCardState extends State<ChaosPlaylistCard>
                         .withValues(alpha: 0.4),
                     width: 1,
                   ),
-                  borderRadius: BorderRadius.circular(radius),
+                  borderRadius: BorderRadius.circular(currentRadius),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(radius),
+                  borderRadius: BorderRadius.circular(currentRadius),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -335,8 +337,8 @@ class _ChaosPlaylistCardState extends State<ChaosPlaylistCard>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Transform.rotate(
-                              angle: -rotation * 0.5,
+                            ChaosRotatedStatefulWidget(
+                              angle: getAnglePercentage(-rotation * 0.5, chaosLevel),
                               child: Text(
                                 widget.playlist.playlistName!.toUpperCase(),
                                 style: TextStyle(
@@ -352,8 +354,8 @@ class _ChaosPlaylistCardState extends State<ChaosPlaylistCard>
                               ),
                             ),
                             const SizedBox(height: 4),
-                            Transform.rotate(
-                              angle: rotation * 0.3,
+                            ChaosRotatedStatefulWidget(
+                              angle: getAnglePercentage(rotation * 0.3, chaosLevel),
                               child: Text(
                                 '${widget.playlist.playlistTracks!.length} TRACKS',
                                 style: TextStyle(
@@ -436,6 +438,8 @@ class _ChaosPlaylistDetailState extends State<_ChaosPlaylistDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     return MediaQuery.removePadding(
       context: context,
       removeTop: true,
@@ -485,6 +489,7 @@ class _ChaosPlaylistDetailState extends State<_ChaosPlaylistDetail> {
               itemBuilder: (context, index) {
                 final track = _tracks[index];
                 return ChaosRotatedStatefulWidget(
+                  maxAngle: getAnglePercentage(0.1, chaosLevel),
                   key: ValueKey('chaos_${track.mediaItem!.id}'),
                   child: _ChaosPlaylistTrackItem(
                     key: ValueKey(track.mediaItem!.id),
@@ -772,7 +777,8 @@ class _ChaosPlaylistTrackItemState extends State<_ChaosPlaylistTrackItem>
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
-    final outerRadius = chaosUIState.chaosRadius;
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     final innerRadius = chaosUIState.getAdjustedRadius(2);
 
     final rotation = (widget.index % 7 - 3) * 0.015;
@@ -785,8 +791,8 @@ class _ChaosPlaylistTrackItemState extends State<_ChaosPlaylistTrackItem>
           right: chaosBasePadding,
           bottom: chaosBasePadding,
         ),
-        child: Transform.rotate(
-          angle: rotation * 0.2,
+        child: ChaosRotatedStatefulWidget(
+          angle: getAnglePercentage(rotation * 0.2, chaosLevel),
           child: AnimatedBuilder(
             animation: _glitchController,
             builder: (context, child) {
@@ -810,10 +816,10 @@ class _ChaosPlaylistTrackItemState extends State<_ChaosPlaylistTrackItem>
                           .withValues(alpha: 0.3),
                       width: 1,
                     ),
-                    borderRadius: BorderRadius.circular(outerRadius),
+                    borderRadius: BorderRadius.circular(currentRadius),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(outerRadius),
+                    borderRadius: BorderRadius.circular(currentRadius),
                     child: PageView(
                       controller: _pageController,
                       physics: const BouncingScrollPhysics(),
@@ -934,7 +940,7 @@ class _ChaosPlaylistTrackItemState extends State<_ChaosPlaylistTrackItem>
               ),
             ),
 
-            const SizedBox(width: 4),
+            const SizedBox(width: chaosBasePadding),
 
             // Delete button
             GestureDetector(
@@ -1174,7 +1180,8 @@ class _ChaosPlaylistCreatorState extends State<_ChaosPlaylistCreator> {
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
-    final radius = chaosUIState.chaosRadius;
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     final innerRadius = chaosUIState.getAdjustedRadius(2);
 
     return Container(
@@ -1189,7 +1196,7 @@ class _ChaosPlaylistCreatorState extends State<_ChaosPlaylistCreator> {
               .withValues(alpha: 0.3),
           width: 1,
         ),
-        borderRadius: BorderRadius.circular(radius),
+        borderRadius: BorderRadius.circular(currentRadius),
       ),
       child: Column(
         children: [
@@ -1407,6 +1414,7 @@ class _ChaosPlaylistCreatorState extends State<_ChaosPlaylistCreator> {
                 final isSelected = _selectedTracks.contains(track);
 
                 return ChaosRotatedStatefulWidget(
+                  maxAngle: getAnglePercentage(0.1, chaosLevel),
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: chaosBasePadding),
                     child: GestureDetector(
@@ -1917,7 +1925,8 @@ class _ChaosAddToPlaylistState extends State<_ChaosAddToPlaylist> {
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
-    final radius = chaosUIState.chaosRadius;
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     final innerRadius = chaosUIState.getAdjustedRadius(2);
 
     return Container(
@@ -1932,7 +1941,7 @@ class _ChaosAddToPlaylistState extends State<_ChaosAddToPlaylist> {
               .withValues(alpha: 0.3),
           width: 1,
         ),
-        borderRadius: BorderRadius.circular(radius),
+        borderRadius: BorderRadius.circular(currentRadius),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -2098,6 +2107,7 @@ class _ChaosAddToPlaylistState extends State<_ChaosAddToPlaylist> {
               itemBuilder: (context, index) {
                 final playlist = antiiqState.music.playlists.list[index];
                 return ChaosRotatedStatefulWidget(
+                  maxAngle: getAnglePercentage(0.1, chaosLevel),
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: chaosBasePadding),
                     child: GestureDetector(

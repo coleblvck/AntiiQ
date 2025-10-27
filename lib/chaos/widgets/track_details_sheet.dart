@@ -1,4 +1,5 @@
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/utilities/open_collection.dart';
 import 'package:antiiq/chaos/widgets/chaos/playlist.dart';
@@ -457,8 +458,10 @@ class _MetadataLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     return ChaosRotatedStatefulWidget(
-      maxAngle: 0.08,
+      maxAngle: getAnglePercentage(0.08, chaosLevel),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 6),
         child: GestureDetector(
@@ -800,7 +803,10 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     return ChaosRotatedStatefulWidget(
+      maxAngle: getAnglePercentage(0.1, chaosLevel),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: GestureDetector(

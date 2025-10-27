@@ -1,11 +1,13 @@
 import 'dart:math' as math;
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/playlist_generator/playlist_generator.dart';
+import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -335,13 +337,14 @@ class _ChaosGeneratorButtonState extends State<ChaosGeneratorButton>
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
-    final radius = chaosUIState.chaosRadius;
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     final innerRadius = chaosUIState.getAdjustedRadius(2);
 
     final rotation = (widget.index % 7 - 3) * 0.01;
 
-    return Transform.rotate(
-      angle: rotation,
+    return ChaosRotatedStatefulWidget(
+      angle: getAnglePercentage(rotation, chaosLevel),
       child: AnimatedBuilder(
         animation: _glitchController,
         builder: (context, child) {
@@ -367,7 +370,7 @@ class _ChaosGeneratorButtonState extends State<ChaosGeneratorButton>
                         .withValues(alpha: _isLoading ? 0.15 : 0.3),
                     width: 1,
                   ),
-                  borderRadius: BorderRadius.circular(radius),
+                  borderRadius: BorderRadius.circular(currentRadius),
                 ),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -500,6 +503,8 @@ class _ChaosSelectionDialogState extends State<_ChaosSelectionDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
@@ -584,8 +589,8 @@ class _ChaosSelectionDialogState extends State<_ChaosSelectionDialog> {
 
                   return Padding(
                     padding: const EdgeInsets.only(bottom: chaosBasePadding),
-                    child: Transform.rotate(
-                      angle: rotation,
+                    child: ChaosRotatedStatefulWidget(
+                      angle: getAnglePercentage(rotation, chaosLevel),
                       child: GestureDetector(
                         onTap: isLoading
                             ? null

@@ -5,6 +5,7 @@ import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/main_screen/main_box.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/state/ui_state.dart';
+import 'package:antiiq/player/state/version_updates.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final antiiQState = await AntiiqState.create();
 
+  final VersionUpdates versionUpdates = antiiQState.versionUpdates;
+
   final chaosUIState = ChaosUIState();
   await chaosUIState.init();
   runApp(
@@ -23,6 +26,7 @@ void main() async {
         ChangeNotifierProvider.value(value: antiiQState),
         ChangeNotifierProvider.value(value: chaosUIState),
         ChangeNotifierProvider.value(value: antiiQState.audioSetup.audioHandler),
+        ChangeNotifierProvider(create: (_) => versionUpdates),
       ],
       child: const AntiiQ(),
     ),

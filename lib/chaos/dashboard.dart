@@ -1,7 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:antiiq/chaos/antiiq_updates.dart';
 import 'package:antiiq/chaos/chaos_global_constants.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
+import 'package:antiiq/chaos/widgets/antiiq_update.dart';
+import 'package:antiiq/chaos/widgets/chaos_dashboard_grid.dart';
+import 'package:antiiq/player/state/version_updates.dart';
+import 'package:antiiq/player/utilities/art_theme.dart';
 import 'package:chaos_ui/chaos_canvas.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
@@ -237,6 +243,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
       libraryLoadProgress = 0;
       loadingMessage = "Loading Library";
       Navigator.of(context).pop();
+      _showUpdateDialogIfNeeded();
     } else {
       return;
     }
@@ -244,6 +251,25 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
 
   stateSet() {
     setState(() {});
+  }
+
+  void _showUpdateDialogIfNeeded() async {
+    final versionUpdates = context.read<VersionUpdates>();
+    final currentVersion = antiiqUpdates[0].version;
+
+    if (versionUpdates.shouldShowUpdate(currentVersion)) {
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      if (mounted) {
+        await AntiiQUpdateDialog.show(
+          context,
+          antiiqUpdates[0],
+          () {
+            versionUpdates.setLastSeenUpdateVersion(currentVersion);
+          },
+        );
+      }
+    }
   }
 
   Future<bool> showChaosExitDialog() async {
@@ -255,6 +281,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
           context: context,
           barrierColor: Colors.black.withValues(alpha: 0.85),
           builder: (BuildContext context) {
+            ChaosUIState chaosUIState = context.read<ChaosUIState>();
             return Dialog(
               backgroundColor: AntiiQTheme.of(context).colorScheme.background,
               surfaceTintColor: Colors.transparent,
@@ -270,8 +297,9 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Transform.rotate(
-                      angle: -0.015,
+                    ChaosRotatedStatefulWidget(
+                      angle:
+                          getAnglePercentage(-0.015, chaosUIState.chaosLevel),
                       child: Text(
                         'TERMINATE SESSION',
                         style: TextStyle(
@@ -295,8 +323,9 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                         ),
                         borderRadius: BorderRadius.circular(innerRadius),
                       ),
-                      child: Transform.rotate(
-                        angle: 0.008,
+                      child: ChaosRotatedStatefulWidget(
+                        angle:
+                            getAnglePercentage(0.008, chaosUIState.chaosLevel),
                         child: Text(
                           'EXIT APPLICATION?',
                           style: TextStyle(
@@ -314,8 +343,9 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                     Row(
                       children: [
                         Expanded(
-                          child: Transform.rotate(
-                            angle: 0.01,
+                          child: ChaosRotatedStatefulWidget(
+                            angle: getAnglePercentage(
+                                0.01, chaosUIState.chaosLevel),
                             child: GestureDetector(
                               onTap: () {
                                 HapticFeedback.selectionClick();
@@ -354,8 +384,9 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Transform.rotate(
-                            angle: -0.012,
+                          child: ChaosRotatedStatefulWidget(
+                            angle: getAnglePercentage(
+                                -0.012, chaosUIState.chaosLevel),
                             child: GestureDetector(
                               onTap: () {
                                 HapticFeedback.heavyImpact();
@@ -463,8 +494,8 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
     super.dispose();
   }
 
-  void _handleTypographyElementTapped(CanvasElement element) {
-    switch (element.id) {
+  void _handleDashboardItemTap(String id) {
+    switch (id) {
       case 'songs':
         final ScrollController scrollController = ScrollController();
         _pageManagerController.push(
@@ -643,14 +674,18 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
         _pageManagerController.push(
             Center(
               child: Text(
-                element.id.toUpperCase(),
+                id.toUpperCase(),
                 style: const TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
-            title: element.id.toUpperCase());
+            title: id.toUpperCase());
     }
 
     HapticFeedback.mediumImpact();
+  }
+
+  void _handleTypographyElementTapped(CanvasElement element) {
+    _handleDashboardItemTap(element.id);
   }
 
   void _handleNavigationItemSelected(int index) {
@@ -693,8 +728,68 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
     }
   }
 
+  List<ChaosDashboardItemData> get _dashboardItems => [
+        ChaosDashboardItemData(
+          id: 'songs',
+          title: 'SONGS',
+          icon: RemixIcon.music,
+        ),
+        ChaosDashboardItemData(
+          id: 'albums',
+          title: 'ALBUMS',
+          icon: RemixIcon.album,
+        ),
+        ChaosDashboardItemData(
+          id: 'artists',
+          title: 'ARTISTS',
+          icon: RemixIcon.user_voice,
+        ),
+        ChaosDashboardItemData(
+          id: 'genres',
+          title: 'GENRES',
+          icon: RemixIcon.disc,
+        ),
+        ChaosDashboardItemData(
+          id: 'playlists',
+          title: 'PLAYLISTS',
+          icon: RemixIcon.play_list,
+        ),
+        ChaosDashboardItemData(
+          id: 'smartmix',
+          title: 'SMART MIX',
+          icon: RemixIcon.shuffle,
+        ),
+        ChaosDashboardItemData(
+          id: 'favourites',
+          title: 'FAVOURITES',
+          icon: RemixIcon.heart,
+        ),
+        ChaosDashboardItemData(
+          id: 'history',
+          title: 'HISTORY',
+          icon: RemixIcon.history,
+        ),
+        ChaosDashboardItemData(
+          id: 'selection',
+          title: 'SELECTION',
+          icon: RemixIcon.checkbox_multiple,
+        ),
+      ];
+
+  bool _isEditingDashboardGrid = false;
+
+  void _toggleDashboardGridEditMode() {
+    setState(() {
+      _isEditingDashboardGrid = !_isEditingDashboardGrid;
+    });
+    HapticFeedback.mediumImpact();
+  }
+
+  Uri? lastUri;
+
   @override
   Widget build(BuildContext context) {
+    final chaosUIState = context.watch<ChaosUIState>();
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -727,11 +822,22 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
         resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
-            // Background image
             StreamBuilder<MediaItem?>(
               stream: currentPlaying(),
               builder: (context, snapshot) {
                 MediaItem? currentTrack = snapshot.data ?? currentDefaultSong;
+
+                final coverArtTheme =
+                    context.read<ChaosUIState>().coverArtTheme;
+                if (currentTrack.artUri != null &&
+                    currentTrack.artUri != lastUri &&
+                    coverArtTheme) {
+                  lastUri = currentTrack.artUri;
+                  getArtTheme(currentTrack.artUri!).then((artTheme) {
+                    themeStream.add(artTheme);
+                  });
+                }
+
                 return Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
@@ -746,32 +852,52 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                 );
               },
             ),
-
-            // Main content
             Stack(
               children: [
-                // Typography canvas
-                ChaosCanvas(
-                  controller: _canvasController,
-                  floatAnimation: _floatController,
-                  onElementTapped: _handleTypographyElementTapped,
-                  onCanvasTapped: _consequentialMiniPlayerClose,
-                  canInteract: () {
-                    return _pageManagerController.isEmpty;
-                  },
-                  overlays: [
-                    CanvasOverlay(
-                      anchor: CanvasOverlayAnchor.custom,
-                      useSafeArea: false,
-                      top: 24 + MediaQuery.of(context).padding.top,
-                      left: 24,
-                      right: 24,
-                      child: ChaosHeader(
-                        pageManagerController: _pageManagerController,
+                chaosUIState.canvasEnabled
+                    ? ChaosCanvas(
+                        controller: _canvasController,
+                        floatAnimation: _floatController,
+                        onElementTapped: _handleTypographyElementTapped,
+                        onCanvasTapped: _consequentialMiniPlayerClose,
+                        canInteract: () {
+                          return _pageManagerController.isEmpty;
+                        },
+                        overlays: [
+                          CanvasOverlay(
+                            anchor: CanvasOverlayAnchor.custom,
+                            useSafeArea: false,
+                            top: ChaosHeader.topPadding +
+                                MediaQuery.of(context).padding.top,
+                            left: ChaosHeader.leftPadding,
+                            right: ChaosHeader.rightPadding,
+                            child: ChaosHeader(
+                              pageManagerController: _pageManagerController,
+                            ),
+                          ),
+                        ],
+                      )
+                    : ChaosDashboardGrid(
+                        items: _dashboardItems,
+                        onItemTap: (id) => _handleDashboardItemTap(id),
+                        onDashboardTap: _consequentialMiniPlayerClose,
+                        isEditMode: _isEditingDashboardGrid,
+                        onEditModeChanged: _toggleDashboardGridEditMode,
+                        header: ChaosHeader(
+                          pageManagerController: _pageManagerController,
+                          additionalButtons: [
+                            HeaderButton(
+                              icon: _isEditingDashboardGrid
+                                  ? RemixIcon.check
+                                  : RemixIcon.pencil,
+                              onTap: _toggleDashboardGridEditMode,
+                            )
+                          ],
+                        ),
+                        bottomSpacing: (chaosBasePadding * 2) +
+                            _miniPlayerHeight +
+                            _bottomNavHeight,
                       ),
-                    ),
-                  ],
-                ),
 
                 //TODO: Note: App header used to be here
 
@@ -858,10 +984,11 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                       onControllerReady: (controller) {
                         _playerController = controller;
                       },
-                      onHeightChanged: (height) {
+                      onHeightChanged: (height, collapsedHeight) {
                         if (mounted) {
                           setState(() {
                             _miniPlayerHeight = height;
+                            _miniPlayerCollapsedHeight = collapsedHeight;
                             if (_playerController?.expansionProgress != null) {
                               _miniPlayerExpandProgress =
                                   _playerController!.expansionProgress;
@@ -902,6 +1029,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
   }
 
   double _miniPlayerHeight = 72.0;
+  double _miniPlayerCollapsedHeight = 72.0;
   double _miniPlayerExpandProgress = 0.0;
 
   Widget _buildQueueButton() {
@@ -940,12 +1068,10 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                       },
                     );
                   },
-                  child: Transform.rotate(
-                    angle: ChaosRotation.calculate(
-                      index: hashCode % 1000,
-                      style: ChaosRotationStyle.fibonacci,
-                      maxAngle: 0.15,
-                    ),
+                  child: ChaosRotatedStatefulWidget(
+                    index: hashCode % 1000,
+                    style: ChaosRotationStyle.fibonacci,
+                    maxAngle: getAnglePercentage(0.15, chaosUIState.chaosLevel),
                     child: Container(
                       width: 36,
                       height: 36,

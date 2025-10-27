@@ -1,4 +1,5 @@
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/chaos/settings/antiiq_settings.dart';
 import 'package:antiiq/chaos/page_manager.dart';
@@ -7,10 +8,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+class HeaderButton {
+  final IconData icon;
+  final void Function() onTap;
+
+  HeaderButton({required this.icon, required this.onTap});
+}
+
 class ChaosHeader extends StatelessWidget {
+  static const double height = 40.0;
+  static const double topPadding = 24.0;
+  static const double leftPadding = 24.0;
+  static const double rightPadding = 24.0;
+  final List<HeaderButton> additionalButtons;
   final ChaosPageManagerController pageManagerController;
-  const ChaosHeader({required this.pageManagerController, Key? key})
-      : super(key: key);
+  const ChaosHeader({
+    required this.pageManagerController,
+    this.additionalButtons = const [],
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +73,11 @@ class ChaosHeader extends StatelessWidget {
           children: [
             _buildHelpButton(context),
             const SizedBox(width: 12),
+            for (var button in additionalButtons)
+              Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: _buildHeaderButton(button.icon, context, button.onTap),
+              ),
             _buildHeaderButton(Icons.settings_outlined, context, () {
               pageManagerController.push(
                 const AntiiQSettings(),
@@ -70,9 +91,11 @@ class ChaosHeader extends StatelessWidget {
   }
 
   Widget _buildHelpButton(BuildContext context) {
-    final currentRadius = context.watch<ChaosUIState>().chaosRadius;
+    final chaosUIState = context.watch<ChaosUIState>();
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     return ChaosRotatedStatefulWidget(
-      maxAngle: 0.25,
+      maxAngle: getAnglePercentage(0.25, chaosLevel),
       child: InkWell(
         borderRadius: BorderRadius.circular(currentRadius),
         splashColor: AntiiQTheme.of(context).colorScheme.primary,
@@ -99,9 +122,11 @@ class ChaosHeader extends StatelessWidget {
 
   Widget _buildHeaderButton(
       IconData icon, BuildContext context, void Function() onTap) {
-    final currentRadius = context.watch<ChaosUIState>().chaosRadius;
+    final chaosUIState = context.watch<ChaosUIState>();
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     return ChaosRotatedStatefulWidget(
-      maxAngle: 0.25,
+      maxAngle: getAnglePercentage(0.25, chaosLevel),
       child: InkWell(
         borderRadius: BorderRadius.circular(currentRadius),
         splashColor: AntiiQTheme.of(context).colorScheme.primary,

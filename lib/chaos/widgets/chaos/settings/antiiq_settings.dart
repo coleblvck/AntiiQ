@@ -1,4 +1,5 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:antiiq/chaos/widgets/chaos/settings/about.dart';
@@ -118,8 +119,11 @@ class _SettingCardState extends State<_SettingCard> {
 
   @override
   Widget build(BuildContext context) {
-    final currentRadius = context.watch<ChaosUIState>().chaosRadius;
+    final chaosUIState = context.watch<ChaosUIState>();
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     return ChaosRotatedStatefulWidget(
+      maxAngle: getAnglePercentage(0.1, chaosLevel),
       child: GestureDetector(
         onTapDown: (_) => setState(() => _isPressed = true),
         onTapUp: (_) => setState(() => _isPressed = false),

@@ -3,6 +3,7 @@ import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/audio_setup.dart';
 import 'package:antiiq/player/state/music_state.dart';
 import 'package:antiiq/player/state/permissions_state.dart';
+import 'package:antiiq/player/state/version_updates.dart';
 import 'package:antiiq/player/utilities/file_handling/art_queries.dart';
 import 'package:antiiq/player/utilities/file_handling/intent_handling.dart';
 import 'package:antiiq/player/utilities/initialize.dart';
@@ -23,6 +24,7 @@ class AntiiqState extends ChangeNotifier {
   final Boxes _boxes;
   late bool dataIsInitialized;
   late Box store;
+  late VersionUpdates versionUpdates;
 
   AntiiqState._create({
     required this.audioSetup,
@@ -47,6 +49,8 @@ class AntiiqState extends ChangeNotifier {
     await permissions.checkAndRequest();
     await Hive.initFlutter();
     await _boxes.open(this);
+    final versionBox = await Hive.openBox('version_updates');
+    versionUpdates = VersionUpdates.init(versionBox);
     dataIsInitialized = await store.get("dataInit", defaultValue: false);
     await initializeUserSettings();
     antiiqDirectory = await getApplicationDocumentsDirectory();

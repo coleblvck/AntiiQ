@@ -63,6 +63,7 @@ dependencies:
     git:
       url: https://github.com/coleblvck/chaos_ui.git
       ref: main
+  on_audio_query: ^2.9.0
 
 #dependency_overrides:
 #  chaos_ui:

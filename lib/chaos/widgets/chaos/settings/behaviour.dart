@@ -1,5 +1,6 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
@@ -18,6 +19,8 @@ class Behaviour extends StatefulWidget {
 class _BehaviourState extends State<Behaviour> {
   @override
   Widget build(BuildContext context) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final coverArtTheme = chaosUIState.coverArtTheme;
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.all(chaosBasePadding),
@@ -40,6 +43,19 @@ class _BehaviourState extends State<Behaviour> {
             const SizedBox(height: chaosBasePadding),
             */
             _ToggleSetting(
+              label: 'COVER ART THEME',
+              description:
+                  'THEME APP ACCORDING TO CURRENTLY PLAYING TRACK\'S COVER ART',
+              value: coverArtTheme,
+              onChanged: (value) {
+                HapticFeedback.lightImpact();
+                setState(() {
+                  chaosUIState.setCoverArtTheme(value);
+                });
+              },
+            ),
+            const SizedBox(height: chaosBasePadding),
+            _ToggleSetting(
               label: 'PREVIOUS RESTARTS',
               description:
                   'Previous button restarts current track before going back',
@@ -54,7 +70,8 @@ class _BehaviourState extends State<Behaviour> {
             const SizedBox(height: chaosBasePadding),
             _ToggleSetting(
               label: 'INTERACTIVE SEEKBAR',
-              description: 'Enable seekbar interaction when Mini Player is collapsed',
+              description:
+                  'Enable seekbar interaction when Mini Player is collapsed',
               value: interactiveMiniPlayerSeekbar,
               onChanged: (value) {
                 HapticFeedback.lightImpact();
@@ -215,13 +232,17 @@ class _SettingContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     final outerRadius = chaosUIState.getAdjustedRadius(2);
     return ChaosRotatedStatefulWidget(
+      maxAngle: getAnglePercentage(0.1, chaosLevel),
       child: Container(
         padding: const EdgeInsets.all(chaosBasePadding * 2),
         decoration: BoxDecoration(
-          color:
-              AntiiQTheme.of(context).colorScheme.surface.withValues(alpha: 0.2),
+          color: AntiiQTheme.of(context)
+              .colorScheme
+              .surface
+              .withValues(alpha: 0.2),
           border: Border.all(
             color: AntiiQTheme.of(context)
                 .colorScheme

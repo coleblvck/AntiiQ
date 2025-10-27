@@ -9,6 +9,7 @@ import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/playlist_generator/playlist_generator.dart';
+import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +100,7 @@ class _TrackListItemState extends State<TrackListItem>
       child: Container(
         height: 72,
         margin: const EdgeInsets.only(bottom: chaosBasePadding),
-        child: Transform.rotate(
+        child: ChaosRotatedStatefulWidget(
           angle: widget.rotation * 0.2,
           child: _isGlitching
               ? AnimatedBuilder(
@@ -207,7 +208,7 @@ class _TrackListItemState extends State<TrackListItem>
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Transform.rotate(
+        ChaosRotatedStatefulWidget(
           angle: -widget.rotation * 0.15,
           child: TextScroll(
             widget.track.trackData!.trackName!,
@@ -223,7 +224,7 @@ class _TrackListItemState extends State<TrackListItem>
           ),
         ),
         const SizedBox(height: 4),
-        Transform.rotate(
+        ChaosRotatedStatefulWidget(
           angle: widget.rotation * 0.1,
           child: TextScroll(
             widget.track.trackData!.trackArtistNames ?? "Unknown Artist",
@@ -307,7 +308,7 @@ class _TrackListItemState extends State<TrackListItem>
   }
 
   Widget _buildSwipeIndicator() {
-    return Transform.rotate(
+    return ChaosRotatedStatefulWidget(
       angle: widget.rotation * 0.3,
       child: Icon(
         Icons.keyboard_arrow_left,

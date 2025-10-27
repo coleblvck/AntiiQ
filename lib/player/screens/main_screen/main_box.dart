@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:antiiq/chaos/antiiq_updates.dart';
+import 'package:antiiq/chaos/widgets/antiiq_update.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/main_screen/main_backdrop.dart';
 import 'package:antiiq/player/screens/main_screen/sliding_box.dart';
@@ -7,12 +9,14 @@ import 'package:antiiq/player/screens/now_playing/now_playing.dart';
 import 'package:antiiq/player/screens/queue/queue.dart';
 import 'package:antiiq/player/screens/settings/settings.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/state/version_updates.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/widgets/mini_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:remix_icon_icons/remix_icon_icons.dart';
 
 class MainBoxMetrics {
@@ -172,6 +176,7 @@ class _MainBoxState extends State<MainBox> {
       libraryLoadProgress = 0;
       loadingMessage = "Loading Library";
       Navigator.of(context).pop();
+      _showUpdateDialogIfNeeded();
     } else {
       return;
     }
@@ -179,6 +184,26 @@ class _MainBoxState extends State<MainBox> {
 
   stateSet() {
     setState(() {});
+  }
+
+
+  void _showUpdateDialogIfNeeded() async {
+    final versionUpdates = context.read<VersionUpdates>();
+    final currentVersion = antiiqUpdates[0].version;
+
+    if (versionUpdates.shouldShowUpdate(currentVersion)) {
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      if (mounted) {
+        await AntiiQUpdateDialogClassic.show(
+          context,
+          antiiqUpdates[0],
+          () {
+            versionUpdates.setLastSeenUpdateVersion(currentVersion);
+          },
+        );
+      }
+    }
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/track_details_sheet.dart';
 import 'package:antiiq/chaos/page_manager.dart';
@@ -224,7 +225,8 @@ class _ChaosQueueItemState extends State<ChaosQueueItem>
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
-    final outerRadius = chaosUIState.chaosRadius;
+    final currentRadius = chaosUIState.chaosRadius;
+    final chaosLevel = chaosUIState.chaosLevel;
     final innerRadius = chaosUIState.getAdjustedRadius(2);
 
     final rotation = ChaosRotation.calculate(
@@ -241,8 +243,8 @@ class _ChaosQueueItemState extends State<ChaosQueueItem>
           right: chaosBasePadding,
           bottom: chaosBasePadding,
         ),
-        child: Transform.rotate(
-          angle: rotation,
+        child: ChaosRotatedStatefulWidget(
+          angle: getAnglePercentage(rotation, chaosLevel),
           child: AnimatedBuilder(
             animation: _glitchController,
             builder: (context, child) {
@@ -266,10 +268,10 @@ class _ChaosQueueItemState extends State<ChaosQueueItem>
                           .withValues(alpha: 0.3),
                       width: 1,
                     ),
-                    borderRadius: BorderRadius.circular(outerRadius),
+                    borderRadius: BorderRadius.circular(currentRadius),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(outerRadius),
+                    borderRadius: BorderRadius.circular(currentRadius),
                     child: PageView(
                       controller: _pageController,
                       physics: const BouncingScrollPhysics(),

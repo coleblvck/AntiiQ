@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/utilities/open_collection.dart';
 import 'package:antiiq/chaos/widgets/chaos/tracklist_item.dart';
@@ -274,6 +275,8 @@ class _ChaosSearchState extends State<ChaosSearch> {
   }
 
   Widget _buildSearchResults(double radius, double innerRadius) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final chaosLevel = chaosUIState.chaosLevel;
     final hasResults = searchResults.isNotEmpty ||
         albumResults.isNotEmpty ||
         artistResults.isNotEmpty;
@@ -384,12 +387,10 @@ class _ChaosSearchState extends State<ChaosSearch> {
                 childAspectRatio: 0.75,
               ),
               delegate: SliverChildBuilderDelegate(
-                (context, index) => Transform.rotate(
-                    angle: ChaosRotation.calculate(
-                      index: index + 1,
-                      style: ChaosRotationStyle.fibonacci,
-                      maxAngle: 0.05,
-                    ),
+                (context, index) => ChaosRotatedStatefulWidget(
+                    index: index + 1,
+                    style: ChaosRotationStyle.fibonacci,
+                    maxAngle: getAnglePercentage(0.05, chaosLevel),
                     child: _AlbumGridItem(album: albumResults[index])),
                 childCount: albumResults.length,
               ),
@@ -445,12 +446,10 @@ class _ChaosSearchState extends State<ChaosSearch> {
             padding: const EdgeInsets.symmetric(horizontal: chaosBasePadding),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, index) => Transform.rotate(
-                    angle: ChaosRotation.calculate(
-                      index: index + 1,
-                      style: ChaosRotationStyle.fibonacci,
-                      maxAngle: 0.05,
-                    ),
+                (context, index) => ChaosRotatedStatefulWidget(
+                    index: index + 1,
+                    style: ChaosRotationStyle.fibonacci,
+                    maxAngle: getAnglePercentage(0.05, chaosLevel),
                     child: _ArtistListItem(artist: artistResults[index])),
                 childCount: artistResults.length,
               ),
@@ -511,7 +510,7 @@ class _ChaosSearchState extends State<ChaosSearch> {
                   final Track thisTrack = searchResults[index];
                   final rotation = ChaosRotation.calculate(
                     index: index + 1,
-                    maxAngle: 0.5,
+                    maxAngle: getAnglePercentage(0.5, chaosLevel),
                     style: ChaosRotationStyle.random,
                   );
                   return TrackListItem(
