@@ -74,9 +74,10 @@ class ChaosQueue extends StatelessWidget {
                     HapticFeedback.lightImpact();
                   },
                   itemCount: queue.length,
+                  itemExtent: 80,
                   itemBuilder: (context, index) {
                     return ChaosQueueItem(
-                      key: ValueKey(queue[index].id),
+                      key: ValueKey('chaos_queue_${queue[index].id}_$index'),
                       item: queue[index],
                       index: index,
                     );
@@ -235,56 +236,53 @@ class _ChaosQueueItemState extends State<ChaosQueueItem>
       maxAngle: 0.05,
     );
 
-    return ReorderableDelayedDragStartListener(
-      index: widget.index,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: chaosBasePadding,
-          right: chaosBasePadding,
-          bottom: chaosBasePadding,
-        ),
-        child: ChaosRotatedStatefulWidget(
-          angle: getAnglePercentage(rotation, chaosLevel),
-          child: AnimatedBuilder(
-            animation: _glitchController,
-            builder: (context, child) {
-              final random = math.Random(widget.index);
-              final glitchOffset = _isGlitching
-                  ? Offset(
-                      _glitchController.value * (random.nextDouble() * 3 - 1.5),
-                      _glitchController.value * (random.nextDouble() * 2 - 1),
-                    )
-                  : Offset.zero;
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: chaosBasePadding,
+        right: chaosBasePadding,
+        bottom: chaosBasePadding,
+      ),
+      child: ChaosRotatedStatefulWidget(
+        angle: getAnglePercentage(rotation, chaosLevel),
+        child: AnimatedBuilder(
+          animation: _glitchController,
+          builder: (context, child) {
+            final random = math.Random(widget.index);
+            final glitchOffset = _isGlitching
+                ? Offset(
+                    _glitchController.value * (random.nextDouble() * 3 - 1.5),
+                    _glitchController.value * (random.nextDouble() * 2 - 1),
+                  )
+                : Offset.zero;
 
-              return Transform.translate(
-                offset: glitchOffset,
-                child: Container(
-                  height: 72,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AntiiQTheme.of(context)
-                          .colorScheme
-                          .primary
-                          .withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(currentRadius),
+            return Transform.translate(
+              offset: glitchOffset,
+              child: Container(
+                height: 72,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: AntiiQTheme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.3),
+                    width: 1,
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(currentRadius),
-                    child: PageView(
-                      controller: _pageController,
-                      physics: const BouncingScrollPhysics(),
-                      children: [
-                        _buildMainCard(innerRadius),
-                        _buildActionsCard(innerRadius),
-                      ],
-                    ),
+                  borderRadius: BorderRadius.circular(currentRadius),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(currentRadius),
+                  child: PageView(
+                    controller: _pageController,
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      _buildMainCard(innerRadius),
+                      _buildActionsCard(innerRadius),
+                    ],
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -437,13 +435,21 @@ class _ChaosQueueItemState extends State<ChaosQueueItem>
               ),
             ),
             const SizedBox(width: 4),
-            Icon(
-              Icons.keyboard_arrow_left,
-              color: AntiiQTheme.of(context)
-                  .colorScheme
-                  .primary
-                  .withValues(alpha: 0.4),
-              size: 20,
+            ReorderableDragStartListener(
+              index: widget.index,
+              child: Container(
+                width: 28,
+                height: 28,
+                alignment: Alignment.center,
+                child: Icon(
+                  RemixIcon.drag_move_2,
+                  color: AntiiQTheme.of(context)
+                      .colorScheme
+                      .primary
+                      .withValues(alpha: 0.55),
+                  size: 16,
+                ),
+              ),
             ),
           ],
         ),

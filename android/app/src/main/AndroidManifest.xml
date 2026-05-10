@@ -5,16 +5,21 @@
     <!-- AUDIO SERVICE -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <!-- ON AUDIO QUERY -->
     <!-- Android 12 or below  -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29"/>
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"/>
 
     <!-- Android 13 or greater  -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <!-- <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/> -->
+    <!-- <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/> -->
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
 
     <!-- RECEIVE BOOT COMPLETED for widget -->
@@ -25,6 +30,16 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                tools:node="remove" />
+        </provider>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -47,6 +62,11 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="content"/>
                 <data android:scheme="file"/>
+                <data android:mimeType="audio/*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="audio/*"/>
             </intent-filter>
             <!-- Widget URI scheme handler -->
@@ -107,7 +127,7 @@
         <service android:name="com.ryanheise.audioservice.AudioService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true"
-            android:stopWithTask="true"
+            android:stopWithTask="false"
             tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />

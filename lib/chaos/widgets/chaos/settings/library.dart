@@ -63,6 +63,8 @@ class _LibraryState extends State<Library> {
   fullRescan() async {
     antiiqState.dataIsInitialized = false;
     await antiiqState.store.put("dataInit", false);
+    await antiiqState.store.delete(MainBoxKeys.libraryMetadataCache);
+    await antiiqState.store.delete(MainBoxKeys.libraryCacheSignature);
     Restart.restartApp();
   }
 
@@ -119,18 +121,30 @@ class _LibraryState extends State<Library> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'MIN TRACK LENGTH',
-                        style: TextStyle(
-                          color: AntiiQTheme.of(context)
-                              .colorScheme
-                              .onBackground
-                              .withValues(alpha: 0.6),
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 2,
+                      Expanded(
+                        child: Text(
+                          'MIN TRACK LENGTH',
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context)
+                                .colorScheme
+                                .onBackground
+                                .withValues(alpha: 0.6),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 2,
+                          ),
                         ),
                       ),
+                      _MiniToggle(
+                        value: minimumTrackLengthEnabled,
+                        onChanged: (value) {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            setMinimumTrackLengthEnabled(value);
+                          });
+                        },
+                      ),
+                      const SizedBox(width: chaosBasePadding),
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: chaosBasePadding,
@@ -737,6 +751,64 @@ class _DirectoryCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _MiniToggle extends StatelessWidget {
+  const _MiniToggle({
+    required this.value,
+    required this.onChanged,
+  });
+
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final innerRadius = context.watch<ChaosUIState>().getAdjustedRadius(4);
+    return GestureDetector(
+      onTap: () => onChanged(!value),
+      child: Container(
+        width: 48,
+        height: 24,
+        decoration: BoxDecoration(
+          color: value
+              ? AntiiQTheme.of(context).colorScheme.primary
+              : AntiiQTheme.of(context).colorScheme.surface,
+          border: Border.all(
+            color: AntiiQTheme.of(context)
+                .colorScheme
+                .onBackground
+                .withValues(alpha: 0.3),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(innerRadius),
+        ),
+        child: Stack(
+          children: [
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOutQuart,
+              left: value ? 26 : 2,
+              top: 2,
+              child: Container(
+                width: 18,
+                height: 18,
+                decoration: BoxDecoration(
+                  color: value
+                      ? AntiiQTheme.of(context).colorScheme.onPrimary
+                      : AntiiQTheme.of(context)
+                          .colorScheme
+                          .onBackground
+                          .withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(innerRadius - 2),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

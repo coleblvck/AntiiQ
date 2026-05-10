@@ -37,8 +37,9 @@ class _MainBoxState extends State<MainBox> {
   final AntiiQBoxController boxController = AntiiQBoxController();
   final TextEditingController textEditingController = TextEditingController();
 
-  late Timer libraryLoadTimer;
+  Timer? libraryLoadTimer;
   DateTime? currentBackPressTime;
+  bool _isLibraryLoading = false;
   @override
   void initState() {
     super.initState();
@@ -107,85 +108,90 @@ class _MainBoxState extends State<MainBox> {
   }
 
   initData() async {
-    showDialog(
-      useSafeArea: true,
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(builder: (context, setState) {
-          int loadProgress = libraryLoadProgress;
-          int loadTotal = libraryLoadTotal;
-          String message = loadingMessage;
-          libraryLoadTimer =
-              Timer.periodic(const Duration(seconds: 1), (timer) {
-            if (context.mounted) {
-              setState(() {});
-            }
-          });
-          return PopScope(
-            canPop: false,
-            child: Dialog(
-              backgroundColor: AntiiQTheme.of(context).colorScheme.background,
-              surfaceTintColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(generalRadius),
-              ),
-              elevation: 5,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      message,
-                      style:
-                          AntiiQTheme.of(context).textStyles.onBackgroundText,
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: CustomProgressIndicator(
-                        progress: loadProgress / loadTotal,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Text(
-                      "Processing Files $loadProgress of $loadTotal",
-                      style:
-                          AntiiQTheme.of(context).textStyles.onBackgroundText,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-      },
-    );
+    if (mounted) {
+      setState(() => _isLibraryLoading = true);
+    }
+    libraryLoadTimer ??=
+        Timer.periodic(const Duration(milliseconds: 300), (timer) {
+      if (mounted) setState(() {});
+    });
     await antiiqState.libraryInit();
 
-    libraryLoadTimer.cancel();
+    libraryLoadTimer?.cancel();
+    libraryLoadTimer = null;
 
     if (mounted) {
       stateSet();
       libraryLoadTotal = 1;
       libraryLoadProgress = 0;
       loadingMessage = "Loading Library";
-      Navigator.of(context).pop();
+      _isLibraryLoading = false;
       _showUpdateDialogIfNeeded();
     } else {
       return;
     }
   }
 
+  Widget _buildLibraryStatusBar() {
+    if (!_isLibraryLoading) return const SizedBox.shrink();
+    final loadProgress = libraryLoadProgress;
+    final loadTotal = libraryLoadTotal;
+    final hasKnownTotal = loadTotal > 0;
+    final progressValue =
+        hasKnownTotal ? (loadProgress / loadTotal).clamp(0.0, 1.0) : 0.0;
+    final progressText = hasKnownTotal
+        ? "$loadProgress / $loadTotal"
+        : loadProgress > 0
+            ? "$loadProgress found"
+            : "Scanning";
+
+    return Positioned(
+      top: 8,
+      left: 12,
+      right: 12,
+      child: IgnorePointer(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: AntiiQTheme.of(context)
+                .colorScheme
+                .background
+                .withValues(alpha: 0.9),
+            borderRadius: BorderRadius.circular(generalRadius),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      loadingMessage,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          AntiiQTheme.of(context).textStyles.onBackgroundText,
+                    ),
+                  ),
+                  Text(
+                    progressText,
+                    style: AntiiQTheme.of(context).textStyles.onBackgroundText,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              CustomProgressIndicator(
+                progress: hasKnownTotal ? progressValue : 0,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   stateSet() {
     setState(() {});
   }
-
 
   void _showUpdateDialogIfNeeded() async {
     final versionUpdates = context.read<VersionUpdates>();
@@ -297,29 +303,34 @@ class _MainBoxState extends State<MainBox> {
                     )
                   ],
                 ),
-                body: AntiiQSlidingBox(
-                  draggable: true,
-                  controller: boxController,
-                  minHeight: MainBoxMetrics.minHeightBox,
-                  maxHeight: maxHeightBox,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(generalRadius),
-                    topRight: Radius.circular(generalRadius),
-                  ),
-                  draggableIconColor:
-                      AntiiQTheme.of(context).colorScheme.onSurface,
-                  color: AntiiQTheme.of(context).colorScheme.surface,
-                  backdrop: !antiiqState.permissions.has
-                      ? noAccessToLibraryWidget()
-                      : const MainBackdrop(),
-                  onBoxOpen: () {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  body: NowPlaying(
-                    pageHeight: maxHeightBox,
-                    boxController: boxController,
-                  ),
-                  collapsedBody: MiniPlayer(boxController: boxController),
+                body: Stack(
+                  children: [
+                    AntiiQSlidingBox(
+                      draggable: true,
+                      controller: boxController,
+                      minHeight: MainBoxMetrics.minHeightBox,
+                      maxHeight: maxHeightBox,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(generalRadius),
+                        topRight: Radius.circular(generalRadius),
+                      ),
+                      draggableIconColor:
+                          AntiiQTheme.of(context).colorScheme.onSurface,
+                      color: AntiiQTheme.of(context).colorScheme.surface,
+                      backdrop: !antiiqState.permissions.has
+                          ? noAccessToLibraryWidget()
+                          : const MainBackdrop(),
+                      onBoxOpen: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
+                      body: NowPlaying(
+                        pageHeight: maxHeightBox,
+                        boxController: boxController,
+                      ),
+                      collapsedBody: MiniPlayer(boxController: boxController),
+                    ),
+                    _buildLibraryStatusBar(),
+                  ],
                 ),
                 bottomNavigationBar: BottomAppBar(
                   padding: EdgeInsets.zero,

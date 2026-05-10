@@ -8,6 +8,7 @@ import 'package:antiiq/player/state/music_state.dart';
 import 'package:antiiq/player/utilities/file_handling/art_queries.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
+import 'package:antiiq/player/utilities/settings/user_settings.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:collection';
@@ -63,14 +64,7 @@ class AntiiQLibraryFetcher {
           try {
             Uint8List? artBytes;
 
-            if (song.mediaStoreAlbumId != null) {
-              artBytes = await AudioMetadataBridge.getMediaStoreArtwork(
-                song.mediaStoreAlbumId!,
-                quality: 90,
-              );
-            }
-
-            artBytes ??= await AudioMetadataBridge.extractArtwork(
+            artBytes = await AudioMetadataBridge.extractArtwork(
                   song.path,
                   quality: 90,
                 ) ??
@@ -94,14 +88,7 @@ class AntiiQLibraryFetcher {
             try {
               Uint8List? artBytes;
 
-              if (song.mediaStoreAlbumId != null) {
-                artBytes = await AudioMetadataBridge.getMediaStoreArtwork(
-                  song.mediaStoreAlbumId!,
-                  quality: 90,
-                );
-              }
-
-              artBytes ??= await AudioMetadataBridge.extractArtwork(
+              artBytes = await AudioMetadataBridge.extractArtwork(
                     song.path,
                     quality: 90,
                   ) ??
@@ -160,6 +147,7 @@ class AntiiQLibraryFetcher {
   }
 
   bool _isValidSong(AudioMetadata song) {
+    if (!minimumTrackLengthEnabled) return true;
     final Duration duration = Duration(milliseconds: song.duration);
     return duration != Duration.zero &&
         duration >= Duration(seconds: minimumTrackLength);
@@ -273,71 +261,183 @@ class AntiiQLibraryFetcher {
   }
 
   Future<List<AudioMetadata>> _getAllSongs() async {
-    final List<AudioMetadata> totalLibrary = [];
+    final cachedLibrary = await _loadCachedLibrary();
+    if (cachedLibrary != null) {
+      return cachedLibrary;
+    }
 
-    if (specificPathsToQuery.isNotEmpty) {
-      debugPrint(
-          'Scanning ${specificPathsToQuery.length} specific paths using MediaStore');
-      try {
-        final List<AudioMetadata> songsInPaths =
-            await AudioMetadataBridge.getAudioFilesWithMetadataFromPaths(
-          specificPathsToQuery,
-        );
-        debugPrint(
-            'MediaStore found ${songsInPaths.length} files in specific paths');
-        totalLibrary.addAll(songsInPaths);
-      } catch (e) {
-        debugPrint('MediaStore path query failed: $e');
-        debugPrint('Falling back to directory scanning...');
+    final Map<String, AudioMetadata> metadataByPath = {
+      for (final item in await _loadPartialCachedLibrary()) item.path: item,
+    };
+    AudioMetadataBridge.setProgressListener((progress) {
+      loadingMessage = progress.message;
+      libraryLoadProgress = progress.progress;
+      libraryLoadTotal = progress.total;
+    });
+    AudioMetadataBridge.setMetadataBatchListener((batch) async {
+      for (final item in batch) {
+        metadataByPath[item.path] = item;
+      }
+      await _saveCachedLibrary(metadataByPath.values.toList());
+    });
 
+    try {
+      if (specificPathsToQuery.isNotEmpty) {
+        loadingMessage = "Scanning Selected Folders";
+        libraryLoadProgress = 0;
+        libraryLoadTotal = 0;
+        debugPrint('Scanning ${specificPathsToQuery.length} selected paths');
         for (String path in specificPathsToQuery) {
-          debugPrint('Scanning specific path: $path');
+          debugPrint('Scanning selected path: $path');
           try {
             final List<AudioMetadata> songsInPath =
                 await AudioMetadataBridge.scanDirectoryWithMetadata(
               path,
               recursive: true,
+              knownPaths: metadataByPath.keys.toList(),
             );
-            debugPrint('Found ${songsInPath.length} files in $path');
-            totalLibrary.addAll(songsInPath);
+            debugPrint('Found ${songsInPath.length} audio files in $path');
+            for (final item in songsInPath) {
+              metadataByPath[item.path] = item;
+            }
           } catch (e) {
             debugPrint('Error scanning directory $path: $e');
+          }
+        }
+      } else {
+        loadingMessage = "Scanning Storage";
+        libraryLoadProgress = 0;
+        libraryLoadTotal = 0;
+        debugPrint('Scanning storage with native metadata reader...');
+        try {
+          final List<AudioMetadata> allAudio =
+              await AudioMetadataBridge.scanAllStorageWithMetadata(
+            knownPaths: metadataByPath.keys.toList(),
+          );
+          debugPrint('Native scan found ${allAudio.length} audio files');
+          for (final item in allAudio) {
+            metadataByPath[item.path] = item;
+          }
+        } catch (e) {
+          debugPrint('Native storage scan failed: $e');
+          debugPrint('Falling back to Dart directory scanning...');
+
+          final List<String> allPaths = await _getAllStoragePaths();
+          debugPrint('Scanning ${allPaths.length} storage locations');
+
+          for (String path in allPaths) {
+            debugPrint('Scanning: $path');
+            try {
+              final List<AudioMetadata> songsInPath =
+                  await AudioMetadataBridge.scanDirectoryWithMetadata(
+                path,
+                recursive: true,
+                knownPaths: metadataByPath.keys.toList(),
+              );
+              debugPrint('Found ${songsInPath.length} audio files in $path');
+              for (final item in songsInPath) {
+                metadataByPath[item.path] = item;
+              }
+            } catch (e) {
+              debugPrint('Error scanning directory $path: $e');
+            }
           }
         }
       }
-    } else {
-      debugPrint('Using MediaStore to get all audio files with metadata...');
-      try {
-        final List<AudioMetadata> allAudio =
-            await AudioMetadataBridge.getAllAudioFilesWithMetadata();
-        debugPrint('MediaStore found ${allAudio.length} audio files');
-        totalLibrary.addAll(allAudio);
-      } catch (e) {
-        debugPrint('MediaStore query failed: $e');
-        debugPrint('Falling back to directory scanning...');
+    } finally {
+      AudioMetadataBridge.setProgressListener(null);
+      AudioMetadataBridge.setMetadataBatchListener(null);
+    }
 
-        final List<String> allPaths = await _getAllStoragePaths();
-        debugPrint('Scanning ${allPaths.length} storage locations');
+    final totalLibrary = metadataByPath.values.toList();
+    debugPrint('Total songs found: ${totalLibrary.length}');
+    await _saveCachedLibrary(totalLibrary);
+    return totalLibrary;
+  }
 
-        for (String path in allPaths) {
-          debugPrint('Scanning: $path');
-          try {
-            final List<AudioMetadata> songsInPath =
-                await AudioMetadataBridge.scanDirectoryWithMetadata(
-              path,
-              recursive: true,
-            );
-            debugPrint('Found ${songsInPath.length} audio files in $path');
-            totalLibrary.addAll(songsInPath);
-          } catch (e) {
-            debugPrint('Error scanning directory $path: $e');
-          }
-        }
+  Future<List<AudioMetadata>?> _loadCachedLibrary() async {
+    if (!antiiqState.dataIsInitialized) return null;
+
+    final signature = await antiiqState.store.get(
+      MainBoxKeys.libraryCacheSignature,
+      defaultValue: '',
+    );
+    if (signature != _libraryCacheSignature()) return null;
+
+    final cached = await antiiqState.store.get(
+      MainBoxKeys.libraryMetadataCache,
+      defaultValue: <dynamic>[],
+    );
+    if (cached is! List || cached.isEmpty) return null;
+
+    loadingMessage = "Loading Cached Library";
+    libraryLoadTotal = cached.length;
+    libraryLoadProgress = 0;
+
+    final songs = <AudioMetadata>[];
+    for (int i = 0; i < cached.length; i++) {
+      libraryLoadProgress = i + 1;
+      final item = cached[i];
+      if (item is! Map) continue;
+      final metadata = AudioMetadata.fromMap(Map<String, dynamic>.from(item));
+      if (File(metadata.path).existsSync()) {
+        songs.add(metadata);
       }
     }
 
-    debugPrint('Total songs found: ${totalLibrary.length}');
-    return totalLibrary;
+    if (songs.length != cached.length) {
+      await _saveCachedLibrary(songs);
+    }
+
+    debugPrint('Loaded ${songs.length} songs from native metadata cache');
+    return songs;
+  }
+
+  Future<List<AudioMetadata>> _loadPartialCachedLibrary() async {
+    final signature = await antiiqState.store.get(
+      MainBoxKeys.libraryCacheSignature,
+      defaultValue: '',
+    );
+    if (signature != _libraryCacheSignature()) return [];
+
+    final cached = await antiiqState.store.get(
+      MainBoxKeys.libraryMetadataCache,
+      defaultValue: <dynamic>[],
+    );
+    if (cached is! List || cached.isEmpty) return [];
+
+    final songs = <AudioMetadata>[];
+    for (final item in cached) {
+      if (item is! Map) continue;
+      final metadata = AudioMetadata.fromMap(Map<String, dynamic>.from(item));
+      if (File(metadata.path).existsSync()) {
+        songs.add(metadata);
+      }
+    }
+
+    if (songs.isNotEmpty) {
+      loadingMessage = "Resuming Library Scan";
+      libraryLoadProgress = songs.length;
+      libraryLoadTotal = 0;
+      debugPrint('Resuming scan with ${songs.length} cached metadata entries');
+    }
+    return songs;
+  }
+
+  Future<void> _saveCachedLibrary(List<AudioMetadata> songs) async {
+    await antiiqState.store.put(
+      MainBoxKeys.libraryMetadataCache,
+      songs.map((song) => song.toMap()).toList(),
+    );
+    await antiiqState.store.put(
+      MainBoxKeys.libraryCacheSignature,
+      _libraryCacheSignature(),
+    );
+  }
+
+  String _libraryCacheSignature() {
+    final paths = List<String>.from(specificPathsToQuery)..sort();
+    return 'native-metadata-v2|paths=${paths.join('|')}';
   }
 
   Future<List<String>> _getAllStoragePaths() async {
@@ -435,16 +535,25 @@ class CustomLibrarySongUtil {
   }
 
   int _generateTrackId(AudioMetadata metadata) {
-    return metadata.path.hashCode.abs();
+    return _stablePositiveId(metadata.path);
   }
 
   int _generateAlbumId(AudioMetadata metadata) {
     final String albumKey = '${metadata.album}_${metadata.albumArtist}';
-    return albumKey.hashCode.abs();
+    return _stablePositiveId(albumKey);
   }
 
   int _generateArtistId(AudioMetadata metadata) {
-    return metadata.artist.hashCode.abs();
+    return _stablePositiveId(metadata.artist);
+  }
+
+  int _stablePositiveId(String value) {
+    var hash = 0x811c9dc5;
+    for (final unit in value.codeUnits) {
+      hash ^= unit;
+      hash = (hash * 0x01000193) & 0x7fffffff;
+    }
+    return hash == 0 ? 1 : hash;
   }
 
   MediaItem _createMediaItem(AudioMetadata metadata, Uri? artUri, int trackId) {

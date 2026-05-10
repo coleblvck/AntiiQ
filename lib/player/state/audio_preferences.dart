@@ -1,9 +1,9 @@
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/audio_handler.dart';
+import 'package:antiiq/player/utilities/native_audio_player.dart';
 import 'package:antiiq/player/utilities/playlist_generator/playlist_generator.dart';
 import 'package:antiiq/player/utilities/settings/user_settings.dart';
 import 'package:audio_service/audio_service.dart';
-import 'package:just_audio/just_audio.dart';
 
 class AudioPreferences {
   late AntiiqAudioHandler _audioHandler;
@@ -11,6 +11,8 @@ class AudioPreferences {
     _audioHandler = audioHandler;
     await _getEqualizerEnabled();
     await _getBandFrequencies();
+    await _getGaplessEnabled();
+    await _getCrossfadeSettings();
     await _getAndSetLoopMode();
     await _getAndSetShuffleMode();
     await _getEndlessPlayEnabled();
@@ -44,38 +46,108 @@ class AudioPreferences {
   }
 
   setEqualizerEnabled(bool value) async {
-    _audioHandler.equalizer.setEnabled(value);
+    await _audioHandler.audioPlayer.setEffectsEnabled(value);
     await antiiqState.store.put(MainBoxKeys.eqEnabledStorage, value);
   }
 
   _getEqualizerEnabled() async {
     final bool enabled = await antiiqState.store
         .get(MainBoxKeys.eqEnabledStorage, defaultValue: false);
-    _audioHandler.equalizer.setEnabled(enabled);
+    await _audioHandler.audioPlayer.setEffectsEnabled(enabled);
   }
 
   saveBandFrequencies() async {
-    final params = await _audioHandler.equalizer.parameters;
-    List<double> frequencies = params.bands.map((e) => e.gain).toList();
-    await antiiqState.store.put(MainBoxKeys.bandFrequencyStorage, frequencies);
+    await antiiqState.store.put(MainBoxKeys.bandFrequencyStorage, bandGains);
   }
 
-  List bandFrequencies = [];
+  static const List<double> defaultBandFrequencies = [
+    31,
+    45,
+    63,
+    90,
+    125,
+    180,
+    250,
+    355,
+    500,
+    710,
+    1000,
+    1400,
+    2000,
+    4000,
+    8000,
+  ];
+
+  List<double> bandGains = List<double>.filled(15, 0.0);
 
   _getBandFrequencies() async {
-    bandFrequencies = await antiiqState.store
+    final stored = await antiiqState.store
         .get(MainBoxKeys.bandFrequencyStorage, defaultValue: []);
+    if (stored is List && stored.isNotEmpty) {
+      bandGains = stored
+          .take(15)
+          .map((value) => (value as num).toDouble())
+          .toList();
+      while (bandGains.length < 15) {
+        bandGains.add(0.0);
+      }
+    }
   }
 
   setBands() async {
-    final params = await _audioHandler.equalizer.parameters;
-    List<AndroidEqualizerBand> bands = params.bands;
-    if (bandFrequencies.isNotEmpty) {
-      for (var band in bands) {
-        band.setGain(bandFrequencies[bands.indexOf(band)]);
-      }
-    }
+    await _audioHandler.audioPlayer.setParametricEqBands(_nativeBands);
     bandsSet = true;
+  }
+
+  Future<void> updateBandGain(int index, double gainDb) async {
+    if (index < 0 || index >= bandGains.length) return;
+    bandGains[index] = gainDb.clamp(-12.0, 12.0);
+    await setBands();
+    await saveBandFrequencies();
+  }
+
+  List<NativeEqBand> get _nativeBands {
+    return [
+      for (int i = 0; i < defaultBandFrequencies.length; i++)
+        NativeEqBand(
+          frequency: defaultBandFrequencies[i],
+          gainDb: bandGains[i],
+          q: 1.0,
+        ),
+    ];
+  }
+
+  Future<void> setGaplessEnabled(bool value) async {
+    await _audioHandler.audioPlayer.setGaplessEnabled(value);
+    await antiiqState.store.put(MainBoxKeys.gaplessEnabled, value);
+  }
+
+  Future<void> _getGaplessEnabled() async {
+    final enabled =
+        await antiiqState.store.get(MainBoxKeys.gaplessEnabled, defaultValue: true);
+    await _audioHandler.audioPlayer.setGaplessEnabled(enabled);
+  }
+
+  Future<void> setCrossfadeEnabled(bool value) async {
+    await _audioHandler.audioPlayer.setCrossfadeEnabled(value);
+    await antiiqState.store.put(MainBoxKeys.crossfadeEnabled, value);
+  }
+
+  Future<void> setCrossfadeDuration(int milliseconds) async {
+    final duration = milliseconds.clamp(0, 5000);
+    await _audioHandler.audioPlayer
+        .setCrossfadeDuration(Duration(milliseconds: duration));
+    await antiiqState.store.put(MainBoxKeys.crossfadeDurationMs, duration);
+  }
+
+  Future<void> _getCrossfadeSettings() async {
+    final enabled = await antiiqState.store
+        .get(MainBoxKeys.crossfadeEnabled, defaultValue: false);
+    final duration = await antiiqState.store
+        .get(MainBoxKeys.crossfadeDurationMs, defaultValue: 1000);
+    await _audioHandler.audioPlayer.setCrossfadeEnabled(enabled);
+    await _audioHandler.audioPlayer
+        .setCrossfadeDuration(Duration(milliseconds: duration));
   }
 
   bool bandsSet = false;

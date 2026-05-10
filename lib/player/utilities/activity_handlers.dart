@@ -1,6 +1,5 @@
 //Audio Service
 import 'dart:io';
-import 'dart:typed_data';
 
 //Antiiq Packages
 import 'package:antiiq/player/global_variables.dart';
@@ -83,37 +82,54 @@ shuffleTracks(List<Track> list) async {
 
 playFromIntentLink(String link) async {
   try {
-    // Use AudioMetadataBridge for content URIs
-    final AudioMetadata metadata =
-        await AudioMetadataBridge.getMetadataFromContentUri(link);
+    final prepared = await AudioMetadataBridge.prepareIntentAudio(link);
+    AudioMetadata? metadata;
+    try {
+      metadata = await AudioMetadataBridge.getMetadata(prepared.path);
+    } catch (error) {
+      debugPrint("Intent metadata fallback: $error");
+    }
 
-    // Try to get artwork
-    Uint8List? artBytes =
-        await AudioMetadataBridge.extractArtworkFromContentUri(link,
-            quality: 90);
+    Uint8List? artBytes;
+    try {
+      artBytes = await AudioMetadataBridge.extractArtwork(
+        prepared.path,
+        quality: 90,
+      );
+    } catch (error) {
+      debugPrint("Intent artwork fallback: $error");
+    }
     Uri artUri = defaultArtUri;
 
     if (artBytes != null) {
-      // Save temp artwork
       final tempArtPath = "${antiiqDirectory.path}/coverarts/temp_intent.jpeg";
       File artFile = await File(tempArtPath).create(recursive: true);
       await artFile.writeAsBytes(artBytes, mode: FileMode.write);
       artUri = Uri.file(tempArtPath);
     }
 
+    final fallbackTitle =
+        prepared.displayName?.replaceFirst(RegExp(r'\.[^.]+$'), '').trim() ??
+            "Intent Audio";
+    final displayTitle =
+        (metadata == null || metadata.title == "Unknown Title") &&
+                fallbackTitle.isNotEmpty
+            ? fallbackTitle
+            : metadata?.title ?? fallbackTitle;
+
     final songItem = MediaItem(
-      id: link,
-      title: metadata.title,
-      artist: metadata.artist,
-      album: metadata.album,
+      id: prepared.path,
+      title: displayTitle,
+      artist: metadata?.artist ?? "Unknown Artist",
+      album: metadata?.album ?? "Unknown Album",
       artUri: artUri,
-      duration: Duration(milliseconds: metadata.duration),
+      duration: Duration(milliseconds: metadata?.duration ?? 0),
       extras: {
         "id": "no-id",
       },
     );
 
-    playOnlyThis(songItem);
+    await playOnlyThis(songItem);
   } catch (e) {
     debugPrint("Error playing from intent: $e");
   }

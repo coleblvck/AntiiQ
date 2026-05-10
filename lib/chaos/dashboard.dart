@@ -63,8 +63,9 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
   BottomNavigationController? _navController;
   double _bottomNavHeight = 100.0;
 
-  late Timer libraryLoadTimer;
+  Timer? libraryLoadTimer;
   DateTime? currentBackPressTime;
+  bool _isLibraryLoading = false;
 
   @override
   void initState() {
@@ -120,133 +121,118 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
   }
 
   initData() async {
-    showDialog(
-      useSafeArea: true,
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        final chaosUIState = context.read<ChaosUIState>();
-        final currentRadius = chaosUIState.chaosRadius;
-        final innerRadius = chaosUIState.getAdjustedRadius(4);
-        return StatefulBuilder(builder: (context, setState) {
-          int loadProgress = libraryLoadProgress;
-          int loadTotal = libraryLoadTotal;
-          String message = loadingMessage;
-          libraryLoadTimer =
-              Timer.periodic(const Duration(seconds: 1), (timer) {
-            if (context.mounted) {
-              setState(() {});
-            }
-          });
-          return PopScope(
-            canPop: false,
-            child: Dialog(
-              backgroundColor: AntiiQTheme.of(context).colorScheme.background,
-              surfaceTintColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(currentRadius),
-                side: BorderSide(
-                  color: AntiiQTheme.of(context).colorScheme.primary,
-                  width: 2,
-                ),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(chaosBasePadding * 3),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      message.toUpperCase(),
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.primary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 3,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    Container(
-                      height: 24,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AntiiQTheme.of(context)
-                              .colorScheme
-                              .primary
-                              .withValues(alpha: 0.4),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(innerRadius),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(innerRadius),
-                        child: Stack(
-                          children: [
-                            Container(
-                              color: AntiiQTheme.of(context)
-                                  .colorScheme
-                                  .surface
-                                  .withValues(alpha: 0.2),
-                            ),
-                            FractionallySizedBox(
-                              widthFactor: loadProgress / loadTotal,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: AntiiQTheme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withValues(alpha: 0.5),
-                                  border: Border(
-                                    right: BorderSide(
-                                      color: AntiiQTheme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "PROCESSING FILES $loadProgress OF $loadTotal",
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context)
-                            .colorScheme
-                            .onBackground
-                            .withValues(alpha: 0.7),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 2,
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-      },
-    );
+    if (mounted) {
+      setState(() => _isLibraryLoading = true);
+    }
+    libraryLoadTimer ??=
+        Timer.periodic(const Duration(milliseconds: 300), (timer) {
+      if (mounted) setState(() {});
+    });
     await antiiqState.libraryInit();
 
-    libraryLoadTimer.cancel();
+    libraryLoadTimer?.cancel();
+    libraryLoadTimer = null;
 
     if (mounted) {
       stateSet();
       libraryLoadTotal = 1;
       libraryLoadProgress = 0;
       loadingMessage = "Loading Library";
-      Navigator.of(context).pop();
+      _isLibraryLoading = false;
       _showUpdateDialogIfNeeded();
     } else {
       return;
     }
+  }
+
+  Widget _buildLibraryStatusBar() {
+    if (!_isLibraryLoading) return const SizedBox.shrink();
+    final chaosUIState = context.watch<ChaosUIState>();
+    final loadProgress = libraryLoadProgress;
+    final loadTotal = libraryLoadTotal;
+    final hasKnownTotal = loadTotal > 0;
+    final progressValue =
+        hasKnownTotal ? (loadProgress / loadTotal).clamp(0.0, 1.0) : 0.0;
+    final progressText = hasKnownTotal
+        ? "$loadProgress / $loadTotal"
+        : loadProgress > 0
+            ? "$loadProgress FOUND"
+            : "SCANNING";
+    final innerRadius = chaosUIState.getAdjustedRadius(3);
+
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + chaosBasePadding,
+      left: chaosBasePadding,
+      right: chaosBasePadding,
+      child: IgnorePointer(
+        child: ChaosRotatedStatefulWidget(
+          maxAngle: getAnglePercentage(0.06, chaosUIState.chaosLevel),
+          child: Container(
+            padding: const EdgeInsets.all(chaosBasePadding),
+            decoration: BoxDecoration(
+              color: AntiiQTheme.of(context)
+                  .colorScheme
+                  .background
+                  .withValues(alpha: 0.86),
+              border: Border.all(
+                color: AntiiQTheme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.45),
+              ),
+              borderRadius: BorderRadius.circular(innerRadius),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        loadingMessage.toUpperCase(),
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: AntiiQTheme.of(context).colorScheme.primary,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      progressText,
+                      style: TextStyle(
+                        color: AntiiQTheme.of(context)
+                            .colorScheme
+                            .onBackground
+                            .withValues(alpha: 0.68),
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.4,
+                        fontFamily: 'monospace',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(innerRadius),
+                  child: LinearProgressIndicator(
+                    minHeight: 4,
+                    value: hasKnownTotal ? progressValue : null,
+                    backgroundColor: AntiiQTheme.of(context)
+                        .colorScheme
+                        .surface
+                        .withValues(alpha: 0.3),
+                    color: AntiiQTheme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   stateSet() {
@@ -939,6 +925,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                     });
                   },
                 ),
+                _buildLibraryStatusBar(),
               ],
             ),
           ],

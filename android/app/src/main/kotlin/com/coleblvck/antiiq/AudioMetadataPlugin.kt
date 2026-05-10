@@ -4,8 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
-import android.net.Uri
-import android.provider.MediaStore
+import android.provider.OpenableColumns
+import android.os.Handler
+import android.os.Environment
+import android.os.Looper
+import android.util.Log
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -15,27 +18,84 @@ import io.flutter.plugin.common.MethodChannel.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 import androidx.core.net.toUri
 
 class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var channel: MethodChannel
     private lateinit var context: Context
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val mainHandler = Handler(Looper.getMainLooper())
+
+    private external fun extractNativeMetadata(path: String): Map<String, Any?>?
+    private external fun extractNativeArtwork(path: String): ByteArray?
 
     companion object {
         private const val CHANNEL_NAME = "com.coleblvck.antiiq/audio_metadata"
         private val AUDIO_EXTENSIONS = setOf(
-            "mp3", "m4a", "aac", "ogg", "oga", "opus",
-            "flac", "wav", "wma", "wv", "ape", "mka"
+            "mp3", "mp2", "mp1", "m4a", "aac", "flac", "alac", "ape",
+            "wv", "tta", "tak", "ogg", "oga", "opus", "spx", "wav",
+            "aiff", "aif", "aifc", "wma", "mpc", "mp+", "mpp"
         )
         private val VIDEO_EXTENSIONS = setOf(
-            "mp4", "3gp", "mkv", "avi", "mov", "wmv", "flv", "webm"
+            "mka", "webm", "mp4", "mkv", "avi", "mov", "flv"
         )
+    private val SYSTEM_EXCLUDED_PATHS = setOf(
+        ".thumbnails",
+        ".cache",
+        ".trash",
+        "android/data",
+        "android/obb",
+        ".recycle_bin",
+        ".android_secure",
+        "lost.dir",
+        "notifications",
+        "ringtones",
+        "alarms",
+        "podcasts",
+        "recordings",
+        "voice recorder",
+        "voice recordings",
+        "call recordings",
+        "whatsapp/Media/WhatsApp Voice Notes".lowercase(),
+        "whatsapp business/Media/WhatsApp Business Voice Notes".lowercase(),
+        "telegram/telegram audio"
+    )
+
+        @Volatile
+        private var nativeLibrariesLoaded = false
+
+        private fun ensureNativeLibrariesLoaded() {
+            if (nativeLibrariesLoaded) return
+            synchronized(this) {
+                if (nativeLibrariesLoaded) return
+                loadNativeLibrary("avutil")
+                loadNativeLibrary("swresample")
+                loadNativeLibrary("avcodec")
+                loadNativeLibrary("avformat")
+                loadNativeLibrary("SoundTouch")
+                loadNativeLibrary("antiiq-lite")
+                nativeLibrariesLoaded = true
+            }
+        }
+
+        private fun loadNativeLibrary(name: String) {
+            try {
+                System.loadLibrary(name)
+            } catch (e: UnsatisfiedLinkError) {
+                println("Could not load native library $name: ${e.message}")
+            }
+        }
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -51,10 +111,11 @@ class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
-            "getAllAudioFilesWithMetadata" -> {
+            "scanAllStorageWithMetadata" -> {
+                val knownPaths = call.argument<List<String>>("knownPaths") ?: emptyList()
                 scope.launch {
                     try {
-                        val files = getAllAudioFilesWithMetadataFromMediaStore()
+                        val files = scanAllStorageWithMetadata(knownPaths)
                         withContext(Dispatchers.Main) {
                             result.success(files)
                         }
@@ -63,36 +124,17 @@ class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
                             result.error("SCAN_ERROR", e.message, null)
                         }
                     }
-                }
-            }
-
-            "getAudioFilesWithMetadataFromPaths" -> {
-                val paths = call.argument<List<String>>("paths")
-                if (paths != null) {
-                    scope.launch {
-                        try {
-                            val files = getAudioFilesWithMetadataFromPaths(paths)
-                            withContext(Dispatchers.Main) {
-                                result.success(files)
-                            }
-                        } catch (e: Exception) {
-                            withContext(Dispatchers.Main) {
-                                result.error("SCAN_ERROR", e.message, null)
-                            }
-                        }
-                    }
-                } else {
-                    result.error("INVALID_ARGUMENT", "Paths are required", null)
                 }
             }
 
             "scanDirectoryWithMetadata" -> {
                 val path = call.argument<String>("path")
                 val recursive = call.argument<Boolean>("recursive") ?: true
+                val knownPaths = call.argument<List<String>>("knownPaths") ?: emptyList()
                 if (path != null) {
                     scope.launch {
                         try {
-                            val files = scanDirectoryWithMetadata(path, recursive)
+                            val files = scanDirectoryWithMetadata(path, recursive, knownPaths)
                             withContext(Dispatchers.Main) {
                                 result.success(files)
                             }
@@ -104,42 +146,6 @@ class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
                     }
                 } else {
                     result.error("INVALID_ARGUMENT", "Path is required", null)
-                }
-            }
-
-            "scanDirectory" -> {
-                val path = call.argument<String>("path")
-                val recursive = call.argument<Boolean>("recursive") ?: true
-                if (path != null) {
-                    scope.launch {
-                        try {
-                            val files = scanDirectory(path, recursive)
-                            withContext(Dispatchers.Main) {
-                                result.success(files)
-                            }
-                        } catch (e: Exception) {
-                            withContext(Dispatchers.Main) {
-                                result.error("SCAN_ERROR", e.message, null)
-                            }
-                        }
-                    }
-                } else {
-                    result.error("INVALID_ARGUMENT", "Path is required", null)
-                }
-            }
-
-            "getAllAudioFiles" -> {
-                scope.launch {
-                    try {
-                        val files = getAllAudioFilesFromMediaStore()
-                        withContext(Dispatchers.Main) {
-                            result.success(files)
-                        }
-                    } catch (e: Exception) {
-                        withContext(Dispatchers.Main) {
-                            result.error("SCAN_ERROR", e.message, null)
-                        }
-                    }
                 }
             }
 
@@ -175,6 +181,26 @@ class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
                         } catch (e: Exception) {
                             withContext(Dispatchers.Main) {
                                 result.error("METADATA_ERROR", e.message, null)
+                            }
+                        }
+                    }
+                } else {
+                    result.error("INVALID_ARGUMENT", "URI is required", null)
+                }
+            }
+
+            "prepareIntentAudio" -> {
+                val uriString = call.argument<String>("uri")
+                if (uriString != null) {
+                    scope.launch {
+                        try {
+                            val prepared = prepareIntentAudio(uriString)
+                            withContext(Dispatchers.Main) {
+                                result.success(prepared)
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                result.error("INTENT_AUDIO_ERROR", e.message, null)
                             }
                         }
                     }
@@ -225,301 +251,218 @@ class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
                 }
             }
 
-            "getMediaStoreArtwork" -> {
-                val albumId = call.argument<Long>("albumId")
-                val quality = call.argument<Int>("quality") ?: 90
-                if (albumId != null) {
-                    scope.launch {
-                        try {
-                            val artwork = getMediaStoreArtwork(albumId, quality)
-                            withContext(Dispatchers.Main) {
-                                result.success(artwork)
-                            }
-                        } catch (e: Exception) {
-                            withContext(Dispatchers.Main) {
-                                result.error("ARTWORK_ERROR", e.message, null)
-                            }
-                        }
-                    }
-                } else {
-                    result.error("INVALID_ARGUMENT", "Album ID is required", null)
-                }
-            }
-
             else -> result.notImplemented()
         }
     }
 
-    private fun getAllAudioFilesWithMetadataFromMediaStore(): List<Map<String, Any?>> {
-        val startTime = System.currentTimeMillis()
-        val audioFiles = mutableListOf<Map<String, Any?>>()
-
-        val projection = arrayOf(
-            MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ALBUM_ARTIST,
-            MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.TRACK,
-            MediaStore.Audio.Media.YEAR,
-            MediaStore.Audio.Media.GENRE,
-            MediaStore.Audio.Media.COMPOSER,
-            MediaStore.Audio.Media.MIME_TYPE,
-            MediaStore.Audio.Media.ALBUM_ID
-        )
-
-        //TODO: ADD ARGUMENT FOR SELECTION FILTER FROM DART
-        //val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
-
-        try {
-            val queryStart = System.currentTimeMillis()
-            context.contentResolver.query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                null
-            )?.use { cursor ->
-                val queryEnd = System.currentTimeMillis()
-                println("MediaStore query took: ${queryEnd - queryStart}ms")
-
-                val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
-                val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
-                val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
-                val albumColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)
-                val albumArtistColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ARTIST)
-                val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
-                val trackColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TRACK)
-                val yearColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.YEAR)
-                val genreColumn = cursor.getColumnIndex(MediaStore.Audio.Media.GENRE)
-                val composerColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER)
-                val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE)
-                val albumIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
-
-                val iterationStart = System.currentTimeMillis()
-                while (cursor.moveToNext()) {
-                    val path = cursor.getString(dataColumn)
-
-                    val artist = cursor.getString(artistColumn) ?: "Unknown Artist"
-                    val albumArtist = if (albumArtistColumn != -1) {
-                        cursor.getString(albumArtistColumn)
-                    } else null
-                    val trackNumber = cursor.getInt(trackColumn)
-                    val genre = if (genreColumn != -1) {
-                        cursor.getString(genreColumn)
-                    } else null
-
-                    audioFiles.add(
-                        mapOf(
-                            "path" to path,
-                            "title" to (cursor.getString(titleColumn)
-                                ?: File(path).nameWithoutExtension),
-                            "artist" to artist,
-                            "album" to (cursor.getString(albumColumn) ?: "Unknown Album"),
-                            "albumArtist" to (albumArtist ?: artist),
-                            "genre" to (genre ?: "Unknown Genre"),
-                            "year" to cursor.getInt(yearColumn).let { if (it == 0) null else it },
-                            "trackNumber" to (trackNumber % 1000),
-                            "composer" to cursor.getString(composerColumn),
-                            "writer" to null,
-                            "duration" to cursor.getLong(durationColumn),
-                            "bitrate" to null,
-                            "mimeType" to cursor.getString(mimeTypeColumn),
-                            "fileExtension" to File(path).extension,
-                            "mediaStoreAlbumId" to cursor.getLong(albumIdColumn)
-                        )
-                    )
-                }
-                val iterationEnd = System.currentTimeMillis()
-                println("MediaStore iteration took: ${iterationEnd - iterationStart}ms")
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        val endTime = System.currentTimeMillis()
-        println("Total MediaStore operation took: ${endTime - startTime}ms")
-        return audioFiles
-    }
-
-    private fun getAudioFilesWithMetadataFromPaths(paths: List<String>): List<Map<String, Any?>> {
-        val startTime = System.currentTimeMillis()
-        val audioFiles = mutableListOf<Map<String, Any?>>()
-
-        val projection = arrayOf(
-            MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ALBUM_ARTIST,
-            MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.TRACK,
-            MediaStore.Audio.Media.YEAR,
-            MediaStore.Audio.Media.GENRE,
-            MediaStore.Audio.Media.COMPOSER,
-            MediaStore.Audio.Media.MIME_TYPE,
-            MediaStore.Audio.Media.ALBUM_ID
-        )
-
-        val selectionParts = mutableListOf<String>()
-        val selectionArgs = mutableListOf<String>()
-
-        paths.forEach { path ->
-            selectionParts.add("${MediaStore.Audio.Media.DATA} LIKE ?")
-            selectionArgs.add("$path/%")
-        }
-
-        val selection =
-            "${MediaStore.Audio.Media.IS_MUSIC} != 0 AND (${selectionParts.joinToString(" OR ")})"
-
-        try {
-            val queryStart = System.currentTimeMillis()
-            context.contentResolver.query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                selectionArgs.toTypedArray(),
-                null
-            )?.use { cursor ->
-                val queryEnd = System.currentTimeMillis()
-                println("MediaStore path query took: ${queryEnd - queryStart}ms")
-
-                val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
-                val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
-                val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
-                val albumColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)
-                val albumArtistColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ARTIST)
-                val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
-                val trackColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TRACK)
-                val yearColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.YEAR)
-                val genreColumn = cursor.getColumnIndex(MediaStore.Audio.Media.GENRE)
-                val composerColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.COMPOSER)
-                val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE)
-                val albumIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
-
-                while (cursor.moveToNext()) {
-                    val path = cursor.getString(dataColumn)
-                    val artist = cursor.getString(artistColumn) ?: "Unknown Artist"
-                    val albumArtist = if (albumArtistColumn != -1) {
-                        cursor.getString(albumArtistColumn)
-                    } else null
-                    val trackNumber = cursor.getInt(trackColumn)
-                    val genre = if (genreColumn != -1) {
-                        cursor.getString(genreColumn)
-                    } else null
-
-                    audioFiles.add(
-                        mapOf(
-                            "path" to path,
-                            "title" to (cursor.getString(titleColumn)
-                                ?: File(path).nameWithoutExtension),
-                            "artist" to artist,
-                            "album" to (cursor.getString(albumColumn) ?: "Unknown Album"),
-                            "albumArtist" to (albumArtist ?: artist),
-                            "genre" to (genre ?: "Unknown Genre"),
-                            "year" to cursor.getInt(yearColumn).let { if (it == 0) null else it },
-                            "trackNumber" to (trackNumber % 1000),
-                            "composer" to cursor.getString(composerColumn),
-                            "writer" to null,
-                            "duration" to cursor.getLong(durationColumn),
-                            "bitrate" to null,
-                            "mimeType" to cursor.getString(mimeTypeColumn),
-                            "fileExtension" to File(path).extension,
-                            "mediaStoreAlbumId" to cursor.getLong(albumIdColumn)
-                        )
-                    )
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        val endTime = System.currentTimeMillis()
-        println("Total MediaStore path operation took: ${endTime - startTime}ms, found ${audioFiles.size} files")
-        return audioFiles
-    }
-
-    private fun scanDirectoryWithMetadata(
+    private suspend fun scanDirectoryWithMetadata(
         path: String,
-        recursive: Boolean
+        recursive: Boolean,
+        knownPaths: List<String> = emptyList(),
     ): List<Map<String, Any?>> {
         val audioFiles = mutableListOf<Map<String, Any?>>()
         val directory = File(path)
+        val knownPathSet = knownPaths.map { normalizePath(it) }.toSet()
 
         if (!directory.exists() || !directory.isDirectory) {
             return audioFiles
         }
 
-        try {
-            val files = if (recursive) {
-                directory.walkTopDown()
-                    .onEnter { dir ->
-                        !dir.name.startsWith(".") &&
-                                dir.name != "Android" &&
-                                dir.canRead()
-                    }
-                    .filter { it.isFile && it.canRead() }
-            } else {
-                directory.listFiles()?.asSequence()?.filter { it.isFile && it.canRead() }
-                    ?: emptySequence()
-            }
-
-            files.forEach { file ->
-                if (isAudioFile(file)) {
-                    try {
-                        val metadata = getMetadataFromFile(file.absolutePath)
-                        audioFiles.add(metadata)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        val files = if (recursive) {
+            scanAudioFiles(listOf(directory), "Scanning Selected Folders")
+        } else {
+            directory.listFiles()
+                ?.filter { it.isFile && it.canRead() && isAudioFile(it) }
+                ?: emptyList()
         }
+
+        files.forEachIndexed { index, file ->
+            if (normalizePath(file.absolutePath) in knownPathSet) return@forEachIndexed
+            if (index == 0 || (index + 1) % 25 == 0 || index == files.lastIndex) {
+                emitProgress("metadata", index + 1, files.size, "Reading Metadata")
+            }
+            try {
+                audioFiles.add(getMetadataFromFile(file.absolutePath))
+                if (audioFiles.size % 20 == 0) {
+                    emitMetadataBatch(audioFiles.takeLast(20))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        emitMetadataBatch(audioFiles.takeLast(audioFiles.size % 20))
 
         return audioFiles
     }
 
-    private fun scanDirectory(path: String, recursive: Boolean): List<Map<String, Any?>> {
+    private suspend fun scanAllStorageWithMetadata(knownPaths: List<String> = emptyList()): List<Map<String, Any?>> {
         val audioFiles = mutableListOf<Map<String, Any?>>()
-        val directory = File(path)
+        addFilesystemAudioWithMetadata(audioFiles, knownPaths = knownPaths)
+        return audioFiles
+    }
 
-        if (!directory.exists() || !directory.isDirectory) {
-            return audioFiles
+    private suspend fun addFilesystemAudioWithMetadata(
+        audioFiles: MutableList<Map<String, Any?>>,
+        roots: List<String>? = null,
+        knownPaths: List<String> = emptyList(),
+    ) {
+        val seenPaths = audioFiles.mapNotNull { it["path"] as? String }
+            .map { normalizePath(it) }
+            .toMutableSet()
+        val knownPathSet = knownPaths.map { normalizePath(it) }.toSet()
+
+        val scanRoots = roots
+            ?.map { File(it) }
+            ?.filter { it.exists() && it.isDirectory && it.canRead() }
+            ?: getStorageRoots()
+
+        val files = scanAudioFiles(scanRoots, "Scanning Storage")
+        files.forEachIndexed { index, file ->
+            val key = normalizePath(file.absolutePath)
+            if (!seenPaths.add(key)) return@forEachIndexed
+            if (key in knownPathSet) return@forEachIndexed
+
+            if (index == 0 || (index + 1) % 25 == 0 || index == files.lastIndex) {
+                emitProgress("metadata", index + 1, files.size, "Reading Metadata")
+            }
+            try {
+                audioFiles.add(getMetadataFromFile(file.absolutePath))
+                if (audioFiles.size % 20 == 0) {
+                    emitMetadataBatch(audioFiles.takeLast(20))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        emitMetadataBatch(audioFiles.takeLast(audioFiles.size % 20))
+    }
+
+    private suspend fun scanAudioFiles(roots: List<File>, message: String): List<File> = coroutineScope {
+        val results = ConcurrentHashMap.newKeySet<File>()
+        val workQueue = ArrayDeque<File>()
+        val filesFound = AtomicInteger(0)
+        emitProgress("scanning", 0, 0, message)
+
+        roots.filter { it.exists() && it.canRead() }.forEach {
+            synchronized(workQueue) { workQueue.add(it) }
         }
 
-        try {
-            val files = if (recursive) {
-                directory.walkTopDown()
-                    .onEnter { dir ->
-                        !dir.name.startsWith(".") &&
-                                dir.name != "Android" &&
-                                dir.canRead()
+        val workers = List(Runtime.getRuntime().availableProcessors().coerceAtLeast(2)) {
+            async(Dispatchers.IO) {
+                var localCount = 0
+                while (true) {
+                    val dir = synchronized(workQueue) { workQueue.removeFirstOrNull() } ?: break
+                    val normalizedPath = dir.absolutePath.lowercase()
+                    if (SYSTEM_EXCLUDED_PATHS.any {
+                            normalizedPath.contains("/$it") || normalizedPath.endsWith("/$it")
+                        }) {
+                        continue
                     }
-                    .filter { it.isFile && it.canRead() }
-            } else {
-                directory.listFiles()?.asSequence()?.filter { it.isFile && it.canRead() }
-                    ?: emptySequence()
-            }
+                    if (dir.name.startsWith(".")) continue
 
-            files.forEach { file ->
-                if (isAudioFile(file)) {
-                    audioFiles.add(
-                        mapOf(
-                            "path" to file.absolutePath,
-                            "size" to file.length(),
-                            "lastModified" to file.lastModified()
-                        )
-                    )
+                    try {
+                        val entries = dir.listFiles() ?: continue
+                        val newDirs = mutableListOf<File>()
+                        for (entry in entries) {
+                            when {
+                                entry.isDirectory && entry.canRead() -> newDirs.add(entry)
+                                entry.isFile && isAudioFile(entry) -> {
+                                    results.add(entry)
+                                    localCount++
+                                    val found = filesFound.incrementAndGet()
+                                    if (found == 1 || found % 50 == 0) {
+                                        emitProgress("scanning", found, 0, message)
+                                    }
+                                }
+                            }
+                        }
+                        if (newDirs.isNotEmpty()) {
+                            synchronized(workQueue) { workQueue.addAll(newDirs) }
+                        }
+                    } catch (e: SecurityException) {
+                        Log.w("AudioMetadataPlugin", "Cannot access: ${dir.absolutePath}")
+                    }
+                }
+            }
+        }
+
+        workers.awaitAll()
+        emitProgress("scanning", results.size, results.size, message)
+        results.toList()
+    }
+
+    private fun getStorageRoots(): List<File> {
+        val roots = mutableListOf<File>()
+        addPrimaryStorage(roots)
+        addStorageDirectVolumes(roots)
+        addExternalFilesVolumes(roots)
+        return roots.distinctBy { it.absolutePath }
+            .filter { it.exists() && it.isDirectory && it.canRead() }
+    }
+
+    private fun addPrimaryStorage(roots: MutableList<File>) {
+        Environment.getExternalStorageDirectory()?.let { dir ->
+            if (dir.exists() && dir.canRead()) roots.add(dir)
+        }
+    }
+
+    private fun addStorageDirectVolumes(roots: MutableList<File>) {
+        try {
+            File("/storage").listFiles()?.forEach { volume ->
+                if (volume.isDirectory &&
+                    volume.name != "emulated" &&
+                    volume.name != "self" &&
+                    volume.canRead() &&
+                    volume !in roots
+                ) {
+                    roots.add(volume)
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.w("AudioMetadataPlugin", "Failed to scan /storage", e)
+        }
+    }
+
+    private fun addExternalFilesVolumes(roots: MutableList<File>) {
+        try {
+            context.getExternalFilesDirs(null).filterNotNull().forEach { appDir ->
+                val storageRoot = walkUpToStorageRoot(appDir)
+                if (storageRoot != null && storageRoot.canRead() && storageRoot !in roots) {
+                    roots.add(storageRoot)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("AudioMetadataPlugin", "getExternalFilesDirs error", e)
+        }
+    }
+
+    private fun walkUpToStorageRoot(appDir: File): File? {
+        var current = appDir
+        var depth = 0
+
+        while (current.parentFile != null && depth < 20) {
+            current = current.parentFile!!
+            depth++
+
+            val name = current.name
+            if ((name.matches(Regex("[0-9A-F]{4}-[0-9A-F]{4}")) || name == "emulated" || name == "0") && current.canRead()) {
+                return if (name == "emulated" || name == "0") {
+                    current.parentFile ?: current
+                } else {
+                    current
+                }
+            }
         }
 
-        return audioFiles
+        return null
+    }
+
+    private fun normalizePath(path: String): String {
+        return try {
+            File(path).canonicalPath
+        } catch (e: Exception) {
+            File(path).absolutePath
+        }
     }
 
     private fun isAudioFile(file: File): Boolean {
@@ -527,53 +470,58 @@ class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
         return AUDIO_EXTENSIONS.contains(extension) && !VIDEO_EXTENSIONS.contains(extension)
     }
 
-    private fun getAllAudioFilesFromMediaStore(): List<Map<String, Any?>> {
-        val audioFiles = mutableListOf<Map<String, Any?>>()
-
-        val projection = arrayOf(
-            MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.SIZE,
-            MediaStore.Audio.Media.DATE_MODIFIED
-        )
-
-        //TODO: ADD ARGUMENT FOR SELECTION FILTER FROM DART
-        //val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
-
-        try {
-            context.contentResolver.query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                null
-            )?.use { cursor ->
-                val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
-                val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)
-                val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED)
-
-                while (cursor.moveToNext()) {
-                    val path = cursor.getString(dataColumn)
-                    val file = File(path)
-
-                    if (file.exists() && isAudioFile(file)) {
-                        audioFiles.add(
-                            mapOf(
-                                "path" to path,
-                                "size" to cursor.getLong(sizeColumn),
-                                "lastModified" to cursor.getLong(dateColumn) * 1000
-                            )
-                        )
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+    private fun emitProgress(stage: String, progress: Int, total: Int, message: String) {
+        if (!::channel.isInitialized) return
+        mainHandler.post {
+            channel.invokeMethod(
+                "scanProgress",
+                mapOf(
+                    "stage" to stage,
+                    "progress" to progress,
+                    "total" to total,
+                    "message" to message
+                )
+            )
         }
+    }
 
-        return audioFiles
+    private fun emitMetadataBatch(batch: List<Map<String, Any?>>) {
+        if (!::channel.isInitialized || batch.isEmpty()) return
+        mainHandler.post {
+            channel.invokeMethod("scanMetadataBatch", batch)
+        }
     }
 
     private fun getMetadataFromFile(path: String): Map<String, Any?> {
+        val native = try {
+            ensureNativeLibrariesLoaded()
+            extractNativeMetadata(path)
+        } catch (e: UnsatisfiedLinkError) {
+            null
+        } catch (e: Exception) {
+            null
+        }
+
+        if (native != null) {
+            val artist = native["artist"] as? String ?: "Unknown Artist"
+            return mapOf(
+                "path" to path,
+                "title" to (native["title"] as? String ?: File(path).nameWithoutExtension),
+                "artist" to artist,
+                "album" to (native["album"] as? String ?: "Unknown Album"),
+                "albumArtist" to (native["albumArtist"] as? String ?: artist),
+                "genre" to (native["genre"] as? String ?: "Unknown Genre"),
+                "year" to native["year"],
+                "trackNumber" to (native["trackNumber"] ?: 0),
+                "composer" to native["composer"],
+                "writer" to native["writer"],
+                "duration" to (native["duration"] ?: 0L),
+                "bitrate" to native["bitrate"],
+                "mimeType" to native["mimeType"],
+                "fileExtension" to File(path).extension
+            )
+        }
+
         val retriever = MediaMetadataRetriever()
         try {
             retriever.setDataSource(path)
@@ -617,8 +565,7 @@ class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
                 "duration" to duration,
                 "bitrate" to bitrate,
                 "mimeType" to mimeType,
-                "fileExtension" to File(path).extension,
-                "mediaStoreAlbumId" to null
+                "fileExtension" to File(path).extension
             )
         } finally {
             retriever.release()
@@ -626,6 +573,25 @@ class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     private fun extractArtwork(path: String, quality: Int): ByteArray? {
+        val nativeArt = try {
+            ensureNativeLibrariesLoaded()
+            extractNativeArtwork(path)
+        } catch (e: UnsatisfiedLinkError) {
+            null
+        } catch (e: Exception) {
+            null
+        }
+
+        if (nativeArt != null) {
+            if (quality < 100) {
+                val bitmap = BitmapFactory.decodeByteArray(nativeArt, 0, nativeArt.size)
+                val outputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+                return outputStream.toByteArray()
+            }
+            return nativeArt
+        }
+
         val retriever = MediaMetadataRetriever()
         try {
             retriever.setDataSource(path)
@@ -642,30 +608,6 @@ class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
         } finally {
             retriever.release()
         }
-    }
-
-    private fun getMediaStoreArtwork(albumId: Long, quality: Int): ByteArray? {
-        try {
-            val uri = "content://media/external/audio/albumart".toUri()
-            val albumArtUri = Uri.withAppendedPath(uri, albumId.toString())
-
-            context.contentResolver.openInputStream(albumArtUri)?.use { inputStream ->
-                val rawArt = inputStream.readBytes()
-
-                if (quality < 100) {
-                    val bitmap = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.size)
-                    val outputStream = ByteArrayOutputStream()
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
-                    return outputStream.toByteArray()
-                }
-
-                return rawArt
-            }
-        } catch (e: Exception) {
-            return null
-        }
-
-        return null
     }
 
     private fun getMetadataFromContentUri(uriString: String): Map<String, Any?> {
@@ -713,11 +655,89 @@ class AudioMetadataPlugin : FlutterPlugin, MethodCallHandler {
                 "duration" to duration,
                 "bitrate" to bitrate,
                 "mimeType" to mimeType,
-                "fileExtension" to getFileExtensionFromMimeType(mimeType),
-                "mediaStoreAlbumId" to null
+                "fileExtension" to getFileExtensionFromMimeType(mimeType)
             )
         } finally {
             retriever.release()
+        }
+    }
+
+    private fun prepareIntentAudio(uriString: String): Map<String, Any?> {
+        val uri = uriString.toUri()
+        if (uri.scheme == "file") {
+            val path = uri.path ?: uriString.removePrefix("file://")
+            return mapOf(
+                "path" to path,
+                "displayName" to File(path).name,
+                "mimeType" to context.contentResolver.getType(uri)
+            )
+        }
+
+        if (uri.scheme != "content") {
+            return mapOf(
+                "path" to uriString,
+                "displayName" to File(uriString).name,
+                "mimeType" to null
+            )
+        }
+
+        val displayName = queryDisplayName(uri) ?: "intent_audio_${System.currentTimeMillis()}"
+        val extension = displayName.substringAfterLast('.', "")
+            .ifBlank { extensionFromMime(context.contentResolver.getType(uri)) }
+            .ifBlank { "audio" }
+        val safeBaseName = displayName
+            .substringBeforeLast('.', displayName)
+            .replace(Regex("[^A-Za-z0-9._-]+"), "_")
+            .trim('_')
+            .ifBlank { "intent_audio" }
+        val cacheDir = File(context.cacheDir, "intent_audio").apply {
+            mkdirs()
+        }
+        cacheDir.listFiles()?.forEach { file ->
+            if (System.currentTimeMillis() - file.lastModified() > 24L * 60L * 60L * 1000L) {
+                file.delete()
+            }
+        }
+        val target = File(cacheDir, "${safeBaseName}_${System.currentTimeMillis()}.$extension")
+
+        context.contentResolver.openInputStream(uri).use { input ->
+            if (input == null) {
+                throw IllegalArgumentException("Unable to open intent audio stream")
+            }
+            FileOutputStream(target).use { output ->
+                input.copyTo(output)
+            }
+        }
+
+        return mapOf(
+            "path" to target.absolutePath,
+            "displayName" to displayName,
+            "mimeType" to context.contentResolver.getType(uri)
+        )
+    }
+
+    private fun queryDisplayName(uri: android.net.Uri): String? {
+        context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+            ?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (index >= 0) return cursor.getString(index)
+                }
+            }
+        return null
+    }
+
+    private fun extensionFromMime(mimeType: String?): String {
+        return when (mimeType) {
+            "audio/mpeg" -> "mp3"
+            "audio/mp4", "audio/m4a", "audio/x-m4a" -> "m4a"
+            "audio/flac", "audio/x-flac" -> "flac"
+            "audio/ogg" -> "ogg"
+            "audio/wav", "audio/x-wav" -> "wav"
+            "audio/aac" -> "aac"
+            "audio/opus" -> "opus"
+            "audio/x-ms-wma" -> "wma"
+            else -> ""
         }
     }
 

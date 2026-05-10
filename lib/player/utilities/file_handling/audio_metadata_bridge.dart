@@ -3,34 +3,50 @@ import 'package:flutter/services.dart';
 class AudioMetadataBridge {
   static const MethodChannel _channel =
       MethodChannel('com.coleblvck.antiiq/audio_metadata');
+  static void Function(AudioScanProgress progress)? _progressListener;
+  static void Function(List<AudioMetadata> metadata)? _metadataBatchListener;
 
-  /// Gets all audio files with metadata from MediaStore in ONE call
-  /// This is MUCH faster than getting file list then metadata separately
-  static Future<List<AudioMetadata>> getAllAudioFilesWithMetadata() async {
-    try {
-      final List<dynamic> result =
-          await _channel.invokeMethod('getAllAudioFilesWithMetadata');
-
-      return result
-          .map((item) => AudioMetadata.fromMap(Map<String, dynamic>.from(item)))
-          .toList();
-    } on PlatformException catch (e) {
-      throw AudioMetadataException(
-        'Failed to get audio files from MediaStore: ${e.message}',
-        e.code,
-      );
-    }
+  static void setProgressListener(
+    void Function(AudioScanProgress progress)? listener,
+  ) {
+    _progressListener = listener;
+    _channel.setMethodCallHandler(_handleNativeCall);
   }
 
-  /// Gets audio files with metadata from specific paths using MediaStore (FAST!)
-  /// Much faster than scanDirectoryWithMetadata because it uses MediaStore
-  static Future<List<AudioMetadata>> getAudioFilesWithMetadataFromPaths(
-    List<String> paths,
-  ) async {
+  static void setMetadataBatchListener(
+    void Function(List<AudioMetadata> metadata)? listener,
+  ) {
+    _metadataBatchListener = listener;
+    _channel.setMethodCallHandler(_handleNativeCall);
+  }
+
+  static Future<dynamic> _handleNativeCall(MethodCall call) async {
+    final arguments = call.arguments;
+    if (call.method == 'scanProgress') {
+      if (arguments is! Map) return null;
+      _progressListener?.call(
+        AudioScanProgress.fromMap(Map<String, dynamic>.from(arguments)),
+      );
+    } else if (call.method == 'scanMetadataBatch') {
+      if (arguments is! List) return null;
+      _metadataBatchListener?.call(
+        arguments
+            .map((item) => AudioMetadata.fromMap(
+                  Map<String, dynamic>.from(item as Map),
+                ))
+            .toList(),
+      );
+    }
+    return null;
+  }
+
+  static Future<List<AudioMetadata>> scanAllStorageWithMetadata({
+    List<String> knownPaths = const [],
+  }) async {
     try {
       final List<dynamic> result = await _channel.invokeMethod(
-        'getAudioFilesWithMetadataFromPaths',
-        {'paths': paths},
+        'scanAllStorageWithMetadata',
+        {'knownPaths': knownPaths},
       );
 
       return result
@@ -38,7 +54,7 @@ class AudioMetadataBridge {
           .toList();
     } on PlatformException catch (e) {
       throw AudioMetadataException(
-        'Failed to get audio files from paths: ${e.message}',
+        'Failed to scan storage: ${e.message}',
         e.code,
       );
     }
@@ -48,6 +64,7 @@ class AudioMetadataBridge {
   static Future<List<AudioMetadata>> scanDirectoryWithMetadata(
     String path, {
     bool recursive = true,
+    List<String> knownPaths = const [],
   }) async {
     try {
       final List<dynamic> result = await _channel.invokeMethod(
@@ -55,6 +72,7 @@ class AudioMetadataBridge {
         {
           'path': path,
           'recursive': recursive,
+          'knownPaths': knownPaths,
         },
       );
 
@@ -64,48 +82,6 @@ class AudioMetadataBridge {
     } on PlatformException catch (e) {
       throw AudioMetadataException(
         'Failed to scan directory: ${e.message}',
-        e.code,
-      );
-    }
-  }
-
-  /// Legacy method - kept for compatibility but slower
-  static Future<List<AudioFileInfo>> scanDirectory(
-    String path, {
-    bool recursive = true,
-  }) async {
-    try {
-      final List<dynamic> result = await _channel.invokeMethod(
-        'scanDirectory',
-        {
-          'path': path,
-          'recursive': recursive,
-        },
-      );
-
-      return result
-          .map((item) => AudioFileInfo.fromMap(Map<String, dynamic>.from(item)))
-          .toList();
-    } on PlatformException catch (e) {
-      throw AudioMetadataException(
-        'Failed to scan directory: ${e.message}',
-        e.code,
-      );
-    }
-  }
-
-  /// Legacy method - kept for compatibility but slower
-  static Future<List<AudioFileInfo>> getAllAudioFiles() async {
-    try {
-      final List<dynamic> result =
-          await _channel.invokeMethod('getAllAudioFiles');
-
-      return result
-          .map((item) => AudioFileInfo.fromMap(Map<String, dynamic>.from(item)))
-          .toList();
-    } on PlatformException catch (e) {
-      throw AudioMetadataException(
-        'Failed to get audio files from MediaStore: ${e.message}',
         e.code,
       );
     }
@@ -124,6 +100,22 @@ class AudioMetadataBridge {
     } on PlatformException catch (e) {
       throw AudioMetadataException(
         'Failed to get metadata from content URI: ${e.message}',
+        e.code,
+      );
+    }
+  }
+
+  static Future<PreparedIntentAudio> prepareIntentAudio(String uri) async {
+    try {
+      final Map<dynamic, dynamic> result = await _channel.invokeMethod(
+        'prepareIntentAudio',
+        {'uri': uri},
+      );
+
+      return PreparedIntentAudio.fromMap(Map<String, dynamic>.from(result));
+    } on PlatformException catch (e) {
+      throw AudioMetadataException(
+        'Failed to prepare intent audio: ${e.message}',
         e.code,
       );
     }
@@ -191,47 +183,47 @@ class AudioMetadataBridge {
       );
     }
   }
+}
 
-  /// Gets album artwork from Android MediaStore (FAST!)
-  static Future<Uint8List?> getMediaStoreArtwork(
-    int albumId, {
-    int quality = 90,
-  }) async {
-    try {
-      final Uint8List? result = await _channel.invokeMethod(
-        'getMediaStoreArtwork',
-        {
-          'albumId': albumId,
-          'quality': quality,
-        },
-      );
+class PreparedIntentAudio {
+  const PreparedIntentAudio({
+    required this.path,
+    this.displayName,
+    this.mimeType,
+  });
 
-      return result;
-    } on PlatformException catch (e) {
-      throw AudioMetadataException(
-        'Failed to get MediaStore artwork: ${e.message}',
-        e.code,
-      );
-    }
+  final String path;
+  final String? displayName;
+  final String? mimeType;
+
+  factory PreparedIntentAudio.fromMap(Map<String, dynamic> map) {
+    return PreparedIntentAudio(
+      path: map['path'] as String,
+      displayName: map['displayName'] as String?,
+      mimeType: map['mimeType'] as String?,
+    );
   }
 }
 
-class AudioFileInfo {
-  final String path;
-  final int size;
-  final int lastModified;
+class AudioScanProgress {
+  final String stage;
+  final String message;
+  final int progress;
+  final int total;
 
-  AudioFileInfo({
-    required this.path,
-    required this.size,
-    required this.lastModified,
+  const AudioScanProgress({
+    required this.stage,
+    required this.message,
+    required this.progress,
+    required this.total,
   });
 
-  factory AudioFileInfo.fromMap(Map<String, dynamic> map) {
-    return AudioFileInfo(
-      path: map['path'] as String,
-      size: map['size'] as int,
-      lastModified: map['lastModified'] as int,
+  factory AudioScanProgress.fromMap(Map<String, dynamic> map) {
+    return AudioScanProgress(
+      stage: map['stage'] as String? ?? 'scanning',
+      message: map['message'] as String? ?? 'Scanning Library',
+      progress: map['progress'] as int? ?? 0,
+      total: map['total'] as int? ?? 0,
     );
   }
 }
@@ -251,8 +243,6 @@ class AudioMetadata {
   final int? bitrate;
   final String? mimeType;
   final String fileExtension;
-  final int? mediaStoreAlbumId; // For faster album art lookup
-
   AudioMetadata({
     required this.path,
     required this.title,
@@ -268,7 +258,6 @@ class AudioMetadata {
     this.bitrate,
     this.mimeType,
     required this.fileExtension,
-    this.mediaStoreAlbumId,
   });
 
   factory AudioMetadata.fromMap(Map<String, dynamic> map) {
@@ -287,7 +276,6 @@ class AudioMetadata {
       bitrate: map['bitrate'] as int?,
       mimeType: map['mimeType'] as String?,
       fileExtension: map['fileExtension'] as String,
-      mediaStoreAlbumId: map['mediaStoreAlbumId'] as int?,
     );
   }
 
@@ -307,7 +295,6 @@ class AudioMetadata {
       'bitrate': bitrate,
       'mimeType': mimeType,
       'fileExtension': fileExtension,
-      'mediaStoreAlbumId': mediaStoreAlbumId,
     };
   }
 }

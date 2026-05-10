@@ -4,10 +4,10 @@ import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/utilities/antiiq_audio/queue_handler.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/utilities/native_audio_player.dart';
 import 'package:antiiq/player/utilities/playlist_generator/playlist_generator.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:just_audio/just_audio.dart';
 
 // Import your custom queue handler
 // import 'antiiq_queue_handler.dart';
@@ -18,22 +18,14 @@ class AntiiqAudioHandler extends BaseAudioHandler
     initialize();
   }
 
-  @override
-  late final AudioPlayer audioPlayer = AudioPlayer(
-    handleInterruptions: true,
-    androidApplyAudioAttributes: true,
-    handleAudioSessionActivation: true,
-    audioPipeline: AudioPipeline(androidAudioEffects: [
-      equalizer,
-      loudnessEnhancer,
-    ]),
-  );
+  late final NativeAudioPlayer audioPlayer = NativeAudioPlayer();
 
-  final AndroidEqualizer equalizer = AndroidEqualizer();
-  final AndroidLoudnessEnhancer loudnessEnhancer = AndroidLoudnessEnhancer();
-
-  late StreamSubscription<PlaybackEvent> eventSubscription;
+  late StreamSubscription<void> eventSubscription;
+  late StreamSubscription<String> transitionSubscription;
+  late StreamSubscription<Duration> positionSubscription;
+  late StreamSubscription<bool> playingSubscription;
   int clicks = 0;
+  AudioProcessingState _processingState = AudioProcessingState.idle;
 
   // Endless Play Properties
   bool _endlessPlayEnabled = false;
@@ -46,27 +38,25 @@ class AntiiqAudioHandler extends BaseAudioHandler
   int _generateBatchSize = 20;
 
   void initialize() {
-    // Listen to playback events
-    eventSubscription = audioPlayer.playbackEventStream.listen(
-      (event) {
-        broadcastState();
-      },
-    );
+    eventSubscription = audioPlayer.completedStream.listen((_) {
+      _processingState = AudioProcessingState.completed;
+      broadcastState();
+      _handleTrackCompleted();
+    });
 
-    // Listen to processing state for auto-advance
-    audioPlayer.processingStateStream.listen(
-      (state) {
-        switch (state) {
-          case ProcessingState.completed:
-            _handleTrackCompleted();
-            break;
-          case ProcessingState.ready:
-            break;
-          default:
-            break;
-        }
-      },
-    );
+    transitionSubscription = audioPlayer.transitionStream.listen((trackId) {
+      acceptNativeTransition(trackId);
+      _processingState = AudioProcessingState.ready;
+      broadcastState();
+    });
+
+    positionSubscription = audioPlayer.positionStream.listen((_) {
+      broadcastState();
+    });
+
+    playingSubscription = audioPlayer.playingStream.listen((_) {
+      broadcastState();
+    });
 
     // Track played items for history
     mediaItem.stream.listen((currentItem) {
@@ -82,11 +72,16 @@ class AntiiqAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> loadAndPlayItem(MediaItem item) async {
-    // Create a single-item audio source
-    final audioSource = AudioSource.uri(Uri.parse(item.id));
-
-    // Set it in the player
-    await audioPlayer.setAudioSource(audioSource, preload: false);
+    _processingState = AudioProcessingState.loading;
+    await broadcastState();
+    final openResult = await audioPlayer.open(
+        item.id, item.extras?["id"]?.toString() ?? item.id);
+    if (openResult != 0) {
+      _processingState = AudioProcessingState.error;
+      await broadcastState();
+      throw StateError('Could not open ${item.id}: native result $openResult');
+    }
+    _processingState = AudioProcessingState.ready;
 
     // Auto-play if player was playing
     if (playbackState.value.playing) {
@@ -104,6 +99,7 @@ class AntiiqAudioHandler extends BaseAudioHandler
   Future<void> stopPlayer() async {
     await audioPlayer.stop();
     await audioPlayer.seek(Duration.zero);
+    _processingState = AudioProcessingState.idle;
   }
 
   // ============================================================================
@@ -112,40 +108,56 @@ class AntiiqAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> play() async {
-    // If nothing is loaded (no current item and no queue)
-    if (currentItem == null && isQueueEmpty) {
-      // Initialize with default queue
-      final defaultQueue = antiiqState.music.queue.initialState.isEmpty
-          ? antiiqState.music.tracks.list.map((e) => e.mediaItem!).toList()
-          : antiiqState.music.queue.initialState;
+    try {
+      // If nothing is loaded (no current item and no queue)
+      if (currentItem == null && isQueueEmpty) {
+        // Initialize with default queue
+        final defaultQueue = antiiqState.music.queue.initialState.isEmpty
+            ? antiiqState.music.tracks.list.map((e) => e.mediaItem!).toList()
+            : antiiqState.music.queue.initialState;
 
-      if (defaultQueue.isNotEmpty) {
-        await updateQueue(defaultQueue, initialIndex: 0);
+        if (defaultQueue.isNotEmpty) {
+          await updateQueue(defaultQueue, initialIndex: 0);
+          await audioPlayer.play();
+        }
+      } else if (currentItem != null) {
+        // We have a current item, just resume playback
         await audioPlayer.play();
-        // updateQueue already loads and plays the first item (MY BAD; IT DOES NOT)
+      } else if (!isQueueEmpty) {
+        // We have queue but no current item, play first from queue
+        await playNext();
+        await audioPlayer.play();
       }
-    } else if (currentItem != null) {
-      // We have a current item, just resume playback
-      await audioPlayer.play();
-    } else if (!isQueueEmpty) {
-      // We have queue but no current item, play first from queue
-      await playNext();
-    }
 
-    if (!antiiqState.audioSetup.preferences.bandsSet) {
-      await antiiqState.audioSetup.preferences.setBands();
+      if (!antiiqState.audioSetup.preferences.bandsSet) {
+        await antiiqState.audioSetup.preferences.setBands();
+      }
+      _processingState = AudioProcessingState.ready;
+    } catch (error, stackTrace) {
+      debugPrint('Playback start failed: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      _processingState = AudioProcessingState.error;
     }
+    await broadcastState();
   }
 
   @override
   Future<void> pause() async {
-    await audioPlayer.pause();
+    try {
+      await audioPlayer.pause();
+    } catch (error) {
+      debugPrint('Pause failed: $error');
+    }
+    await broadcastState();
   }
 
   @override
   Future<void> stop() async {
     await stopPlayer();
     eventSubscription.cancel();
+    transitionSubscription.cancel();
+    positionSubscription.cancel();
+    playingSubscription.cancel();
     await broadcastState();
     playbackState.add(PlaybackState(
       controls: [],
@@ -157,7 +169,32 @@ class AntiiqAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> seek(Duration position) async {
-    await audioPlayer.seek(position);
+    try {
+      await audioPlayer.seek(position);
+    } catch (error) {
+      debugPrint('Seek failed: $error');
+    }
+    await broadcastState();
+  }
+
+  @override
+  Duration get currentPosition => audioPlayer.position;
+
+  @override
+  Future<void> seekCurrent(Duration position) => seek(position);
+
+  @override
+  Future<void> resumeCurrent() => play();
+
+  @override
+  Future<void> syncNativeUpcomingQueue(List<MediaItem> upcomingQueue) {
+    return audioPlayer.setUpcomingQueue([
+      for (final item in upcomingQueue)
+        (
+          id: item.extras?["id"]?.toString() ?? item.id,
+          path: item.id,
+        ),
+    ]);
   }
 
   // ============================================================================
@@ -165,8 +202,16 @@ class AntiiqAudioHandler extends BaseAudioHandler
   // ============================================================================
 
   Future<void> _handleTrackCompleted() async {
-    // playNext() handles repeat modes internally
-    await playNext();
+    try {
+      // playNext() handles repeat modes internally
+      await playNext();
+    } catch (error, stackTrace) {
+      debugPrint('Track completion advance failed: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      _processingState = AudioProcessingState.error;
+      await broadcastState();
+      return;
+    }
 
     // Check if we need to extend queue for endless play
     if (_endlessPlayEnabled &&
@@ -203,7 +248,7 @@ class AntiiqAudioHandler extends BaseAudioHandler
           processingState: getProcessingState(),
           playing: audioPlayer.playing,
           updatePosition: audioPlayer.position,
-          bufferedPosition: audioPlayer.bufferedPosition,
+          bufferedPosition: audioPlayer.position,
           speed: audioPlayer.speed,
           repeatMode: playbackState.value.repeatMode,
           shuffleMode: playbackState.value.shuffleMode,
@@ -213,18 +258,7 @@ class AntiiqAudioHandler extends BaseAudioHandler
   }
 
   AudioProcessingState getProcessingState() {
-    switch (audioPlayer.processingState) {
-      case ProcessingState.idle:
-        return AudioProcessingState.idle;
-      case ProcessingState.loading:
-        return AudioProcessingState.loading;
-      case ProcessingState.buffering:
-        return AudioProcessingState.buffering;
-      case ProcessingState.ready:
-        return AudioProcessingState.ready;
-      case ProcessingState.completed:
-        return AudioProcessingState.completed;
-    }
+    return _processingState;
   }
 
   // ============================================================================
@@ -368,7 +402,7 @@ class AntiiqAudioHandler extends BaseAudioHandler
         }
       }
     } catch (e) {
-      print('Error extending queue: $e');
+      debugPrint('Error extending queue: $e');
     } finally {
       _isGeneratingQueue = false;
     }
@@ -445,7 +479,7 @@ class AntiiqAudioHandler extends BaseAudioHandler
           );
       }
     } catch (e) {
-      print('Error generating from context: $e');
+      debugPrint('Error generating from context: $e');
     }
 
     return null;
@@ -495,7 +529,7 @@ class AntiiqAudioHandler extends BaseAudioHandler
         autoPlay: false,
       );
     } catch (e) {
-      print('Error generating from history: $e');
+      debugPrint('Error generating from history: $e');
     }
 
     return null;
@@ -529,17 +563,20 @@ class AntiiqAudioHandler extends BaseAudioHandler
   // ============================================================================
 
   /// Play a track immediately (add to front of queue and skip to it)
+  @override
   Future<void> playTrackNow(MediaItem item) async {
     await insertQueueItem(0, item);
     await skipToQueueItem(0);
   }
 
   /// Add track to play next (after current track)
+  @override
   Future<void> playTrackNext(MediaItem item) async {
     await insertQueueItem(0, item);
   }
 
   /// Replace queue and start playing from beginning
+  @override
   Future<void> playNewQueue(List<MediaItem> items) async {
     await updateQueue(items, initialIndex: 0);
     await play();
@@ -548,9 +585,9 @@ class AntiiqAudioHandler extends BaseAudioHandler
   /// Get debug information
   void printQueueDebugInfo() {
     final info = getQueueDebugInfo();
-    print('=== Queue Debug Info ===');
+    debugPrint('=== Queue Debug Info ===');
     info.forEach((key, value) {
-      print('$key: $value');
+      debugPrint('$key: $value');
     });
   }
 

@@ -3,6 +3,7 @@ import 'package:antiiq/player/screens/settings/about.dart';
 import 'package:antiiq/player/screens/settings/backup_restore.dart';
 import 'package:antiiq/player/screens/settings/behaviour.dart';
 import 'package:antiiq/player/screens/settings/library.dart';
+import 'package:antiiq/player/screens/settings/playback.dart';
 import 'package:antiiq/player/screens/settings/user_interface.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
@@ -120,6 +121,12 @@ settingsPages(context) => {
         "cardTheme": AntiiQTheme.of(context).cardThemes.background,
         "icon": RemixIcon.play,
         "page": const Behaviour(),
+      },
+      "Playback": {
+        "color": AntiiQTheme.of(context).colorScheme.secondary,
+        "cardTheme": AntiiQTheme.of(context).cardThemes.background,
+        "icon": RemixIcon.surround_sound,
+        "page": const Playback(),
       },
       "Backup/Restore": {
         "color": AntiiQTheme.of(context).colorScheme.onSurface,

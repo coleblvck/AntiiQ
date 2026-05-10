@@ -1,28 +1,48 @@
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/state/audio_preferences.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/widgets/ui/antiiq_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_round_slider/flutter_round_slider.dart';
-import 'package:just_audio/just_audio.dart';
 
 class Equalizer extends StatefulWidget {
-  const Equalizer({
-    super.key,
-  });
+  const Equalizer({super.key});
 
   @override
   State<Equalizer> createState() => _EqualizerState();
 }
 
 class _EqualizerState extends State<Equalizer> {
-  final AndroidEqualizer equalizer = globalAntiiqAudioHandler.equalizer;
-  final AndroidLoudnessEnhancer loudnessEnhancer =
-      globalAntiiqAudioHandler.loudnessEnhancer;
-  final AudioPlayer audioPlayer = globalAntiiqAudioHandler.audioPlayer;
+  bool _eqEnabled = false;
+
+  AudioPreferences get _preferences => antiiqState.audioSetup.preferences;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final enabled = await antiiqState.store.get(
+      'equalizerEnabled',
+      defaultValue: false,
+    );
+    if (!mounted) return;
+    setState(() => _eqEnabled = enabled);
+  }
+
+  Future<void> _setEqEnabled(bool enabled) async {
+    setState(() => _eqEnabled = enabled);
+    await _preferences.setEqualizerEnabled(enabled);
+    await _preferences.setBands();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = AntiiQTheme.of(context);
+    final audioPlayer = antiiqState.audioSetup.audioHandler.audioPlayer;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -30,271 +50,232 @@ class _EqualizerState extends State<Equalizer> {
           Expanded(
             child: Row(
               children: [
-                Expanded(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      StreamBuilder<double>(
-                          stream: loudnessEnhancer.targetGainStream,
-                          builder: (context, snapshot) {
-                            final targetGain = snapshot.data ?? 0.0;
-                            return RoundSlider(
-                              style: RoundSliderStyle(
-                                visibleFactor: 1,
-                                radius: 70,
-                                stepLineCount: 30,
-                                glowDistance: 100,
-                                borderColor: targetGain == 0.0
-                                    ? AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .primary
-                                    : Colors.white,
-                                lineColor: AntiiQTheme.of(context)
-                                    .colorScheme
-                                    .secondary,
-                              ),
-                              value: targetGain,
-                              onChanged: (value) {
-                                setState(() {
-                                  loudnessEnhancer.setTargetGain(value);
-                                });
-                              },
-                            );
-                          }),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Gain!",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color:
-                                  AntiiQTheme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                          StreamBuilder<bool>(
-                              stream: loudnessEnhancer.enabledStream,
-                              builder: (context, snapshot) {
-                                final bool enabled = snapshot.data ?? false;
-                                return Switch(
-                                  activeTrackColor: AntiiQTheme.of(context)
-                                      .colorScheme
-                                      .primary,
-                                  activeColor: AntiiQTheme.of(context)
-                                      .colorScheme
-                                      .onPrimary,
-                                  value: enabled,
-                                  onChanged: (value) {
-                                    loudnessEnhancer.setEnabled(value);
-                                  },
-                                );
-                              })
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
                 StreamBuilder<double>(
-                    stream: audioPlayer.pitchStream,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Text("Unavailable");
-                      }
-                      final double pitchValue = snapshot.data!;
-                      return Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onDoubleTap: () {
-                              audioPlayer.setPitch(1.0);
-                            },
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Text(
-                                  "Pitch",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .primary,
+                  stream: audioPlayer.speedStream,
+                  builder: (context, snapshot) {
+                    final double speed = snapshot.data ?? audioPlayer.speed;
+                    final normalizedSpeed = ((speed - 0.5) / 1.0).clamp(
+                      0.0,
+                      1.0,
+                    );
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onDoubleTap: () {
+                            audioPlayer.setSpeed(1.0);
+                          },
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Speed",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: theme.colorScheme.primary,
+                                    ),
                                   ),
-                                ),
-                                RoundSlider(
-                                  style: RoundSliderStyle(
-                                    visibleFactor: 1,
-                                    lineStroke: 5,
-                                    borderStroke: 5,
-                                    lineLengths: [5, 10, 25],
-                                    radius: 70,
-                                    friction: 2,
-                                    borderColor: AntiiQTheme.of(context)
-                                        .colorScheme
-                                        .secondary,
-                                    lineColor: pitchValue == 1.0
-                                        ? AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .primary
-                                        : Colors.white,
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "${speed.toStringAsFixed(1)}x",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: theme.colorScheme.onBackground,
+                                    ),
                                   ),
-                                  value: pitchValue / 2,
-                                  onChanged: (value) {
-                                    if (value != 0.0) {
-                                      audioPlayer.setPitch(value * 2);
-                                    } else {
-                                      audioPlayer.setPitch(0.02);
-                                    }
-                                  },
+                                ],
+                              ),
+                              RoundSlider(
+                                style: RoundSliderStyle(
+                                  visibleFactor: 1,
+                                  lineStroke: 5,
+                                  borderStroke: 5,
+                                  lineLengths: const [5, 10, 25],
+                                  radius: 70,
+                                  friction: 2,
+                                  borderColor: theme.colorScheme.secondary,
+                                  lineColor: speed == 1.0
+                                      ? theme.colorScheme.primary
+                                      : Colors.white,
                                 ),
-                              ],
-                            ),
+                                value: normalizedSpeed,
+                                onChanged: (value) {
+                                  audioPlayer.setSpeed(0.5 + value);
+                                },
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    }),
+                      ),
+                    );
+                  },
+                ),
+                StreamBuilder<double>(
+                  stream: audioPlayer.pitchStream,
+                  builder: (context, snapshot) {
+                    final double pitchValue =
+                        snapshot.data ?? audioPlayer.pitch;
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onDoubleTap: () {
+                            audioPlayer.setPitch(1.0);
+                          },
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Pitch",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "${(pitchValue * 100).round()}%",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: theme.colorScheme.onBackground,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              RoundSlider(
+                                style: RoundSliderStyle(
+                                  visibleFactor: 1,
+                                  lineStroke: 5,
+                                  borderStroke: 5,
+                                  lineLengths: const [5, 10, 25],
+                                  radius: 70,
+                                  friction: 2,
+                                  borderColor: theme.colorScheme.secondary,
+                                  lineColor: pitchValue == 1.0
+                                      ? theme.colorScheme.primary
+                                      : Colors.white,
+                                ),
+                                value: pitchValue / 2,
+                                onChanged: (value) {
+                                  audioPlayer.setPitch(
+                                    value == 0.0 ? 0.5 : value * 2,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
-          SizedBox(
-            height: 40, // Increased to accommodate larger track height
+          const SizedBox(height: 8),
+          Container(
+            height: 46,
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.background.withValues(alpha: 0.26),
+              borderRadius: BorderRadius.circular(generalRadius),
+              border: Border.all(
+                color: theme.colorScheme.primary.withValues(alpha: 0.45),
+              ),
+            ),
             child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: CustomButton(
-                    style: AntiiQTheme.of(context).buttonStyles.style3,
-                    function: () {
-                      audioPlayer.setSpeed(1.0);
-                    },
-                    child: const Text(
-                      "Speed:",
+                Expanded(
+                  child: Text(
+                    "Equalizer",
+                    style: TextStyle(
+                      color: theme.colorScheme.onBackground,
+                      fontSize: 16,
                     ),
                   ),
                 ),
-                StreamBuilder<double>(
-                    stream: audioPlayer.speedStream,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Text("Unavailable");
-                      }
-                      double speed = snapshot.data!;
-                      return Expanded(
-                        child: AntiiQSlider(
-                          min: 10,
-                          max: 30,
-                          value: speed * 20,
-                          activeTrackColor:
-                              AntiiQTheme.of(context).colorScheme.secondary,
-                          inactiveTrackColor:
-                              AntiiQTheme.of(context).colorScheme.primary,
-                          thumbColor: speed == 1.0
-                              ? AntiiQTheme.of(context).colorScheme.onPrimary
-                              : Colors.white,
-                          thumbWidth: 30.0,
-                          thumbHeight: 16.0,
-                          thumbBorderRadius: generalRadius / 2,
-                          trackHeight:
-                              20.0,
-                          trackBorderRadius: generalRadius - 6,
-                          orientation: Axis.horizontal,
-                          selectByTap: true,
-                          onChangeEnd: (value) {
-                            audioPlayer.setSpeed(value / 20);
-                          },
-                        ),
-                      );
-                    }),
+                Switch(
+                  value: _eqEnabled,
+                  activeThumbColor: theme.colorScheme.secondary,
+                  inactiveThumbColor: theme.colorScheme.primary,
+                  inactiveTrackColor:
+                      theme.colorScheme.primary.withValues(alpha: 0.28),
+                  onChanged: _setEqEnabled,
+                ),
               ],
             ),
           ),
-          StreamBuilder<bool>(
-            stream: equalizer.enabledStream,
-            builder: (context, snapshot) {
-              final enabled = snapshot.data ?? false;
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "EQ",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: AntiiQTheme.of(context).colorScheme.secondary,
+          const SizedBox(height: 8),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (int i = 0;
+                      i < AudioPreferences.defaultBandFrequencies.length;
+                      i++)
+                    SizedBox(
+                      width: 54,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: AntiiQSlider(
+                                min: -12,
+                                max: 12,
+                                value: _preferences.bandGains[i],
+                                activeTrackColor: theme.colorScheme.secondary,
+                                inactiveTrackColor: theme.colorScheme.primary,
+                                thumbColor: theme.colorScheme.onPrimary,
+                                thumbWidth: 16.0,
+                                thumbHeight: 30.0,
+                                thumbBorderRadius: generalRadius - 6,
+                                trackHeight: 20.0,
+                                trackBorderRadius: generalRadius - 6,
+                                orientation: Axis.vertical,
+                                selectByTap: true,
+                                onChangeEnd: (value) async {
+                                  setState(() {
+                                    _preferences.bandGains[i] = value;
+                                  });
+                                  await _preferences.updateBandGain(i, value);
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              _labelFor(
+                                AudioPreferences.defaultBandFrequencies[i],
+                              ),
+                              style: TextStyle(
+                                color: theme.colorScheme.onBackground,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Switch(
-                      activeTrackColor:
-                          AntiiQTheme.of(context).colorScheme.primary,
-                      activeColor:
-                          AntiiQTheme.of(context).colorScheme.onPrimary,
-                      value: enabled,
-                      onChanged: (value) {
-                        antiiqState.audioSetup.preferences
-                            .setEqualizerEnabled(value);
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          Expanded(
-            child: FutureBuilder<AndroidEqualizerParameters>(
-              future: equalizer.parameters,
-              builder: (context, snapshot) {
-                final parameters = snapshot.data;
-
-                if (parameters == null) {
-                  return const Center(
-                    child: Text("Equalizer not available"),
-                  );
-                }
-                return Row(
-                  children: [
-                    for (var band in parameters.bands)
-                      StreamBuilder<double>(
-                        stream: band.gainStream,
-                        builder: (context, snapshot) {
-                          final double gain = snapshot.data ?? 0.0;
-                          final double minValue = parameters.minDecibels * 100;
-                          final double maxValue = parameters.maxDecibels * 100;
-
-                          return Expanded(
-                            child: AntiiQSlider(
-                              min: minValue,
-                              max: maxValue,
-                              value: gain * 100,
-                              activeTrackColor:
-                                  AntiiQTheme.of(context).colorScheme.secondary,
-                              inactiveTrackColor:
-                                  AntiiQTheme.of(context).colorScheme.primary,
-                              thumbColor:
-                                  AntiiQTheme.of(context).colorScheme.onPrimary,
-                              thumbWidth: 16.0,
-                              thumbHeight: 30.0,
-                              thumbBorderRadius: generalRadius - 6,
-                              trackHeight: 20.0,
-                              trackBorderRadius: generalRadius - 6,
-                              orientation: Axis.vertical,
-                              selectByTap: true,
-                              onChangeEnd: (value) {
-                                band.setGain(value / 100);
-                                antiiqState.audioSetup.preferences
-                                    .saveBandFrequencies();
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                  ],
-                );
-              },
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  String _labelFor(double frequency) {
+    if (frequency >= 1000) {
+      return '${(frequency / 1000).toStringAsFixed(frequency >= 10000 ? 0 : 1)}k';
+    }
+    return frequency.round().toString();
   }
 }

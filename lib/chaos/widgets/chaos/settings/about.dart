@@ -140,7 +140,143 @@ class About extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: chaosBasePadding * 2),
+            const SizedBox(height: chaosBasePadding),
+
+            _SettingContainer(
+              child: GestureDetector(
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  openLink(antiiqCoreUri);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(chaosBasePadding * 1.5),
+                  decoration: BoxDecoration(
+                    color: AntiiQTheme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.12),
+                    border: Border.all(
+                      color: AntiiQTheme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.45),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(innerRadius),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 46,
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: AntiiQTheme.of(context)
+                              .colorScheme
+                              .secondary
+                              .withValues(alpha: 0.18),
+                          borderRadius: BorderRadius.circular(innerRadius),
+                        ),
+                        child: Icon(
+                          RemixIcon.sound_module,
+                          color: AntiiQTheme.of(context).colorScheme.secondary,
+                          size: 22,
+                        ),
+                      ),
+                      const SizedBox(width: chaosBasePadding),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'GET ANTIIQ CORE',
+                              style: TextStyle(
+                                color:
+                                    AntiiQTheme.of(context).colorScheme.primary,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Native Android audio for the full Core experience.',
+                              style: TextStyle(
+                                color: AntiiQTheme.of(context)
+                                    .colorScheme
+                                    .onBackground
+                                    .withValues(alpha: 0.76),
+                                fontSize: 12,
+                                height: 1.35,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        RemixIcon.arrow_right_up,
+                        color: AntiiQTheme.of(context).colorScheme.primary,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: chaosBasePadding),
+
+            _SettingContainer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'NATIVE AUDIO CREDITS',
+                    style: TextStyle(
+                      color: AntiiQTheme.of(context)
+                          .colorScheme
+                          .onBackground
+                          .withValues(alpha: 0.6),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  const SizedBox(height: chaosBasePadding),
+                  Text(
+                    'AntiiQ 2.0 uses FFmpeg for broad audio format support and SoundTouch for speed and pitch processing.',
+                    style: TextStyle(
+                      color: AntiiQTheme.of(context)
+                          .colorScheme
+                          .onBackground
+                          .withValues(alpha: 0.78),
+                      fontSize: 12,
+                      height: 1.45,
+                    ),
+                  ),
+                  const SizedBox(height: chaosBasePadding * 1.5),
+                  Wrap(
+                    spacing: chaosBasePadding,
+                    runSpacing: chaosBasePadding,
+                    children: [
+                      _ChaosCreditLink(
+                        label: 'FFMPEG BUILD/SOURCE',
+                        uri: ffmpegUri,
+                      ),
+                      _ChaosCreditLink(
+                        label: 'SOUNDTOUCH SOURCE',
+                        uri: soundTouchUri,
+                      ),
+                      _ChaosCreditLink(
+                        label: 'ANTIIQ SOURCE',
+                        uri: antiiqSourceUri,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: chaosBasePadding),
 
             // Changelog section
             const _SectionDivider(label: 'CHANGELOG'),
@@ -482,6 +618,57 @@ class _SocialButton extends StatelessWidget {
           icon,
           color: AntiiQTheme.of(context).colorScheme.primary,
           size: 20,
+        ),
+      ),
+    );
+  }
+}
+
+class _ChaosCreditLink extends StatelessWidget {
+  const _ChaosCreditLink({
+    required this.label,
+    required this.uri,
+  });
+
+  final String label;
+  final Uri uri;
+
+  @override
+  Widget build(BuildContext context) {
+    final chaosUIState = context.watch<ChaosUIState>();
+    final innerRadius = chaosUIState.getAdjustedRadius(4);
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        openLink(uri);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: chaosBasePadding * 1.25,
+          vertical: chaosBasePadding,
+        ),
+        decoration: BoxDecoration(
+          color: AntiiQTheme.of(context)
+              .colorScheme
+              .primary
+              .withValues(alpha: 0.1),
+          border: Border.all(
+            color: AntiiQTheme.of(context)
+                .colorScheme
+                .primary
+                .withValues(alpha: 0.35),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(innerRadius),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: AntiiQTheme.of(context).colorScheme.primary,
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.2,
+          ),
         ),
       ),
     );

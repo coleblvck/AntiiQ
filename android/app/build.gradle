@@ -31,8 +31,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.coleblvck.antiiq"
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion "26.1.10909125"
+    compileSdkVersion 36
+    ndkVersion "28.2.13676358"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -45,11 +45,12 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        main.jniLibs.srcDirs = ['src/main/jniLibs']
     }
 
     defaultConfig {
-        def minimumApiVersion = 21
-        def androidApiVersion = 34
+        def minimumApiVersion = 24
+        def androidApiVersion = 36
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.coleblvck.antiiq"
         // You can update the following values to match your application needs.
@@ -59,6 +60,13 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
+
+        externalNativeBuild {
+            cmake {
+                cppFlags '-std=c++17'
+                arguments '-DANDROID_STL=c++_shared', '-DANDROID_PLATFORM=android-24'
+            }
+        }
     }
     
     signingConfigs {
@@ -72,11 +80,26 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
         }
     }
 
     buildFeatures {
         compose true
+    }
+
+    packagingOptions {
+        jniLibs {
+            excludes += ['lib/x86/**', 'lib/x86_64/**']
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
     }
 
     dependenciesInfo {

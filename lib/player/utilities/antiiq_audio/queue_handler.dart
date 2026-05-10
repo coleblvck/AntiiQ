@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:antiiq/player/global_variables.dart';
 import 'package:audio_service/audio_service.dart';
-import 'package:just_audio/just_audio.dart';
 
 /// A cleaner queue management system for AntiiQ.
 ///
@@ -94,8 +93,10 @@ mixin AntiiqQueueHandler on BaseAudioHandler {
   /// Stop the current audio player
   Future<void> stopPlayer();
 
-  /// Get the current audio player instance
-  AudioPlayer get audioPlayer;
+  Duration get currentPosition;
+  Future<void> seekCurrent(Duration position);
+  Future<void> resumeCurrent();
+  Future<void> syncNativeUpcomingQueue(List<MediaItem> upcomingQueue);
 
   // ============================================================================
   // QUEUE MANIPULATION
@@ -277,8 +278,8 @@ mixin AntiiqQueueHandler on BaseAudioHandler {
   Future<void> skipToPrevious() async {
     //TODO REMOVE GLOBAL VARIABLE FROM HERE
     if (previousRestart) {
-      if (audioPlayer.position > const Duration(seconds: 5)) {
-        await audioPlayer.seek(Duration.zero);
+      if (currentPosition > const Duration(seconds: 5)) {
+        await seekCurrent(Duration.zero);
       } else {
         await _playPrevious();
       }
@@ -299,8 +300,8 @@ mixin AntiiqQueueHandler on BaseAudioHandler {
   Future<void> _playNext() async {
     // Handle repeat one - just replay current
     if (_repeatMode == AudioServiceRepeatMode.one && _currentItem != null) {
-      await audioPlayer.seek(Duration.zero);
-      await audioPlayer.play();
+      await seekCurrent(Duration.zero);
+      await resumeCurrent();
       return;
     }
 
@@ -367,7 +368,7 @@ mixin AntiiqQueueHandler on BaseAudioHandler {
     // Check if there's a previous item in session history
     if (_sessionHistory.isEmpty) {
       if (_currentItem != null) {
-        await audioPlayer.seek(Duration.zero);
+        await seekCurrent(Duration.zero);
       }
       return;
     }
@@ -522,11 +523,36 @@ mixin AntiiqQueueHandler on BaseAudioHandler {
   void _broadcastQueue() {
     // Broadcast ONLY upcoming queue (not current item)
     queue.add(upcomingQueue);
+    syncNativeUpcomingQueue(upcomingQueue);
 
     // Update media item separately
     if (_currentItem != null) {
       mediaItem.add(_currentItem);
     }
+  }
+
+  Future<void> acceptNativeTransition(String trackId) async {
+    if (_currentItem != null) {
+      _addToHistory(_currentItem!);
+      _addToSessionHistory(_currentItem!);
+    }
+
+    final index = _upcomingQueue.indexWhere((item) {
+      final extraId = item.extras?["id"]?.toString();
+      return extraId == trackId || item.id == trackId;
+    });
+    if (index == -1) return;
+
+    for (int i = 0; i < index; i++) {
+      _addToHistory(_upcomingQueue.removeAt(0));
+    }
+
+    _currentItem = _upcomingQueue.removeAt(0);
+    if (_originalQueueOrder != null) {
+      _originalQueueOrder!.remove(_currentItem);
+    }
+
+    _broadcastQueue();
   }
 
   /// Get debug information about queue state

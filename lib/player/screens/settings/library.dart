@@ -59,6 +59,8 @@ class _LibraryState extends State<Library> {
   fullRescan() async {
     antiiqState.dataIsInitialized = false;
     await antiiqState.store.put("dataInit", false);
+    await antiiqState.store.delete(MainBoxKeys.libraryMetadataCache);
+    await antiiqState.store.delete(MainBoxKeys.libraryCacheSignature);
     Restart.restartApp();
   }
 
@@ -208,8 +210,32 @@ class _LibraryState extends State<Library> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Minimum Track Length Filter:",
+                                style: AntiiQTheme.of(context)
+                                    .textStyles
+                                    .onSurfaceText,
+                              ),
+                            ),
+                            Switch(
+                              activeTrackColor:
+                                  AntiiQTheme.of(context).colorScheme.primary,
+                              activeThumbColor:
+                                  AntiiQTheme.of(context).colorScheme.onPrimary,
+                              value: minimumTrackLengthEnabled,
+                              onChanged: (value) {
+                                setState(() {
+                                  setMinimumTrackLengthEnabled(value);
+                                });
+                              },
+                            ),
+                          ],
+                        ),
                         Text(
-                          "Minimum Track Length: $minimumTrackLength seconds",
+                          "$minimumTrackLength seconds",
                           style:
                               AntiiQTheme.of(context).textStyles.onSurfaceText,
                         ),

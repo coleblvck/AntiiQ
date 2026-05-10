@@ -14,6 +14,21 @@ class Version {
 
 List<Version> versions = [
   const Version(
+    version: "2.0.0",
+    title: "Audiophile",
+    date: "10-MAY-2026",
+    changes: [
+      "- New native audio discovery, metadata reading, and playback engine",
+      "- Broader local audio file support through FFmpeg-backed scanning and playback",
+      "- Gapless playback and crossfade support",
+      "- 15-band parametric equalizer",
+      "- Speed and pitch controls",
+      "- Chaos UI is now enabled by default for new installs",
+      "- Improved library scanning and scan progress handling",
+      "- Initial Play Store listing",
+    ],
+  ),
+  const Version(
     version: "1.7.0",
     title: "Audiophile",
     date: "27-OCT-2025",

@@ -10,9 +10,13 @@ class MainBoxKeys {
   static const String userTheme = "currentTheme";
   static const String includedPaths = "libraryPaths";
   static const String minimumTrackLength = "minimumTrackLength";
+  static const String minimumTrackLengthEnabled = "minimumTrackLengthEnabled";
   static const String previousRestart = "previousRestart";
   static const String eqEnabledStorage = "equalizerEnabled";
   static const String bandFrequencyStorage = "bandFreqs";
+  static const String gaplessEnabled = "gaplessEnabled";
+  static const String crossfadeEnabled = "crossfadeEnabled";
+  static const String crossfadeDurationMs = "crossfadeDurationMs";
   static const String loopModeStorage = "loopMode";
   static const String shuffleModeStorage = "shuffleMode";
   static const String swipeGestures = "swipeGestures";
@@ -37,15 +41,26 @@ class MainBoxKeys {
       "additionalMiniPlayerControls";
   static const String dashboardViewOrder = "dashboardViewOrder";
   static const String endlessPlayEnabled = "endlessPlayEnabled";
+  static const String libraryMetadataCache = "libraryMetadataCacheV2";
+  static const String libraryCacheSignature = "libraryCacheSignatureV2";
 }
 
 updateDirectories() async {
   await antiiqState.store.put(MainBoxKeys.includedPaths, specificPathsToQuery);
+  await antiiqState.store.delete(MainBoxKeys.libraryMetadataCache);
+  await antiiqState.store.delete(MainBoxKeys.libraryCacheSignature);
+  await antiiqState.store.put("dataInit", false);
+  antiiqState.dataIsInitialized = false;
 }
 
 setMinimumTrackLength(int length) async {
   minimumTrackLength = length;
   await antiiqState.store.put(MainBoxKeys.minimumTrackLength, length);
+}
+
+setMinimumTrackLengthEnabled(bool enabled) async {
+  minimumTrackLengthEnabled = enabled;
+  await antiiqState.store.put(MainBoxKeys.minimumTrackLengthEnabled, enabled);
 }
 
 setGeneralRadius(double radius) async {
@@ -91,6 +106,7 @@ initializeUserSettings() async {
   await themeInit();
   await getUserLibraryDirectories();
   await getMinimumTrackLength();
+  await getMinimumTrackLengthEnabled();
   await getGeneralRadius();
   await getPreviousButtonAction();
   await getSwipeGestures();
@@ -110,6 +126,11 @@ getUserLibraryDirectories() async {
 getMinimumTrackLength() async {
   minimumTrackLength = await antiiqState.store
       .get(MainBoxKeys.minimumTrackLength, defaultValue: 45);
+}
+
+getMinimumTrackLengthEnabled() async {
+  minimumTrackLengthEnabled = await antiiqState.store
+      .get(MainBoxKeys.minimumTrackLengthEnabled, defaultValue: false);
 }
 
 getGeneralRadius() async {

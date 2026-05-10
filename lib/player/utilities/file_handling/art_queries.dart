@@ -25,7 +25,8 @@ getDefaultArt() async {
 
 setDefaultArt() async {
   if (antiiqState.dataIsInitialized) {
-    defaultArtUri = Uri.file("${antiiqDirectory.path}/coverarts/defaultart.jpeg");
+    defaultArtUri =
+        Uri.file("${antiiqDirectory.path}/coverarts/defaultart.jpeg");
   } else {
     defaultArtUri = await getDefaultArt();
   }
@@ -54,10 +55,7 @@ void setAlbumArtByKey(dynamic key, Uri uri) {
   }
 }
 
-// Legacy functions for backward compatibility with on_audio_query
 Future<Uint8List?> getSongArtBytes(int id) async {
-  // This would need on_audio_query - kept for reference only
-  // You can remove this if not needed
   return null;
 }
 
@@ -78,8 +76,6 @@ Uri directSongArtPath(int id) {
 }
 
 Future<Uint8List?> getAlbumArtBytes(int id) async {
-  // This would need on_audio_query - kept for reference only
-  // You can remove this if not needed
   return null;
 }
 
@@ -87,7 +83,7 @@ Future<Uri> getAlbumArt(dynamic id, String pathOfSong) async {
   // Support both int (legacy) and String (new) keys
   final String idString = id is int ? id.toString() : id as String;
   final artFilePath = "${antiiqDirectory.path}/coverarts/albums/$idString.jpeg";
-  
+
   if (!antiiqState.dataIsInitialized) {
     Uint8List? art = await getAlbumArtBytes(id is int ? id : 0);
     art ??= await getDirectoryArt(pathOfSong) ?? await defaultArt();
@@ -126,10 +122,10 @@ Future<Uint8List?> getDirectoryArt(String pathOfSong) async {
   Directory dir = File(pathOfSong).parent;
   Uint8List? artToReturn;
   List<FileSystemEntity> allDirFiles = getAllDirectoryFiles(dir);
-  
+
   for (FileSystemEntity dirFile in allDirFiles) {
     if (dirFile is File) {
-      if (lookupMimeType(dirFile.path) != null && 
+      if (lookupMimeType(dirFile.path) != null &&
           lookupMimeType(dirFile.path)!.contains("image")) {
         artToReturn = await dirFile.readAsBytes();
         break;

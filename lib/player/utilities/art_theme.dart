@@ -5,23 +5,33 @@ import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:flutter/material.dart';
 
 Future<AntiiQColorScheme> getArtTheme(Uri artUri) async {
-  ColorScheme dynamicColors = await ColorScheme.fromImageProvider(
-    provider: FileImage(File(artUri.toFilePath())),
-    brightness: Brightness.dark,
-  );
+  final fallbackTheme = currentColorScheme;
+  try {
+    final artFile = File(artUri.toFilePath());
+    if (!await artFile.exists()) {
+      return fallbackTheme;
+    }
 
-  return AntiiQColorScheme(
-    primary: dynamicColors.primary,
-    onPrimary: dynamicColors.onPrimary,
-    secondary: dynamicColors.tertiary,
-    onSecondary: dynamicColors.onTertiary,
-    surface: dynamicColors.secondaryContainer,
-    onSurface: dynamicColors.onSecondaryContainer,
-    background: Colors.black /*: dynamicColors.surface*/,
-    onBackground: dynamicColors.onSurface,
-    error: generalErrorColor,
-    onError: generalOnErrorColor,
-    brightness: Brightness.dark,
-    colorSchemeType: ColorSchemeType.dynamic,
-  );
+    ColorScheme dynamicColors = await ColorScheme.fromImageProvider(
+      provider: FileImage(artFile),
+      brightness: Brightness.dark,
+    ).timeout(const Duration(seconds: 3));
+
+    return AntiiQColorScheme(
+      primary: dynamicColors.primary,
+      onPrimary: dynamicColors.onPrimary,
+      secondary: dynamicColors.tertiary,
+      onSecondary: dynamicColors.onTertiary,
+      surface: dynamicColors.secondaryContainer,
+      onSurface: dynamicColors.onSecondaryContainer,
+      background: Colors.black /*: dynamicColors.surface*/,
+      onBackground: dynamicColors.onSurface,
+      error: generalErrorColor,
+      onError: generalOnErrorColor,
+      brightness: Brightness.dark,
+      colorSchemeType: ColorSchemeType.dynamic,
+    );
+  } catch (_) {
+    return fallbackTheme;
+  }
 }

@@ -1,13 +1,13 @@
+import 'dart:math' as math;
+
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
+import 'package:antiiq/player/state/audio_preferences.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
-import 'dart:math' as math;
 
 class ChaosEqualizer extends StatefulWidget {
   const ChaosEqualizer({super.key});
@@ -18,12 +18,11 @@ class ChaosEqualizer extends StatefulWidget {
 
 class _ChaosEqualizerState extends State<ChaosEqualizer>
     with TickerProviderStateMixin {
-  late AnimationController _glitchController;
-  late AnimationController _floatingController;
+  late final AnimationController _glitchController;
+  late final AnimationController _floatingController;
+  bool _eqEnabled = false;
 
-  final AndroidEqualizer equalizer = globalAntiiqAudioHandler.equalizer;
-  final AndroidLoudnessEnhancer loudnessEnhancer = globalAntiiqAudioHandler.loudnessEnhancer;
-  final AudioPlayer audioPlayer = globalAntiiqAudioHandler.audioPlayer;
+  AudioPreferences get _preferences => antiiqState.audioSetup.preferences;
 
   @override
   void initState() {
@@ -36,6 +35,16 @@ class _ChaosEqualizerState extends State<ChaosEqualizer>
       duration: const Duration(seconds: 8),
       vsync: this,
     )..repeat();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final enabled = await antiiqState.store.get(
+      'equalizerEnabled',
+      defaultValue: false,
+    );
+    if (!mounted) return;
+    setState(() => _eqEnabled = enabled);
   }
 
   @override
@@ -53,7 +62,6 @@ class _ChaosEqualizerState extends State<ChaosEqualizer>
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
-    final radius = chaosUIState.chaosRadius;
     final innerRadius = chaosUIState.getAdjustedRadius(2);
 
     return AnimatedBuilder(
@@ -66,11 +74,11 @@ class _ChaosEqualizerState extends State<ChaosEqualizer>
               padding: const EdgeInsets.all(chaosBasePadding),
               child: Column(
                 children: [
-                  _buildHeader(radius, innerRadius),
+                  _buildHeader(innerRadius),
                   const SizedBox(height: chaosBasePadding * 2),
-                  _buildControlSection(radius, innerRadius),
+                  _buildControlSection(innerRadius),
                   const SizedBox(height: chaosBasePadding * 2),
-                  _buildEqualizerSection(radius, innerRadius),
+                  _buildEqualizerSection(innerRadius),
                 ],
               ),
             ),
@@ -81,48 +89,46 @@ class _ChaosEqualizerState extends State<ChaosEqualizer>
   }
 
   Widget _buildFloatingElements() {
+    final indicators = [
+      ('48kHz', 0.85, 0.1, -0.008),
+      ('24bit', 0.1, 0.15, 0.012),
+      ('+12dB', 0.9, 0.4, -0.015),
+      ('15BAND', 0.05, 0.7, 0.008),
+      ('FFMPEG', 0.78, 0.82, -0.01),
+    ];
+
     return Positioned.fill(
       child: Stack(
-        children: _buildFloatingIndicators(),
+        children: indicators.map((indicator) {
+          final offset = math.sin(
+                _floatingController.value * 2 * math.pi + indicator.$4 * 10,
+              ) *
+              2;
+          return Positioned(
+            left: MediaQuery.of(context).size.width * indicator.$2,
+            top: MediaQuery.of(context).size.height * indicator.$3 + offset,
+            child: Transform.rotate(
+              angle: indicator.$4,
+              child: Opacity(
+                opacity: 0.3,
+                child: Text(
+                  indicator.$1,
+                  style: TextStyle(
+                    color: AntiiQTheme.of(context).colorScheme.secondary,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
 
-  List<Widget> _buildFloatingIndicators() {
-    final indicators = [
-      ('48kHz', 0.85, 0.1, -0.008),
-      ('24bit', 0.1, 0.15, 0.012),
-      ('∞dB', 0.9, 0.4, -0.015),
-      ('±12dB', 0.05, 0.7, 0.008),
-      ('THD+N', 0.8, 0.8, -0.01),
-    ];
-
-    return indicators.map((indicator) {
-      final offset = math.sin(
-              _floatingController.value * 2 * math.pi + indicator.$4 * 10) * 2;
-      return Positioned(
-        left: MediaQuery.of(context).size.width * indicator.$2,
-        top: MediaQuery.of(context).size.height * indicator.$3 + offset,
-        child: Transform.rotate(
-          angle: indicator.$4,
-          child: Opacity(
-            opacity: 0.3,
-            child: Text(
-              indicator.$1,
-              style: TextStyle(
-                color: AntiiQTheme.of(context).colorScheme.secondary,
-                fontSize: 10,
-                fontWeight: FontWeight.w300,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  Widget _buildHeader(double radius, double innerRadius) {
+  Widget _buildHeader(double innerRadius) {
     final glitchOffset = _glitchController.isAnimating
         ? Offset(
             _glitchController.value * (math.Random().nextDouble() * 4 - 2),
@@ -153,7 +159,10 @@ class _ChaosEqualizerState extends State<ChaosEqualizer>
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: AntiiQTheme.of(context).colorScheme.primary.withValues(alpha: 0.6),
+                  color: AntiiQTheme.of(context)
+                      .colorScheme
+                      .primary
+                      .withValues(alpha: 0.6),
                   width: 1,
                 ),
                 borderRadius: BorderRadius.circular(innerRadius),
@@ -174,179 +183,117 @@ class _ChaosEqualizerState extends State<ChaosEqualizer>
     );
   }
 
-  Widget _buildControlSection(double radius, double innerRadius) {
+  Widget _buildControlSection(double innerRadius) {
+    final audioPlayer = antiiqState.audioSetup.audioHandler.audioPlayer;
     return Column(
       children: [
-        _buildGainSlider(radius, innerRadius),
-        const SizedBox(height: chaosBasePadding),
-        _buildPitchSlider(radius, innerRadius),
-        const SizedBox(height: chaosBasePadding),
-        _buildSpeedSlider(radius, innerRadius),
-      ],
-    );
-  }
-
-  Widget _buildGainSlider(double radius, double innerRadius) {
-    return StreamBuilder<double>(
-      stream: loudnessEnhancer.targetGainStream,
-      builder: (context, gainSnapshot) {
-        final targetGain = gainSnapshot.data ?? 0.0;
-        return StreamBuilder<bool>(
-          stream: loudnessEnhancer.enabledStream,
-          builder: (context, enabledSnapshot) {
-            final enabled = enabledSnapshot.data ?? false;
-            return _buildControlSlider(
-              'GAIN BOOST',
-              targetGain,
-              (value) {
-                loudnessEnhancer.setTargetGain(value);
+        StreamBuilder<double>(
+          stream: audioPlayer.pitchStream,
+          builder: (context, snapshot) {
+            final pitch = snapshot.data ?? audioPlayer.pitch;
+            return GestureDetector(
+              onDoubleTap: () {
+                audioPlayer.setPitch(1.0);
                 _triggerGlitch();
               },
-              AntiiQTheme.of(context).colorScheme.secondary,
-              '${(targetGain * 30).toInt()}dB',
-              radius,
-              innerRadius,
-              hasSwitch: true,
-              switchValue: enabled,
-              onSwitchChanged: (value) {
-                loudnessEnhancer.setEnabled(value);
-                _triggerGlitch();
-              },
+              child: _buildControlSlider(
+                'PITCH SHIFT',
+                pitch / 2,
+                (value) {
+                  audioPlayer.setPitch(value == 0.0 ? 0.5 : value * 2);
+                  _triggerGlitch();
+                },
+                AntiiQTheme.of(context).colorScheme.primary,
+                '${(pitch * 100).toInt()}%',
+                innerRadius,
+                centerValue: 0.5,
+                subtitle: 'DOUBLE TAP: RESET',
+              ),
             );
           },
-        );
-      },
-    );
-  }
-
-  Widget _buildPitchSlider(double radius, double innerRadius) {
-    return StreamBuilder<double>(
-      stream: audioPlayer.pitchStream,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const SizedBox.shrink();
-        }
-        final pitchValue = snapshot.data!;
-        return GestureDetector(
-          onDoubleTap: () {
-            audioPlayer.setPitch(1.0);
-            _triggerGlitch();
+        ),
+        const SizedBox(height: chaosBasePadding),
+        StreamBuilder<double>(
+          stream: audioPlayer.speedStream,
+          builder: (context, snapshot) {
+            final speed = snapshot.data ?? audioPlayer.speed;
+            final normalizedSpeed = ((speed - 0.5) / 1.0).clamp(0.0, 1.0);
+            return GestureDetector(
+              onDoubleTap: () {
+                audioPlayer.setSpeed(1.0);
+                _triggerGlitch();
+              },
+              child: _buildControlSlider(
+                'SPEED',
+                normalizedSpeed,
+                (value) {
+                  audioPlayer.setSpeed(0.5 + value);
+                  _triggerGlitch();
+                },
+                AntiiQTheme.of(context).colorScheme.error,
+                '${speed.toStringAsFixed(1)}x',
+                innerRadius,
+                centerValue: 0.5,
+                subtitle: 'DBL TAP: RESET',
+              ),
+            );
           },
-          child: _buildControlSlider(
-            'PITCH SHIFT',
-            pitchValue / 2,
-            (value) {
-              audioPlayer.setPitch(value != 0.0 ? value * 2 : 0.02);
-              _triggerGlitch();
-            },
-            AntiiQTheme.of(context).colorScheme.primary,
-            '${(pitchValue * 100).toInt()}%',
-            radius,
-            innerRadius,
-            centerValue: 0.5,
-            subtitle: 'DOUBLE TAP: RESET',
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSpeedSlider(double radius, double innerRadius) {
-    return StreamBuilder<double>(
-      stream: audioPlayer.speedStream,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const SizedBox.shrink();
-        }
-        final speed = snapshot.data!;
-        final normalizedSpeed = (speed - 0.5) / 1.5;
-        return GestureDetector(
-          onDoubleTap: () {
-            audioPlayer.setSpeed(1.0);
-            _triggerGlitch();
-          },
-          child: _buildControlSlider(
-            'SPEED',
-            normalizedSpeed,
-            (value) {
-              audioPlayer.setSpeed(0.5 + (value * 1.5));
-              _triggerGlitch();
-            },
-            AntiiQTheme.of(context).colorScheme.error,
-            '${speed.toStringAsFixed(1)}x',
-            radius,
-            innerRadius,
-            centerValue: 0.33,
-            subtitle: 'DBL TAP: RESET',
-          ),
-        );
-      },
+        ),
+      ],
     );
   }
 
   Widget _buildControlSlider(
     String title,
     double value,
-    Function(double) onChanged,
+    ValueChanged<double> onChanged,
     Color color,
     String label,
-    double radius,
     double innerRadius, {
-    bool hasSwitch = false,
-    bool switchValue = false,
-    Function(bool)? onSwitchChanged,
     double? centerValue,
     String? subtitle,
   }) {
+    final clampedValue = value.clamp(0.0, 1.0);
     return Container(
       height: 44,
-      padding: const EdgeInsets.symmetric(horizontal: chaosBasePadding, vertical: chaosBasePadding),
+      padding: const EdgeInsets.symmetric(
+        horizontal: chaosBasePadding,
+        vertical: chaosBasePadding,
+      ),
       decoration: BoxDecoration(
         color: AntiiQTheme.of(context).colorScheme.background,
-        border: Border.all(
-          color: (hasSwitch && !switchValue)
-              ? AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.2)
-              : color.withValues(alpha: 0.4),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.4), width: 1),
         borderRadius: BorderRadius.circular(innerRadius),
       ),
       child: Row(
         children: [
           SizedBox(
-            width: 85,
+            width: 92,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Transform.rotate(
-                  angle: -0.008,
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: (hasSwitch && !switchValue)
-                          ? AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.5)
-                          : AntiiQTheme.of(context).colorScheme.onBackground,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.8,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: AntiiQTheme.of(context).colorScheme.onBackground,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.8,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 if (subtitle != null)
-                  Transform.rotate(
-                    angle: 0.005,
-                    child: Text(
-                      subtitle,
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.4),
-                        fontSize: 6,
-                        letterSpacing: 0.5,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: AntiiQTheme.of(context)
+                          .colorScheme
+                          .onBackground
+                          .withValues(alpha: 0.4),
+                      fontSize: 6,
+                      letterSpacing: 0.5,
                     ),
                   ),
               ],
@@ -357,65 +304,23 @@ class _ChaosEqualizerState extends State<ChaosEqualizer>
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return GestureDetector(
-                  onPanUpdate: (details) {
-                    if (hasSwitch && !switchValue) return;
-                    final newValue = (details.localPosition.dx / constraints.maxWidth).clamp(0.0, 1.0);
-                    onChanged(newValue);
+                  onTapDown: (details) {
+                    onChanged(
+                      (details.localPosition.dx / constraints.maxWidth)
+                          .clamp(0.0, 1.0),
+                    );
                   },
-                  child: Container(
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: AntiiQTheme.of(context).colorScheme.background.withValues(blue: 0.06, red: 0.06, green: 0.06),
-                      borderRadius: BorderRadius.circular(innerRadius / 2),
-                      border: Border.all(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.1),
-                        width: 0.5,
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
-                        if (centerValue != null)
-                          Positioned(
-                            left: centerValue * constraints.maxWidth - 0.5,
-                            top: 0,
-                            bottom: 0,
-                            child: Container(
-                              width: 1,
-                              color: AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.3),
-                            ),
-                          ),
-                        FractionallySizedBox(
-                          widthFactor: value,
-                          child: Container(
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: (hasSwitch && !switchValue)
-                                  ? AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.2)
-                                  : color,
-                              borderRadius: BorderRadius.circular(innerRadius / 2),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          left: value * (constraints.maxWidth - 16),
-                          top: 2,
-                          child: Container(
-                            width: 16,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: (hasSwitch && !switchValue)
-                                  ? AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.4)
-                                  : color,
-                              borderRadius: BorderRadius.circular(innerRadius / 3),
-                              border: Border.all(
-                                color: AntiiQTheme.of(context).colorScheme.background,
-                                width: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  onPanUpdate: (details) {
+                    onChanged(
+                      (details.localPosition.dx / constraints.maxWidth)
+                          .clamp(0.0, 1.0),
+                    );
+                  },
+                  child: _HorizontalRail(
+                    value: clampedValue,
+                    centerValue: centerValue,
+                    color: color,
+                    innerRadius: innerRadius,
                   ),
                 );
               },
@@ -423,33 +328,15 @@ class _ChaosEqualizerState extends State<ChaosEqualizer>
           ),
           const SizedBox(width: 8),
           SizedBox(
-            width: hasSwitch ? 70 : 45,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      color: (hasSwitch && !switchValue)
-                          ? AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.4)
-                          : color,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (hasSwitch) ...[
-                  const SizedBox(width: 6),
-                  SizedBox(
-                    width: 32,
-                    height: 16,
-                    child: _buildToggleSwitch(switchValue, onSwitchChanged!, innerRadius),
-                  ),
-                ],
-              ],
+            width: 45,
+            child: Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.right,
             ),
           ),
         ],
@@ -457,20 +344,325 @@ class _ChaosEqualizerState extends State<ChaosEqualizer>
     );
   }
 
-  Widget _buildToggleSwitch(bool value, Function(bool) onChanged, double innerRadius) {
+  Widget _buildEqualizerSection(double innerRadius) {
+    return Expanded(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Transform.rotate(
+                angle: -0.008,
+                child: Text(
+                  'FREQUENCY EQUALIZER',
+                  style: TextStyle(
+                    color: AntiiQTheme.of(context).colorScheme.onBackground,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              _MiniSwitch(
+                value: _eqEnabled,
+                innerRadius: innerRadius,
+                onChanged: (value) async {
+                  setState(() => _eqEnabled = value);
+                  await _preferences.setEqualizerEnabled(value);
+                  await _preferences.setBands();
+                  _triggerGlitch();
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: chaosBasePadding * 2),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: List.generate(
+                  AudioPreferences.defaultBandFrequencies.length,
+                  (index) => SizedBox(
+                    width: 48,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: _buildEQBand(index, innerRadius),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEQBand(int index, double innerRadius) {
+    final gain = _preferences.bandGains[index];
+    final normalizedValue = ((gain + 12) / 24).clamp(0.0, 1.0);
+    final color = _getEQColor(gain);
+
+    return Column(
+      children: [
+        Transform.rotate(
+          angle: (index % 2 == 0) ? -0.01 : 0.01,
+          child: Text(
+            _getBandLabel(AudioPreferences.defaultBandFrequencies[index]),
+            style: TextStyle(
+              color: AntiiQTheme.of(context)
+                  .colorScheme
+                  .onBackground
+                  .withValues(alpha: 0.7),
+              fontSize: 8,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final height = constraints.maxHeight;
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapUp: (details) {
+                  _setBandFromDrag(index, details.localPosition.dy, height);
+                },
+                onVerticalDragStart: (details) {
+                  _setBandFromDrag(index, details.localPosition.dy, height);
+                },
+                onVerticalDragUpdate: (details) {
+                  _setBandFromDrag(index, details.localPosition.dy, height);
+                },
+                child: _VerticalRail(
+                  value: normalizedValue,
+                  color: color,
+                  innerRadius: innerRadius,
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 8),
+        Transform.rotate(
+          angle: (index % 3 == 0) ? -0.008 : 0.008,
+          child: Text(
+            gain.toStringAsFixed(1),
+            style: TextStyle(
+              color: color,
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _setBandFromDrag(int index, double y, double height) {
+    final normalized = (1.0 - (y / height)).clamp(0.0, 1.0);
+    final gain = -12.0 + (normalized * 24.0);
+    setState(() => _preferences.bandGains[index] = gain);
+    _preferences.updateBandGain(index, gain);
+  }
+
+  String _getBandLabel(double frequency) {
+    if (frequency < 1000) return '${frequency.toInt()}Hz';
+    return '${(frequency / 1000).toStringAsFixed(1)}kHz';
+  }
+
+  Color _getEQColor(double gain) {
+    if (gain > 1.0) return AntiiQTheme.of(context).colorScheme.secondary;
+    if (gain < -1.0) return AntiiQTheme.of(context).colorScheme.error;
+    return AntiiQTheme.of(context).colorScheme.primary;
+  }
+}
+
+class _HorizontalRail extends StatelessWidget {
+  const _HorizontalRail({
+    required this.value,
+    required this.color,
+    required this.innerRadius,
+    this.centerValue,
+  });
+
+  final double value;
+  final double? centerValue;
+  final Color color;
+  final double innerRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 12,
+      decoration: BoxDecoration(
+        color: AntiiQTheme.of(context)
+            .colorScheme
+            .background
+            .withValues(blue: 0.06, red: 0.06, green: 0.06),
+        borderRadius: BorderRadius.circular(innerRadius / 2),
+        border: Border.all(
+          color: AntiiQTheme.of(context)
+              .colorScheme
+              .onBackground
+              .withValues(alpha: 0.1),
+          width: 0.5,
+        ),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Stack(
+            children: [
+              if (centerValue != null)
+                Positioned(
+                  left: centerValue! * constraints.maxWidth - 0.5,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 1,
+                    color: AntiiQTheme.of(context)
+                        .colorScheme
+                        .onBackground
+                        .withValues(alpha: 0.3),
+                  ),
+                ),
+              FractionallySizedBox(
+                widthFactor: value,
+                child: Container(
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(innerRadius / 2),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: value * (constraints.maxWidth - 16),
+                top: 2,
+                child: Container(
+                  width: 16,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: color,
+                    border: Border.all(
+                      color: AntiiQTheme.of(context).colorScheme.background,
+                      width: 0.5,
+                    ),
+                    borderRadius: BorderRadius.circular(innerRadius / 3),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _VerticalRail extends StatelessWidget {
+  const _VerticalRail({
+    required this.value,
+    required this.color,
+    required this.innerRadius,
+  });
+
+  final double value;
+  final Color color;
+  final double innerRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final height = constraints.maxHeight;
+        return Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: AntiiQTheme.of(context)
+                .colorScheme
+                .background
+                .withValues(blue: 0.06, red: 0.06, green: 0.06),
+            border: Border.all(
+              color: AntiiQTheme.of(context)
+                  .colorScheme
+                  .onBackground
+                  .withValues(alpha: 0.1),
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(innerRadius / 2),
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                left: 0,
+                right: 0,
+                top: height * 0.5,
+                child: Container(
+                  height: 1,
+                  color: AntiiQTheme.of(context)
+                      .colorScheme
+                      .onBackground
+                      .withValues(alpha: 0.3),
+                ),
+              ),
+              Positioned(
+                left: 2,
+                right: 2,
+                top: (1.0 - value) * (height - 20) + 2,
+                child: Container(
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: color,
+                    border: Border.all(
+                      color: AntiiQTheme.of(context).colorScheme.background,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(innerRadius / 3),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _MiniSwitch extends StatelessWidget {
+  const _MiniSwitch({
+    required this.value,
+    required this.onChanged,
+    required this.innerRadius,
+  });
+
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final double innerRadius;
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onChanged(!value),
       child: Container(
         width: 32,
         height: 16,
         decoration: BoxDecoration(
-          color: value 
-              ? AntiiQTheme.of(context).colorScheme.surface 
+          color: value
+              ? AntiiQTheme.of(context).colorScheme.surface
               : AntiiQTheme.of(context).colorScheme.background,
           border: Border.all(
             color: value
                 ? AntiiQTheme.of(context).colorScheme.secondary
-                : AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.3),
+                : AntiiQTheme.of(context)
+                    .colorScheme
+                    .onBackground
+                    .withValues(alpha: 0.3),
             width: 1,
           ),
           borderRadius: BorderRadius.circular(innerRadius / 2),
@@ -485,211 +677,15 @@ class _ChaosEqualizerState extends State<ChaosEqualizer>
             decoration: BoxDecoration(
               color: value
                   ? AntiiQTheme.of(context).colorScheme.secondary
-                  : AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.6),
+                  : AntiiQTheme.of(context)
+                      .colorScheme
+                      .onBackground
+                      .withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(innerRadius / 3),
             ),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildEqualizerSection(double radius, double innerRadius) {
-    return StreamBuilder<bool>(
-      stream: equalizer.enabledStream,
-      builder: (context, enabledSnapshot) {
-        final enabled = enabledSnapshot.data ?? false;
-        return Flexible(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Transform.rotate(
-                    angle: -0.008,
-                    child: Text(
-                      'FREQUENCY EQUALIZER',
-                      style: TextStyle(
-                        color: AntiiQTheme.of(context).colorScheme.onBackground,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  _buildToggleSwitch(enabled, (value) {
-                    antiiqState.audioSetup.preferences.setEqualizerEnabled(value);
-                    _triggerGlitch();
-                  }, innerRadius),
-                ],
-              ),
-              const SizedBox(height: chaosBasePadding * 2),
-              Flexible(
-                child: FutureBuilder<AndroidEqualizerParameters>(
-                  future: equalizer.parameters,
-                  builder: (context, snapshot) {
-                    final parameters = snapshot.data;
-                    if (parameters == null) {
-                      return Center(
-                        child: Text(
-                          'EQUALIZER NOT AVAILABLE',
-                          style: TextStyle(
-                            color: AntiiQTheme.of(context).colorScheme.error,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 1.5,
-                          ),
-                        ),
-                      );
-                    }
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: List.generate(parameters.bands.length, (index) {
-                        return Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 2),
-                            child: _buildEQBand(parameters.bands[index], parameters, index, innerRadius),
-                          ),
-                        );
-                      }),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildEQBand(AndroidEqualizerBand band, AndroidEqualizerParameters parameters, int index, double innerRadius) {
-    return StreamBuilder<double>(
-      stream: band.gainStream,
-      builder: (context, snapshot) {
-        final gain = snapshot.data ?? 0.0;
-        final normalizedValue = (gain - parameters.minDecibels) / (parameters.maxDecibels - parameters.minDecibels);
-        final label = _getBandLabel(band.centerFrequency);
-
-        return Column(
-          children: [
-            Transform.rotate(
-              angle: (index % 2 == 0) ? -0.01 : 0.01,
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.7),
-                  fontSize: 8,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: _buildVerticalSlider(
-                normalizedValue,
-                (newValue) {
-                  final newGain = parameters.minDecibels + (newValue * (parameters.maxDecibels - parameters.minDecibels));
-                  band.setGain(newGain);
-                  antiiqState.audioSetup.preferences.saveBandFrequencies();
-                  _triggerGlitch();
-                },
-                _getEQColor(gain, parameters),
-                innerRadius,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Transform.rotate(
-              angle: (index % 3 == 0) ? -0.008 : 0.008,
-              child: Text(
-                gain.toStringAsFixed(1),
-                style: TextStyle(
-                  color: _getEQColor(gain, parameters),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  String _getBandLabel(double frequency) {
-    if (frequency < 1000) {
-      return '${frequency.toInt()}Hz';
-    } else if (frequency < 1000000) {
-      return '${(frequency / 1000).toStringAsFixed(1)}kHz';
-    } else {
-      return '${(frequency / 1000000).toStringAsFixed(1)}MHz';
-    }
-  }
-
-  Color _getEQColor(double gain, AndroidEqualizerParameters parameters) {
-    final normalizedGain = gain / parameters.maxDecibels;
-    if (normalizedGain > 0.1) {
-      return AntiiQTheme.of(context).colorScheme.secondary;
-    }
-    if (normalizedGain < -0.1) {
-      return AntiiQTheme.of(context).colorScheme.error;
-    }
-    return AntiiQTheme.of(context).colorScheme.primary;
-  }
-
-  Widget _buildVerticalSlider(double value, Function(double) onChanged, Color color, double innerRadius) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final height = constraints.maxHeight;
-        return GestureDetector(
-          onPanUpdate: (details) {
-            final newValue = 1.0 - (details.localPosition.dy / height);
-            onChanged(newValue.clamp(0.0, 1.0));
-          },
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: AntiiQTheme.of(context).colorScheme.background.withValues(blue: 0.06, red: 0.06, green: 0.06),
-              border: Border.all(
-                color: AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.1),
-                width: 0.5,
-              ),
-              borderRadius: BorderRadius.circular(innerRadius / 2),
-            ),
-            child: Stack(
-              children: [
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  top: height * 0.5,
-                  child: Container(
-                    height: 1,
-                    color: AntiiQTheme.of(context).colorScheme.onBackground.withValues(alpha: 0.3),
-                  ),
-                ),
-                Positioned(
-                  left: 2,
-                  right: 2,
-                  top: (1.0 - value) * (height - 20) + 2,
-                  child: Container(
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: color,
-                      border: Border.all(
-                        color: AntiiQTheme.of(context).colorScheme.background,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(innerRadius / 3),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

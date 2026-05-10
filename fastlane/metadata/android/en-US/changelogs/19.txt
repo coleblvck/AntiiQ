@@ -1,0 +1,10 @@
+AntiiQ 2.0.0
+
+- New native audio discovery, metadata reading, and playback engine
+- Broader local audio file support through FFmpeg-backed scanning and playback
+- Gapless playback and crossfade support
+- 15-band parametric equalizer
+- Speed and pitch controls
+- Chaos UI is now enabled by default for new installs
+- Improved library scanning and scan progress handling
+- Initial Play Store listing

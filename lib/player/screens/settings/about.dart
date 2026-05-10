@@ -77,7 +77,8 @@ class About extends StatelessWidget {
                           child: Text(
                             "AntiiQ is an Open Source Music Player for Music Collectors and Enthusiasts, built with Flutter.",
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onSurface,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onSurface,
                               fontSize: 18,
                             ),
                           ),
@@ -92,16 +93,18 @@ class About extends StatelessWidget {
                                 Text(
                                   "Developer:",
                                   style: TextStyle(
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.primary,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
                                     fontSize: 18,
                                   ),
                                 ),
                                 Text(
                                   "Cole Blvck",
                                   style: TextStyle(
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.secondary,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .secondary,
                                     fontSize: 18,
                                   ),
                                 ),
@@ -113,7 +116,9 @@ class About extends StatelessWidget {
                                       },
                                       icon: Icon(
                                         RemixIcon.mail,
-                                        color: AntiiQTheme.of(context).colorScheme.onBackground,
+                                        color: AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .onBackground,
                                       ),
                                     ),
                                     IconButton(
@@ -122,7 +127,9 @@ class About extends StatelessWidget {
                                       },
                                       icon: Icon(
                                         RemixIcon.github,
-                                        color: AntiiQTheme.of(context).colorScheme.onBackground,
+                                        color: AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .onBackground,
                                       ),
                                     ),
                                     IconButton(
@@ -131,7 +138,9 @@ class About extends StatelessWidget {
                                       },
                                       icon: Icon(
                                         RemixIcon.twitter_x,
-                                        color: AntiiQTheme.of(context).colorScheme.onBackground,
+                                        color: AntiiQTheme.of(context)
+                                            .colorScheme
+                                            .onBackground,
                                       ),
                                     ),
                                   ],
@@ -139,6 +148,119 @@ class About extends StatelessWidget {
                               ],
                             ),
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.primary,
+                  child: Padding(
+                    padding: const EdgeInsets.all(14.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              height: 46,
+                              width: 46,
+                              decoration: BoxDecoration(
+                                color: AntiiQTheme.of(context)
+                                    .colorScheme
+                                    .onPrimary,
+                                borderRadius:
+                                    BorderRadius.circular(generalRadius),
+                              ),
+                              child: Icon(
+                                RemixIcon.sound_module,
+                                color:
+                                    AntiiQTheme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Get AntiiQ Core",
+                                    style: TextStyle(
+                                      color: AntiiQTheme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "The native Artatura build for people who want the full Core experience.",
+                                    style: TextStyle(
+                                      color: AntiiQTheme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        CustomButton(
+                          style: ButtonStyles().style1,
+                          function: () {
+                            openLink(antiiqCoreUri);
+                          },
+                          child: const Text("Visit antiiq.artatura.com"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                CustomCard(
+                  theme: AntiiQTheme.of(context).cardThemes.surface,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          "Native audio credits",
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context).colorScheme.primary,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          "AntiiQ 2.0 uses FFmpeg for broad audio format support and SoundTouch for speed and pitch processing.",
+                          style: TextStyle(
+                            color:
+                                AntiiQTheme.of(context).colorScheme.onSurface,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            _CreditLink(
+                              label: "FFmpeg build/source",
+                              uri: ffmpegUri,
+                            ),
+                            _CreditLink(
+                              label: "SoundTouch source",
+                              uri: soundTouchUri,
+                            ),
+                            _CreditLink(
+                              label: "AntiiQ source",
+                              uri: antiiqSourceUri,
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -156,7 +278,8 @@ class About extends StatelessWidget {
                           child: Text(
                             "Changelog:",
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onPrimary,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onPrimary,
                               fontSize: 20,
                             ),
                           ),
@@ -166,7 +289,8 @@ class About extends StatelessWidget {
                           child: Text(
                             "Latest:",
                             style: TextStyle(
-                              color: AntiiQTheme.of(context).colorScheme.onPrimary,
+                              color:
+                                  AntiiQTheme.of(context).colorScheme.onPrimary,
                               fontSize: 18,
                             ),
                           ),
@@ -181,24 +305,27 @@ class About extends StatelessWidget {
                                 Text(
                                   versions[0].version,
                                   style: TextStyle(
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.onSurface,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .onSurface,
                                     fontSize: 18,
                                   ),
                                 ),
                                 Text(
                                   "Codename: ${versions[0].title}",
                                   style: TextStyle(
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.primary,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .primary,
                                     fontSize: 18,
                                   ),
                                 ),
                                 Text(
                                   versions[0].date,
                                   style: TextStyle(
-                                    color:
-                                        AntiiQTheme.of(context).colorScheme.onSurface,
+                                    color: AntiiQTheme.of(context)
+                                        .colorScheme
+                                        .onSurface,
                                     fontSize: 18,
                                   ),
                                 ),
@@ -252,6 +379,43 @@ class About extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CreditLink extends StatelessWidget {
+  const _CreditLink({
+    required this.label,
+    required this.uri,
+  });
+
+  final String label;
+  final Uri uri;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(generalRadius),
+      onTap: () {
+        openLink(uri);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: AntiiQTheme.of(context).colorScheme.background,
+          borderRadius: BorderRadius.circular(generalRadius),
+          border: Border.all(
+            color: AntiiQTheme.of(context).colorScheme.primary,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: AntiiQTheme.of(context).colorScheme.primary,
+            fontSize: 13,
           ),
         ),
       ),

@@ -15,7 +15,7 @@ class ChaosUIState extends ChangeNotifier {
   late Box _box;
   Box get box => _box;
 
-  bool _chaosUIStatus = false;
+  bool _chaosUIStatus = true;
   bool get chaosUIStatus => _chaosUIStatus;
 
   double _chaosLevel = 0.0;
@@ -66,7 +66,7 @@ class ChaosUIState extends ChangeNotifier {
   // Initialize and load from Hive
   Future<void> init() async {
     _box = await Hive.openBox(_boxName);
-    _chaosUIStatus = _box.get(_chaosUIStatusKey, defaultValue: false);
+    _chaosUIStatus = _box.get(_chaosUIStatusKey, defaultValue: true);
     // TODO: REMOVE THIS. Temporarily set fallback for statusbar color setting
     chaosUIEnabled = _chaosUIStatus;
     _chaosRadius = _box.get(_radiusKey, defaultValue: 2.0);

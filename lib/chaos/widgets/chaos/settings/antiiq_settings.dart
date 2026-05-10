@@ -6,6 +6,7 @@ import 'package:antiiq/chaos/widgets/chaos/settings/about.dart';
 import 'package:antiiq/chaos/widgets/chaos/settings/backup_restore.dart';
 import 'package:antiiq/chaos/widgets/chaos/settings/behaviour.dart';
 import 'package:antiiq/chaos/widgets/chaos/settings/library.dart';
+import 'package:antiiq/chaos/widgets/chaos/settings/playback.dart';
 import 'package:antiiq/chaos/widgets/chaos/settings/user_interface.dart';
 import 'package:antiiq/chaos/page_manager.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
@@ -42,6 +43,13 @@ class AntiiQSettings extends StatelessWidget {
         icon: RemixIcon.toggle,
         color: AntiiQTheme.of(context).colorScheme.primary,
         page: const Behaviour(),
+      ),
+      _SettingItem(
+        id: 'playback',
+        label: 'PLAYBACK',
+        icon: RemixIcon.surround_sound,
+        color: AntiiQTheme.of(context).colorScheme.secondary,
+        page: const Playback(),
       ),
       _SettingItem(
         id: 'backup',
