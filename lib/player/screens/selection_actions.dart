@@ -15,7 +15,7 @@ import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 findTrackAndOpenSheet(context, MediaItem? item) {
@@ -166,7 +166,7 @@ doThingsWithAudioSheet(context, List<Track> tracks,
                                     onPressed: () => antiiqState
                                         .music.favourites
                                         .addOrRemove(tracks[0]),
-                                    icon: const Icon(RemixIcon.heart_pulse),
+                                    icon: const Icon(RemixIcons.heart_pulse_fill),
                                     color:
                                         favouritesSituation.contains(tracks[0])
                                             ? Colors.red

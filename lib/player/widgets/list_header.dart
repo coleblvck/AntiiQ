@@ -6,7 +6,7 @@ import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:flutter/material.dart';
 //Icon Pack
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class ListHeader extends StatelessWidget {
   const ListHeader({
@@ -70,7 +70,7 @@ class ListHeader extends StatelessWidget {
                                       );
                                     },
                                     icon: const Icon(
-                                      RemixIcon.list_check_3,
+                                      RemixIcons.list_check_3,
                                     ),
                                   )
                                 : Container();
@@ -84,7 +84,7 @@ class ListHeader extends StatelessWidget {
                                 shuffleTracks(listToShuffle);
                               },
                               icon: const Icon(
-                                RemixIcon.shuffle,
+                                RemixIcons.shuffle_fill,
                               ),
                             )
                           : Container(),
@@ -97,7 +97,7 @@ class ListHeader extends StatelessWidget {
                                 showSortModal(context, sortList, availableSortTypes,
                                     setState: setState);
                               },
-                              icon: const Icon(RemixIcon.sort_asc),
+                              icon: const Icon(RemixIcons.sort_asc),
                             )
                           : Container(),
                     ],

@@ -13,7 +13,7 @@ import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class AntiiQSettings extends StatelessWidget {
   const AntiiQSettings({super.key});
@@ -26,42 +26,42 @@ class AntiiQSettings extends StatelessWidget {
       _SettingItem(
         id: 'interface',
         label: 'INTERFACE',
-        icon: RemixIcon.magic,
+        icon: RemixIcons.magic_fill,
         color: AntiiQTheme.of(context).colorScheme.primary,
         page: const UserInterface(),
       ),
       _SettingItem(
         id: 'library',
         label: 'LIBRARY',
-        icon: RemixIcon.folder_music,
+        icon: RemixIcons.folder_music_fill,
         color: AntiiQTheme.of(context).colorScheme.secondary,
         page: const Library(),
       ),
       _SettingItem(
         id: 'behaviour',
         label: 'BEHAVIOUR',
-        icon: RemixIcon.toggle,
+        icon: RemixIcons.toggle_fill,
         color: AntiiQTheme.of(context).colorScheme.primary,
         page: const Behaviour(),
       ),
       _SettingItem(
         id: 'playback',
         label: 'PLAYBACK',
-        icon: RemixIcon.surround_sound,
+        icon: RemixIcons.surround_sound_fill,
         color: AntiiQTheme.of(context).colorScheme.secondary,
         page: const Playback(),
       ),
       _SettingItem(
         id: 'backup',
         label: 'BACKUP/RESTORE',
-        icon: RemixIcon.save_3,
+        icon: RemixIcons.save_3_fill,
         color: AntiiQTheme.of(context).colorScheme.secondary,
         page: const BackupRestore(),
       ),
       _SettingItem(
         id: 'about',
         label: 'ABOUT',
-        icon: RemixIcon.information,
+        icon: RemixIcons.information_fill,
         color: AntiiQTheme.of(context).colorScheme.primary,
         page: const About(),
       ),
@@ -214,7 +214,7 @@ class _SettingCardState extends State<_SettingCard> {
 
                       // Arrow
                       Icon(
-                        RemixIcon.arrow_right_s,
+                        RemixIcons.arrow_right_s_fill,
                         color: widget.setting.color.withValues(alpha: 0.5),
                         size: 24,
                       ),

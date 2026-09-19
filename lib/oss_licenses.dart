@@ -4288,14 +4288,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
     isDirectDependency: false,
   ),
   Package(
-    name: 'remix_icon_icons',
-    description: 'Open-source neutral-style system symbols elaborately crafted for designers and developers. All of the icons are free for both personal and commercial use.',
-    repository: 'https://github.com/Eronildo/remix_icon',
+    name: 'remixicon',
+    description: 'Remix icon is a set of open-source neutral-style system symbols elaborately crafted for designers and developers.',
+    homepage: 'https://remixicon.com/',
+    repository: 'https://github.com/alialnaghmoush/remixicon',
     authors: [],
-    version: '1.0.1',
-    license: '''The MIT License (MIT)
+    version: '4.9.3',
+    license: '''MIT License
 
-Copyright (c) 2023 Eronildo Cavalcanti
+Copyright (c) 2019 Jonny Borges
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

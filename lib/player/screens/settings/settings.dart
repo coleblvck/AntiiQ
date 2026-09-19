@@ -7,7 +7,7 @@ import 'package:antiiq/player/screens/settings/playback.dart';
 import 'package:antiiq/player/screens/settings/user_interface.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class Settings extends StatelessWidget {
   const Settings({
@@ -30,7 +30,7 @@ class Settings extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(RemixIcon.arrow_left),
+            icon: const Icon(RemixIcons.arrow_left_fill),
           ),
           actions: [
             Padding(
@@ -107,37 +107,37 @@ settingsPages(context) => {
       "Interface": {
         "color": AntiiQTheme.of(context).colorScheme.secondary,
         "cardTheme": AntiiQTheme.of(context).cardThemes.background,
-        "icon": RemixIcon.magic,
+        "icon": RemixIcons.magic_fill,
         "page": const UserInterface(),
       },
       "Library": {
         "color": AntiiQTheme.of(context).colorScheme.onSurface,
         "cardTheme": AntiiQTheme.of(context).cardThemes.surface,
-        "icon": RemixIcon.folder,
+        "icon": RemixIcons.folder_fill,
         "page": const Library(),
       },
       "Behaviour": {
         "color": AntiiQTheme.of(context).colorScheme.primary,
         "cardTheme": AntiiQTheme.of(context).cardThemes.background,
-        "icon": RemixIcon.play,
+        "icon": RemixIcons.play_fill,
         "page": const Behaviour(),
       },
       "Playback": {
         "color": AntiiQTheme.of(context).colorScheme.secondary,
         "cardTheme": AntiiQTheme.of(context).cardThemes.background,
-        "icon": RemixIcon.surround_sound,
+        "icon": RemixIcons.surround_sound_fill,
         "page": const Playback(),
       },
       "Backup/Restore": {
         "color": AntiiQTheme.of(context).colorScheme.onSurface,
         "cardTheme": AntiiQTheme.of(context).cardThemes.surface,
-        "icon": RemixIcon.save_3,
+        "icon": RemixIcons.save_3_fill,
         "page": const BackupRestore(),
       },
       "About": {
         "color": AntiiQTheme.of(context).colorScheme.onPrimary,
         "cardTheme": AntiiQTheme.of(context).cardThemes.primary,
-        "icon": RemixIcon.information,
+        "icon": RemixIcons.information_fill,
         "page": const About(),
       },
     };

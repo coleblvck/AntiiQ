@@ -12,7 +12,7 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:antiiq/player/utilities/settings/theme_settings.dart';
 import 'package:home_widget/home_widget.dart';
 
@@ -988,7 +988,7 @@ class _CustomThemeCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                RemixIcon.palette,
+                RemixIcons.palette_fill,
                 color: AntiiQTheme.of(context).colorScheme.primary,
                 size: 32,
               ),

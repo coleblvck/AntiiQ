@@ -5,7 +5,7 @@ import 'package:antiiq/player/utilities/pick_and_crop.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 addSelectionToPlaylistDialog(context, List<Track> tracks) {
@@ -90,7 +90,7 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
                               await getArt();
                             },
                             icon: Icon(
-                              RemixIcon.image,
+                              RemixIcons.image_fill,
                               color:
                                   AntiiQTheme.of(context).colorScheme.primary,
                             ),
@@ -100,7 +100,7 @@ addSelectionToPlaylistDialog(context, List<Track> tracks) {
                               playlistCreate();
                             },
                             icon: Icon(
-                              RemixIcon.check,
+                              RemixIcons.check_fill,
                               color:
                                   AntiiQTheme.of(context).colorScheme.primary,
                             ),

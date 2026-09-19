@@ -12,7 +12,7 @@ import 'package:antiiq/player/widgets/seekbar.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 /// TODO
@@ -97,7 +97,7 @@ class NowPlayingBottomHeader extends StatelessWidget {
                   boxController.closeBox();
                 },
                 icon: Icon(
-                  RemixIcon.arrow_down_double,
+                  RemixIcons.arrow_down_double_fill,
                   color: AntiiQTheme.of(context).colorScheme.onBackground,
                 ),
               )
@@ -297,7 +297,7 @@ class NowPlayingControlCard extends StatelessWidget {
                                                   },
                                                   iconSize: 30,
                                                   icon: const Icon(
-                                                      RemixIcon.repeat_2),
+                                                      RemixIcons.repeat_2_fill),
                                                 ),
                                               AudioServiceRepeatMode.one =>
                                                 IconButton(
@@ -314,7 +314,7 @@ class NowPlayingControlCard extends StatelessWidget {
                                                   },
                                                   iconSize: 30,
                                                   icon: const Icon(
-                                                      RemixIcon.repeat_one),
+                                                      RemixIcons.repeat_one_fill),
                                                 ),
                                               _ => IconButton(
                                                   color: AntiiQTheme.of(context)
@@ -330,7 +330,7 @@ class NowPlayingControlCard extends StatelessWidget {
                                                   },
                                                   iconSize: 30,
                                                   icon: const Icon(
-                                                      RemixIcon.repeat_2),
+                                                      RemixIcons.repeat_2_fill),
                                                 ),
                                             },
                                             IconButton(
@@ -357,7 +357,7 @@ class NowPlayingControlCard extends StatelessWidget {
                                               },
                                               iconSize: 30,
                                               icon:
-                                                  const Icon(RemixIcon.shuffle),
+                                                  const Icon(RemixIcons.shuffle_fill),
                                             ),
                                           ],
                                         ),
@@ -379,13 +379,13 @@ class NowPlayingControlCard extends StatelessWidget {
                                                 width: 60,
                                                 height: 40,
                                                 thumbSize: 20,
-                                                activeIcon: RemixIcon.infinity,
+                                                activeIcon: RemixIcons.infinity_fill,
                                                 activeIconColor:
                                                     AntiiQTheme.of(context)
                                                         .colorScheme
                                                         .onSecondary,
                                                 inactiveIcon:
-                                                    RemixIcon.infinity,
+                                                    RemixIcons.infinity_fill,
                                                 inactiveIconColor:
                                                     AntiiQTheme.of(context)
                                                         .colorScheme
@@ -437,7 +437,7 @@ class NowPlayingControlCard extends StatelessWidget {
                                               );
                                             },
                                             iconSize: 30,
-                                            icon: const Icon(RemixIcon.menu_4),
+                                            icon: const Icon(RemixIcons.menu_4_fill),
                                           ),
                                         ],
                                       ),
@@ -480,8 +480,8 @@ class NowPlayingControlCard extends StatelessWidget {
                                                   rewind();
                                                 },
                                                 iconSize: 40,
-                                                icon: const Icon(RemixIcon
-                                                    .arrow_left_double),
+                                                icon: const Icon(RemixIcons
+                                                    .arrow_left_double_fill),
                                               ),
                                               IconButton(
                                                 color: AntiiQTheme.of(context)
@@ -491,8 +491,8 @@ class NowPlayingControlCard extends StatelessWidget {
                                                   previous();
                                                 },
                                                 iconSize: 40,
-                                                icon: const Icon(RemixIcon
-                                                    .arrow_left_circle),
+                                                icon: const Icon(RemixIcons
+                                                    .arrow_left_circle_fill),
                                               ),
                                               IconButton(
                                                 color: AntiiQTheme.of(context)
@@ -506,9 +506,9 @@ class NowPlayingControlCard extends StatelessWidget {
                                                 iconSize: 40,
                                                 icon: playState
                                                     ? const Icon(
-                                                        RemixIcon.pause_circle)
+                                                        RemixIcons.pause_circle_fill)
                                                     : const Icon(
-                                                        RemixIcon.play_circle),
+                                                        RemixIcons.play_circle_fill),
                                               ),
                                               IconButton(
                                                 color: AntiiQTheme.of(context)
@@ -518,8 +518,8 @@ class NowPlayingControlCard extends StatelessWidget {
                                                   next();
                                                 },
                                                 iconSize: 40,
-                                                icon: const Icon(RemixIcon
-                                                    .arrow_right_circle),
+                                                icon: const Icon(RemixIcons
+                                                    .arrow_right_circle_fill),
                                               ),
                                               IconButton(
                                                 color: AntiiQTheme.of(context)
@@ -529,8 +529,8 @@ class NowPlayingControlCard extends StatelessWidget {
                                                   forward();
                                                 },
                                                 iconSize: 40,
-                                                icon: const Icon(RemixIcon
-                                                    .arrow_right_double),
+                                                icon: const Icon(RemixIcons
+                                                    .arrow_right_double_fill),
                                               ),
                                             ],
                                           );

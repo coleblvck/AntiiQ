@@ -17,7 +17,7 @@ import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 /// Playlists Grid - Main view for all playlists
@@ -112,7 +112,7 @@ class _ChaosPlaylistsGridState extends State<ChaosPlaylistsGrid>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              RemixIcon.add,
+                              RemixIcons.add_fill,
                               color: AntiiQTheme.of(context)
                                   .colorScheme
                                   .primary
@@ -643,7 +643,7 @@ class PlaylistHeader extends StatelessWidget {
                             borderRadius: BorderRadius.circular(innerRadius),
                           ),
                           child: Icon(
-                            RemixIcon.edit,
+                            RemixIcons.edit_fill,
                             color: AntiiQTheme.of(context).colorScheme.primary,
                             size: 20,
                           ),
@@ -930,7 +930,7 @@ class _ChaosPlaylistTrackItemState extends State<_ChaosPlaylistTrackItem>
                   borderRadius: BorderRadius.circular(radius),
                 ),
                 child: Icon(
-                  RemixIcon.menu_4,
+                  RemixIcons.menu_4_fill,
                   color: AntiiQTheme.of(context)
                       .colorScheme
                       .onBackground
@@ -956,7 +956,7 @@ class _ChaosPlaylistTrackItemState extends State<_ChaosPlaylistTrackItem>
                   borderRadius: BorderRadius.circular(radius),
                 ),
                 child: Icon(
-                  RemixIcon.delete_bin_2,
+                  RemixIcons.delete_bin_2_fill,
                   color: Colors.red.withValues(alpha: 0.8),
                   size: 14,
                 ),
@@ -1271,7 +1271,7 @@ class _ChaosPlaylistCreatorState extends State<_ChaosPlaylistCreator> {
                       borderRadius: BorderRadius.circular(innerRadius),
                     ),
                     child: Icon(
-                      RemixIcon.image,
+                      RemixIcons.image_fill,
                       color: AntiiQTheme.of(context).colorScheme.secondary,
                       size: 20,
                     ),
@@ -1294,7 +1294,7 @@ class _ChaosPlaylistCreatorState extends State<_ChaosPlaylistCreator> {
                       borderRadius: BorderRadius.circular(innerRadius),
                     ),
                     child: Icon(
-                      RemixIcon.check,
+                      RemixIcons.check_fill,
                       color: AntiiQTheme.of(context).colorScheme.primary,
                       size: 20,
                     ),
@@ -1354,7 +1354,7 @@ class _ChaosPlaylistCreatorState extends State<_ChaosPlaylistCreator> {
                         _search("");
                       },
                       child: Icon(
-                        RemixIcon.close,
+                        RemixIcons.close_fill,
                         color: AntiiQTheme.of(context)
                             .colorScheme
                             .onBackground
@@ -1761,7 +1761,7 @@ class _ChaosPlaylistEditorState extends State<_ChaosPlaylistEditor> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              RemixIcon.image,
+                              RemixIcons.image_fill,
                               color:
                                   AntiiQTheme.of(context).colorScheme.secondary,
                               size: 16,
@@ -1836,7 +1836,7 @@ class _ChaosPlaylistEditorState extends State<_ChaosPlaylistEditor> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        RemixIcon.delete_bin_2,
+                        RemixIcons.delete_bin_2_fill,
                         color: Colors.red.withValues(alpha: 0.8),
                         size: 16,
                       ),
@@ -2032,7 +2032,7 @@ class _ChaosAddToPlaylistState extends State<_ChaosAddToPlaylist> {
                           borderRadius: BorderRadius.circular(innerRadius),
                         ),
                         child: Icon(
-                          RemixIcon.image,
+                          RemixIcons.image_fill,
                           color: AntiiQTheme.of(context).colorScheme.secondary,
                           size: 20,
                         ),
@@ -2055,7 +2055,7 @@ class _ChaosAddToPlaylistState extends State<_ChaosAddToPlaylist> {
                           borderRadius: BorderRadius.circular(innerRadius),
                         ),
                         child: Icon(
-                          RemixIcon.check,
+                          RemixIcons.check_fill,
                           color: AntiiQTheme.of(context).colorScheme.primary,
                           size: 20,
                         ),

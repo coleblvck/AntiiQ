@@ -7,7 +7,7 @@ import 'package:antiiq/player/utilities/pick_and_crop.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class Playlists extends StatefulWidget {
@@ -99,7 +99,7 @@ class _PlaylistsState extends State<Playlists> {
                         await getArt();
                       },
                       icon: Icon(
-                        RemixIcon.image,
+                        RemixIcons.image_fill,
                         color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
@@ -108,7 +108,7 @@ class _PlaylistsState extends State<Playlists> {
                         playlistCreate();
                       },
                       icon: Icon(
-                        RemixIcon.check,
+                        RemixIcons.check_fill,
                         color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
@@ -149,7 +149,7 @@ class _PlaylistsState extends State<Playlists> {
                             search("");
                           },
                           icon: Icon(
-                            RemixIcon.close,
+                            RemixIcons.close_fill,
                             color:
                                 AntiiQTheme.of(context).colorScheme.onSurface,
                           ),

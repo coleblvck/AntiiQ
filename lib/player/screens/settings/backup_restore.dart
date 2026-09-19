@@ -6,7 +6,7 @@ import 'package:antiiq/player/utilities/file_handling/backup_and_restore.dart';
 import 'package:antiiq/player/utilities/folder_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class BackupRestore extends StatefulWidget {
   const BackupRestore({
@@ -119,7 +119,7 @@ class _BackupRestoreState extends State<BackupRestore> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(RemixIcon.arrow_left),
+            icon: const Icon(RemixIcons.arrow_left_fill),
           ),
           actions: [
             Padding(
@@ -178,7 +178,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                                             clearBackupRestoreDirectoryList();
                                           },
                                           icon: Icon(
-                                            RemixIcon.close_circle,
+                                            RemixIcons.close_circle_fill,
                                             color: AntiiQTheme.of(context)
                                                 .colorScheme
                                                 .onBackground,

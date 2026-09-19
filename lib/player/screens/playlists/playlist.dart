@@ -11,7 +11,7 @@ import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class PlaylistItem extends StatelessWidget {
@@ -198,7 +198,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                             context, mainPageStateSet, setState, playlist);
                       },
                       icon: Icon(
-                        RemixIcon.edit,
+                        RemixIcons.edit_fill,
                         color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                     ),
@@ -211,7 +211,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                         }
                       },
                       icon: const Icon(
-                        RemixIcon.delete_bin_2,
+                        RemixIcons.delete_bin_2_fill,
                         color: Colors.red,
                       ),
                     ),
@@ -220,7 +220,7 @@ showPlaylist(context, PlayList playlist, Function mainPageStateSet) {
                         Navigator.of(context).pop();
                       },
                       icon: Icon(
-                        RemixIcon.arrow_down_double,
+                        RemixIcons.arrow_down_double_fill,
                         color: AntiiQTheme.of(context).colorScheme.onBackground,
                       ),
                     ),

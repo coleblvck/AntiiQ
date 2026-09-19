@@ -6,7 +6,7 @@ import 'package:antiiq/player/utilities/activity_handlers.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class UnSwipedCard extends StatelessWidget {
   const UnSwipedCard({
@@ -90,7 +90,7 @@ class UnSwipedCard extends StatelessWidget {
                       onPressed: () {
                         openSheetFromTrack(context, track);
                       },
-                      icon: const Icon(RemixIcon.menu_4),
+                      icon: const Icon(RemixIcons.menu_4_fill),
                     ),
                   ),
                 ],

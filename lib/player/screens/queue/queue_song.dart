@@ -5,7 +5,7 @@ import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/utilities/playlist_generator/playlist_generator.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class QueueSongItem extends StatelessWidget {
   final Widget title;
@@ -96,7 +96,7 @@ class QueueSongItem extends StatelessWidget {
                   onPressed: () {
                     findTrackAndOpenSheet(context, item);
                   },
-                  icon: const Icon(RemixIcon.menu_4),
+                  icon: const Icon(RemixIcons.menu_4_fill),
                 ),
               ),
               // Remove button
@@ -107,7 +107,7 @@ class QueueSongItem extends StatelessWidget {
                   onPressed: () {
                     globalAntiiqAudioHandler.removeQueueItemAt(index);
                   },
-                  icon: const Icon(RemixIcon.close_circle),
+                  icon: const Icon(RemixIcons.close_circle_fill),
                 ),
               ),
               // Drag handle
@@ -116,7 +116,7 @@ class QueueSongItem extends StatelessWidget {
                 child: ReorderableDragStartListener(
                   index: index,
                   child: Icon(
-                    RemixIcon.draggable,
+                    RemixIcons.draggable,
                     color: AntiiQTheme.of(context)
                         .colorScheme
                         .onBackground

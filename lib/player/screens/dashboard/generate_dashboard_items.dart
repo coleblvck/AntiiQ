@@ -1,6 +1,6 @@
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/dashboard/dashboard_item_data.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 
 List<DashboardItemData> generateDashboardItemData() {
@@ -8,7 +8,7 @@ List<DashboardItemData> generateDashboardItemData() {
     DashboardItemData(
       key: 'songs',
       title: "Songs",
-      icon: RemixIcon.music,
+      icon: RemixIcons.music_fill,
       function: () {
         mainPageController.jumpToPage(
           mainPageIndexes["songs"] as int,
@@ -18,7 +18,7 @@ List<DashboardItemData> generateDashboardItemData() {
     DashboardItemData(
       key: 'albums',
       title: "Albums",
-      icon: RemixIcon.album,
+      icon: RemixIcons.album_fill,
       function: () {
         mainPageController.jumpToPage(
           mainPageIndexes["albums"] as int,
@@ -28,7 +28,7 @@ List<DashboardItemData> generateDashboardItemData() {
     DashboardItemData(
       key: 'artists',
       title: "Artists",
-      icon: RemixIcon.user_4,
+      icon: RemixIcons.user_4_fill,
       function: () {
         mainPageController.jumpToPage(
           mainPageIndexes["artists"] as int,
@@ -38,7 +38,7 @@ List<DashboardItemData> generateDashboardItemData() {
     DashboardItemData(
       key: 'genres',
       title: "Genres",
-      icon: RemixIcon.keyboard,
+      icon: RemixIcons.keyboard_fill,
       function: () {
         mainPageController.jumpToPage(
           mainPageIndexes["genres"] as int,
@@ -48,7 +48,7 @@ List<DashboardItemData> generateDashboardItemData() {
     DashboardItemData(
       key: 'playlists',
       title: "Playlists",
-      icon: RemixIcon.play_list,
+      icon: RemixIcons.play_list_fill,
       function: () {
         mainPageController.jumpToPage(
           mainPageIndexes["playlists"] as int,
@@ -58,7 +58,7 @@ List<DashboardItemData> generateDashboardItemData() {
     DashboardItemData(
       key: 'favourites',
       title: "Favourites",
-      icon: RemixIcon.heart_pulse,
+      icon: RemixIcons.heart_pulse_fill,
       function: () {
         mainPageController.jumpToPage(
           mainPageIndexes["favourites"] as int,
@@ -68,7 +68,7 @@ List<DashboardItemData> generateDashboardItemData() {
     DashboardItemData(
       key: 'selection',
       title: "Selection",
-      icon: RemixIcon.check_double,
+      icon: RemixIcons.check_double_fill,
       function: () {
         mainPageController.jumpToPage(
           mainPageIndexes["selection"] as int,
@@ -78,7 +78,7 @@ List<DashboardItemData> generateDashboardItemData() {
     DashboardItemData(
       key: 'history',
       title: "History",
-      icon: RemixIcon.history,
+      icon: RemixIcons.history_fill,
       function: () {
         mainPageController.jumpToPage(
           mainPageIndexes["history"] as int,
@@ -88,7 +88,7 @@ List<DashboardItemData> generateDashboardItemData() {
     DashboardItemData(
       key: 'smartMix',
       title: "Smart Mix",
-      icon: RemixIcon.radio,
+      icon: RemixIcons.radio_fill,
       function: () {
         mainPageController.jumpToPage(
           mainPageIndexes["smartMix"] as int,

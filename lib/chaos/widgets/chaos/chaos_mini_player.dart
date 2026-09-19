@@ -12,7 +12,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'dart:math' as math;
 import 'dart:io';
 
@@ -1050,8 +1050,8 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
       (
         (repeatMode == AudioServiceRepeatMode.none ||
                 repeatMode == AudioServiceRepeatMode.all)
-            ? RemixIcon.repeat
-            : RemixIcon.repeat_one,
+            ? RemixIcons.repeat_fill
+            : RemixIcons.repeat_one_fill,
         getAnglePercentage(0.015, chaosLevel),
         repeatMode == AudioServiceRepeatMode.none ? false : true,
         () {

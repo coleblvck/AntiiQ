@@ -11,7 +11,7 @@ import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class ChaosSnackBar {
   static void show(
@@ -149,14 +149,14 @@ class ChaosPlaylistGenerator extends StatelessWidget {
       children: [
         ChaosGeneratorButton(
           label: 'SHUFFLE ALL',
-          icon: RemixIcon.shuffle,
+          icon: RemixIcons.shuffle_fill,
           index: 0,
           onPressed: () => _generatePlaylist(context, PlaylistType.shuffleAll),
         ),
         const SizedBox(height: chaosBasePadding),
         ChaosGeneratorButton(
           label: 'BY GENRE',
-          icon: RemixIcon.folder_music,
+          icon: RemixIcons.folder_music_fill,
           index: 1,
           onPressed: () async {
             final genres = playlistGenerator.getAvailableGenres();
@@ -175,7 +175,7 @@ class ChaosPlaylistGenerator extends StatelessWidget {
         const SizedBox(height: chaosBasePadding),
         ChaosGeneratorButton(
           label: 'LIKED SHUFFLE',
-          icon: RemixIcon.heart_3,
+          icon: RemixIcons.heart_3_fill,
           index: 2,
           onPressed: () =>
               _generatePlaylist(context, PlaylistType.likedShuffle),
@@ -184,7 +184,7 @@ class ChaosPlaylistGenerator extends StatelessWidget {
         if (currentlyPlayingTrack != null)
           ChaosGeneratorButton(
             label: 'SIMILAR TRACKS',
-            icon: RemixIcon.music_2,
+            icon: RemixIcons.music_2_fill,
             index: 3,
             onPressed: () => _generatePlaylist(
               context,
@@ -196,7 +196,7 @@ class ChaosPlaylistGenerator extends StatelessWidget {
           const SizedBox(height: chaosBasePadding),
         ChaosGeneratorButton(
           label: 'FROM HISTORY',
-          icon: RemixIcon.time,
+          icon: RemixIcons.time_fill,
           index: 4,
           onPressed: () => _generatePlaylist(
             context,
@@ -207,7 +207,7 @@ class ChaosPlaylistGenerator extends StatelessWidget {
         const SizedBox(height: chaosBasePadding),
         ChaosGeneratorButton(
           label: 'BY MOOD',
-          icon: RemixIcon.emotion_happy,
+          icon: RemixIcons.emotion_happy_fill,
           index: 5,
           onPressed: () async {
             final moods = playlistGenerator.getAvailableMoods();
@@ -226,7 +226,7 @@ class ChaosPlaylistGenerator extends StatelessWidget {
         const SizedBox(height: chaosBasePadding),
         ChaosGeneratorButton(
           label: 'BY TEMPO',
-          icon: RemixIcon.speed,
+          icon: RemixIcons.speed_fill,
           index: 6,
           onPressed: () async {
             final tempos = playlistGenerator.getAvailableTempos();
@@ -245,7 +245,7 @@ class ChaosPlaylistGenerator extends StatelessWidget {
         const SizedBox(height: chaosBasePadding),
         ChaosGeneratorButton(
           label: 'FRESH DISCOVERY',
-          icon: RemixIcon.compass_3,
+          icon: RemixIcons.compass_3_fill,
           index: 7,
           onPressed: () => _generatePlaylist(
             context,
@@ -256,7 +256,7 @@ class ChaosPlaylistGenerator extends StatelessWidget {
         const SizedBox(height: chaosBasePadding),
         ChaosGeneratorButton(
           label: 'ACOUSTIC VIBE',
-          icon: RemixIcon.surround_sound,
+          icon: RemixIcons.surround_sound_fill,
           index: 8,
           onPressed: () =>
               _generatePlaylist(context, PlaylistType.acousticVibe),
@@ -424,7 +424,7 @@ class _ChaosGeneratorButtonState extends State<ChaosGeneratorButton>
                               ),
                             ),
                             Icon(
-                              RemixIcon.arrow_right_s,
+                              RemixIcons.arrow_right_s_fill,
                               color: AntiiQTheme.of(context)
                                   .colorScheme
                                   .primary
@@ -641,7 +641,7 @@ class _ChaosSelectionDialogState extends State<_ChaosSelectionDialog> {
                                       ),
                                     ),
                                     Icon(
-                                      RemixIcon.check,
+                                      RemixIcons.check_fill,
                                       color: AntiiQTheme.of(context)
                                           .colorScheme
                                           .primary

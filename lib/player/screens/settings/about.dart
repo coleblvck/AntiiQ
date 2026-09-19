@@ -4,7 +4,7 @@ import 'package:antiiq/player/screens/settings/changelog_data.dart';
 import 'package:antiiq/player/screens/settings/links.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class About extends StatelessWidget {
   const About({
@@ -27,13 +27,13 @@ class About extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(RemixIcon.arrow_left),
+            icon: const Icon(RemixIcons.arrow_left_fill),
           ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
               child: Icon(
-                RemixIcon.information,
+                RemixIcons.information_fill,
                 color: AntiiQTheme.of(context).colorScheme.primary,
                 size: 30,
               ),
@@ -115,7 +115,7 @@ class About extends StatelessWidget {
                                         openLink(emailUri);
                                       },
                                       icon: Icon(
-                                        RemixIcon.mail,
+                                        RemixIcons.mail_fill,
                                         color: AntiiQTheme.of(context)
                                             .colorScheme
                                             .onBackground,
@@ -126,7 +126,7 @@ class About extends StatelessWidget {
                                         openLink(githubUri);
                                       },
                                       icon: Icon(
-                                        RemixIcon.github,
+                                        RemixIcons.github_fill,
                                         color: AntiiQTheme.of(context)
                                             .colorScheme
                                             .onBackground,
@@ -137,7 +137,7 @@ class About extends StatelessWidget {
                                         openLink(twitterUri);
                                       },
                                       icon: Icon(
-                                        RemixIcon.twitter_x,
+                                        RemixIcons.twitter_x_fill,
                                         color: AntiiQTheme.of(context)
                                             .colorScheme
                                             .onBackground,
@@ -173,7 +173,7 @@ class About extends StatelessWidget {
                                     BorderRadius.circular(generalRadius),
                               ),
                               child: Icon(
-                                RemixIcon.sound_module,
+                                RemixIcons.sound_module_fill,
                                 color:
                                     AntiiQTheme.of(context).colorScheme.primary,
                               ),

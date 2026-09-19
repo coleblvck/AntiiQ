@@ -39,7 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class TypographyChaosDashboard extends StatefulWidget {
   const TypographyChaosDashboard({Key? key}) : super(key: key);
@@ -718,47 +718,47 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
         ChaosDashboardItemData(
           id: 'songs',
           title: 'SONGS',
-          icon: RemixIcon.music,
+          icon: RemixIcons.music_fill,
         ),
         ChaosDashboardItemData(
           id: 'albums',
           title: 'ALBUMS',
-          icon: RemixIcon.album,
+          icon: RemixIcons.album_fill,
         ),
         ChaosDashboardItemData(
           id: 'artists',
           title: 'ARTISTS',
-          icon: RemixIcon.user_voice,
+          icon: RemixIcons.user_voice_fill,
         ),
         ChaosDashboardItemData(
           id: 'genres',
           title: 'GENRES',
-          icon: RemixIcon.disc,
+          icon: RemixIcons.disc_fill,
         ),
         ChaosDashboardItemData(
           id: 'playlists',
           title: 'PLAYLISTS',
-          icon: RemixIcon.play_list,
+          icon: RemixIcons.play_list_fill,
         ),
         ChaosDashboardItemData(
           id: 'smartmix',
           title: 'SMART MIX',
-          icon: RemixIcon.shuffle,
+          icon: RemixIcons.shuffle_fill,
         ),
         ChaosDashboardItemData(
           id: 'favourites',
           title: 'FAVOURITES',
-          icon: RemixIcon.heart,
+          icon: RemixIcons.heart_fill,
         ),
         ChaosDashboardItemData(
           id: 'history',
           title: 'HISTORY',
-          icon: RemixIcon.history,
+          icon: RemixIcons.history_fill,
         ),
         ChaosDashboardItemData(
           id: 'selection',
           title: 'SELECTION',
-          icon: RemixIcon.checkbox_multiple,
+          icon: RemixIcons.checkbox_multiple_fill,
         ),
       ];
 
@@ -874,8 +874,8 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                           additionalButtons: [
                             HeaderButton(
                               icon: _isEditingDashboardGrid
-                                  ? RemixIcon.check
-                                  : RemixIcon.pencil,
+                                  ? RemixIcons.check_fill
+                                  : RemixIcons.pencil_fill,
                               onTap: _toggleDashboardGridEditMode,
                             )
                           ],
@@ -1080,7 +1080,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                         children: [
                           Center(
                             child: Icon(
-                              RemixIcon.play_list,
+                              RemixIcons.play_list_fill,
                               color:
                                   AntiiQTheme.of(context).colorScheme.primary,
                               size: 16,
@@ -1136,10 +1136,10 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                     width: 60,
                     height: 36,
                     thumbSize: 18,
-                    activeIcon: RemixIcon.infinity,
+                    activeIcon: RemixIcons.infinity_fill,
                     activeIconColor:
                         AntiiQTheme.of(context).colorScheme.onPrimary,
-                    inactiveIcon: RemixIcon.infinity,
+                    inactiveIcon: RemixIcons.infinity_fill,
                     inactiveIconColor:
                         AntiiQTheme.of(context).colorScheme.onSurface,
                     trackPadding: 10,

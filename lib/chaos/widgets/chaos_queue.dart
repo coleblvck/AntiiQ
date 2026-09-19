@@ -12,7 +12,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class ChaosQueue extends StatelessWidget {
@@ -405,7 +405,7 @@ class _ChaosQueueItemState extends State<ChaosQueueItem>
                   borderRadius: BorderRadius.circular(radius),
                 ),
                 child: Icon(
-                  RemixIcon.menu_4,
+                  RemixIcons.menu_4_fill,
                   color: AntiiQTheme.of(context)
                       .colorScheme
                       .onBackground
@@ -428,7 +428,7 @@ class _ChaosQueueItemState extends State<ChaosQueueItem>
                   borderRadius: BorderRadius.circular(radius),
                 ),
                 child: Icon(
-                  RemixIcon.close,
+                  RemixIcons.close_fill,
                   color: Colors.red.withValues(alpha: 0.8),
                   size: 14,
                 ),
@@ -442,7 +442,7 @@ class _ChaosQueueItemState extends State<ChaosQueueItem>
                 height: 28,
                 alignment: Alignment.center,
                 child: Icon(
-                  RemixIcon.drag_move_2,
+                  RemixIcons.drag_move_2_fill,
                   color: AntiiQTheme.of(context)
                       .colorScheme
                       .primary

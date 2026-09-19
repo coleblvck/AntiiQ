@@ -9,7 +9,7 @@ import 'package:antiiq/player/widgets/collection_widgets/collection_heading.dart
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:antiiq/player/widgets/list_header.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class ArtistItem extends StatelessWidget {
@@ -63,7 +63,7 @@ class ArtistItem extends StatelessWidget {
                   onPressed: () {
                     doThingsWithAudioSheet(context, artist.artistTracks!);
                   },
-                  icon: const Icon(RemixIcon.menu_4),
+                  icon: const Icon(RemixIcons.menu_4_fill),
                 ),
               ),
             ],
@@ -181,7 +181,7 @@ showArtist(context, Artist artist) {
                       Navigator.of(context).pop();
                     },
                     icon: Icon(
-                      RemixIcon.arrow_down_double,
+                      RemixIcons.arrow_down_double_fill,
                       color: AntiiQTheme.of(context).colorScheme.onBackground,
                     ),
                   ),

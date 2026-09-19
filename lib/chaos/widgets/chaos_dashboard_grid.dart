@@ -7,7 +7,7 @@ import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:flutter_reorderable_grid_view/widgets/reorderable_builder.dart';
 
 class ChaosDashboardItemData {
@@ -548,7 +548,7 @@ class _ChaosDashboardCard extends StatelessWidget {
                           ),
                         ),
                         child: Icon(
-                          RemixIcon.draggable,
+                          RemixIcons.draggable,
                           size: 10,
                           color: AntiiQTheme.of(context)
                               .colorScheme

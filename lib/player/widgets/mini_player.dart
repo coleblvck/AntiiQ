@@ -7,7 +7,7 @@ import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:antiiq/player/widgets/seekbar.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class MiniPlayer extends StatelessWidget {
@@ -119,8 +119,8 @@ class MiniPlayer extends StatelessWidget {
                                                   previous();
                                                 },
                                                 child: Icon(
-                                                  RemixIcon
-                                                      .arrow_left_s_outline,
+                                                  RemixIcons
+                                                      .arrow_left_s_line,
                                                   color: AntiiQTheme.of(context)
                                                       .colorScheme
                                                       .primary,
@@ -134,14 +134,14 @@ class MiniPlayer extends StatelessWidget {
                                           },
                                           child: playState
                                               ? Icon(
-                                                  RemixIcon.pause,
+                                                  RemixIcons.pause_fill,
                                                   size: 44,
                                                   color: AntiiQTheme.of(context)
                                                       .colorScheme
                                                       .secondary,
                                                 )
                                               : Icon(
-                                                  RemixIcon.play,
+                                                  RemixIcons.play_fill,
                                                   size: 44,
                                                   color: AntiiQTheme.of(context)
                                                       .colorScheme
@@ -154,8 +154,8 @@ class MiniPlayer extends StatelessWidget {
                                                   next();
                                                 },
                                                 child: Icon(
-                                                  RemixIcon
-                                                      .arrow_right_s_outline,
+                                                  RemixIcons
+                                                      .arrow_right_s_line,
                                                   color: AntiiQTheme.of(context)
                                                       .colorScheme
                                                       .primary,

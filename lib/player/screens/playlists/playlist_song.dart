@@ -8,7 +8,7 @@ import 'package:antiiq/player/utilities/activity_handlers.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/widgets/song_cards/swiped_card.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class PlaylistSong extends StatelessWidget {
   final Widget title;
@@ -83,7 +83,7 @@ class PlaylistSong extends StatelessWidget {
                           onPressed: () {
                             openSheetFromTrack(context, track);
                           },
-                          icon: const Icon(RemixIcon.menu_4),
+                          icon: const Icon(RemixIcons.menu_4_fill),
                         ),
                       ),
                       SizedBox(
@@ -96,7 +96,7 @@ class PlaylistSong extends StatelessWidget {
                             setState(() {});
                             mainPageStateSet(() {});
                           },
-                          icon: const Icon(RemixIcon.delete_bin_2),
+                          icon: const Icon(RemixIcons.delete_bin_2_fill),
                         ),
                       )
                     ],

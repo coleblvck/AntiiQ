@@ -3,7 +3,7 @@ import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/settings/user_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:restart_app/restart_app.dart';
 
 class Behaviour extends StatefulWidget {
@@ -38,7 +38,7 @@ class _BehaviourState extends State<Behaviour> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(RemixIcon.arrow_left),
+            icon: const Icon(RemixIcons.arrow_left_fill),
           ),
           actions: [
             Padding(

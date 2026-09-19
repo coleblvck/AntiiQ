@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class MainBoxMetrics {
   static double bottomNavigationBarHeight = 56;
@@ -277,7 +277,7 @@ class _MainBoxState extends State<MainBox> {
                     IconButton(
                       iconSize: 27,
                       icon: Icon(
-                        RemixIcon.play_list_2,
+                        RemixIcons.play_list_2_fill,
                         color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                       onPressed: () {
@@ -287,7 +287,7 @@ class _MainBoxState extends State<MainBox> {
                     IconButton(
                       iconSize: 27,
                       icon: Icon(
-                        RemixIcon.settings_6,
+                        RemixIcons.settings_6_fill,
                         color: AntiiQTheme.of(context).colorScheme.primary,
                       ),
                       onPressed: () {
@@ -350,7 +350,7 @@ class _MainBoxState extends State<MainBox> {
                             );
                           },
                           icon: Icon(
-                            RemixIcon.dashboard,
+                            RemixIcons.dashboard_fill,
                             color: AntiiQTheme.of(context).colorScheme.primary,
                           ),
                         ),
@@ -362,7 +362,7 @@ class _MainBoxState extends State<MainBox> {
                             );
                           },
                           icon: Icon(
-                            RemixIcon.equalizer,
+                            RemixIcons.equalizer_fill,
                             color: AntiiQTheme.of(context).colorScheme.primary,
                           ),
                         ),
@@ -374,7 +374,7 @@ class _MainBoxState extends State<MainBox> {
                             );
                           },
                           icon: Icon(
-                            RemixIcon.search_eye,
+                            RemixIcons.search_eye_fill,
                             color: AntiiQTheme.of(context).colorScheme.primary,
                           ),
                         ),

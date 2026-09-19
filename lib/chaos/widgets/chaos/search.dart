@@ -17,7 +17,7 @@ import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class ChaosSearch extends StatefulWidget {
@@ -148,7 +148,7 @@ class _ChaosSearchState extends State<ChaosSearch> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Icon(
-                      RemixIcon.search,
+                      RemixIcons.search_fill,
                       color: AntiiQTheme.of(context).colorScheme.primary,
                       size: 20,
                     ),
@@ -207,7 +207,7 @@ class _ChaosSearchState extends State<ChaosSearch> {
                           borderRadius: BorderRadius.circular(innerRadius),
                         ),
                         child: Icon(
-                          RemixIcon.close,
+                          RemixIcons.close_fill,
                           color: AntiiQTheme.of(context).colorScheme.error,
                           size: 16,
                         ),
@@ -248,7 +248,7 @@ class _ChaosSearchState extends State<ChaosSearch> {
               borderRadius: BorderRadius.circular(radius),
             ),
             child: Icon(
-              RemixIcon.search_2,
+              RemixIcons.search_2_fill,
               size: 40,
               color: AntiiQTheme.of(context)
                   .colorScheme
@@ -300,7 +300,7 @@ class _ChaosSearchState extends State<ChaosSearch> {
                 borderRadius: BorderRadius.circular(radius),
               ),
               child: Icon(
-                RemixIcon.file_forbid,
+                RemixIcons.file_forbid_fill,
                 size: 40,
                 color: AntiiQTheme.of(context)
                     .colorScheme
@@ -633,7 +633,7 @@ class _AlbumGridItem extends StatelessWidget {
                                     BorderRadius.circular(innerRadius),
                               ),
                               child: Icon(
-                                RemixIcon.menu_4,
+                                RemixIcons.menu_4_fill,
                                 color: AntiiQTheme.of(context)
                                     .colorScheme
                                     .secondary,
@@ -821,7 +821,7 @@ class _ArtistListItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(innerRadius),
                   ),
                   child: Icon(
-                    RemixIcon.menu_4,
+                    RemixIcons.menu_4_fill,
                     color: AntiiQTheme.of(context).colorScheme.primary,
                     size: 16,
                   ),

@@ -13,7 +13,7 @@ import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class AlbumsGrid extends StatelessWidget {
@@ -155,7 +155,7 @@ class _AlbumGridItem extends StatelessWidget {
                                     BorderRadius.circular(innerRadius),
                               ),
                               child: Icon(
-                                RemixIcon.menu_4,
+                                RemixIcons.menu_4_fill,
                                 color:
                                     AntiiQTheme.of(context).colorScheme.primary,
                                 size: 16,

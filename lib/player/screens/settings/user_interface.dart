@@ -8,7 +8,7 @@ import 'package:antiiq/player/widgets/ui/antiiq_slider.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:antiiq/player/utilities/settings/theme_settings.dart';
 import 'package:home_widget/home_widget.dart';
 
@@ -66,7 +66,7 @@ class _UserInterfaceState extends State<UserInterface> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(RemixIcon.arrow_left),
+            icon: const Icon(RemixIcons.arrow_left_fill),
           ),
           actions: [
             Padding(
@@ -970,7 +970,7 @@ class SettingsThemeGrid extends StatelessWidget {
                     function: () {
                       customColorEditSheet(context);
                     },
-                    child: const Icon(RemixIcon.magic),
+                    child: const Icon(RemixIcons.magic_fill),
                   ),
                 ],
               )),
@@ -1167,7 +1167,7 @@ customColorEditSheet(context) {
                       CustomButton(
                         style: AntiiQTheme.of(context).buttonStyles.style1,
                         child: const Center(
-                          child: Icon(RemixIcon.arrow_down_double),
+                          child: Icon(RemixIcons.arrow_down_double_fill),
                         ),
                         function: () {
                           Navigator.of(context).pop();

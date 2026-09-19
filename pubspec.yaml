@@ -32,7 +32,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  remix_icon_icons: ^1.0.1
+  remixicon: ^4.9.3
   audio_service: ^0.18.12
   path_provider: ^2.1.1
   hive_flutter: ^1.1.0

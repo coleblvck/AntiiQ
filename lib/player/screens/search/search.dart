@@ -7,7 +7,7 @@ import 'package:antiiq/player/utilities/file_handling/metadata.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:antiiq/player/widgets/song_cards/song_card.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class Search extends StatefulWidget {
@@ -83,7 +83,7 @@ class _SearchState extends State<Search> {
                       controller: searchController,
                       decoration: InputDecoration(
                         prefixIcon: Icon(
-                          RemixIcon.search,
+                          RemixIcons.search_fill,
                           color: AntiiQTheme.of(context).colorScheme.primary,
                         ),
                         border: InputBorder.none,
@@ -101,7 +101,7 @@ class _SearchState extends State<Search> {
                       search("");
                     },
                     icon: Icon(
-                      RemixIcon.close,
+                      RemixIcons.close_fill,
                       color: AntiiQTheme.of(context).colorScheme.onSurface,
                     ),
                   ),

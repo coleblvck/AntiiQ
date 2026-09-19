@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class BackupRestore extends StatefulWidget {
   const BackupRestore({super.key});
@@ -144,7 +144,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                       child: Row(
                         children: [
                           Icon(
-                            RemixIcon.information,
+                            RemixIcons.information_fill,
                             color: AntiiQTheme.of(context).colorScheme.primary,
                             size: 16,
                           ),
@@ -188,7 +188,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              RemixIcon.folder_open,
+                              RemixIcons.folder_open_fill,
                               color:
                                   AntiiQTheme.of(context).colorScheme.primary,
                               size: 20,
@@ -253,7 +253,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                                     BorderRadius.circular(innerRadius),
                               ),
                               child: Icon(
-                                RemixIcon.close,
+                                RemixIcons.close_fill,
                                 color:
                                     AntiiQTheme.of(context).colorScheme.error,
                                 size: 16,
@@ -290,7 +290,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                               child: Row(
                                 children: [
                                   Icon(
-                                    RemixIcon.hard_drive,
+                                    RemixIcons.hard_drive_fill,
                                     color: AntiiQTheme.of(context)
                                         .colorScheme
                                         .secondary,
@@ -310,7 +310,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                                     ),
                                   ),
                                   Icon(
-                                    RemixIcon.arrow_right_s,
+                                    RemixIcons.arrow_right_s_fill,
                                     color: AntiiQTheme.of(context)
                                         .colorScheme
                                         .onBackground
@@ -335,7 +335,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                     Row(
                       children: [
                         Icon(
-                          RemixIcon.folder_2,
+                          RemixIcons.folder_2_fill,
                           color: AntiiQTheme.of(context).colorScheme.secondary,
                           size: 16,
                         ),
@@ -397,7 +397,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                               child: Column(
                                 children: [
                                   Icon(
-                                    RemixIcon.save_3,
+                                    RemixIcons.save_3_fill,
                                     color: AntiiQTheme.of(context)
                                         .colorScheme
                                         .primary,
@@ -446,7 +446,7 @@ class _BackupRestoreState extends State<BackupRestore> {
                               child: Column(
                                 children: [
                                   Icon(
-                                    RemixIcon.restart,
+                                    RemixIcons.restart_fill,
                                     color: AntiiQTheme.of(context)
                                         .colorScheme
                                         .secondary,

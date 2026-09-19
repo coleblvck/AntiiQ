@@ -4,7 +4,7 @@ import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 showQueue(context) {
@@ -99,7 +99,7 @@ class QueueBottomHeader extends StatelessWidget {
                       Navigator.of(context).pop();
                     },
                     icon: Icon(
-                      RemixIcon.arrow_down_double,
+                      RemixIcons.arrow_down_double_fill,
                       color: AntiiQTheme.of(context).colorScheme.onBackground,
                     ),
                   )

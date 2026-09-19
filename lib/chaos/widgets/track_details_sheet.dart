@@ -16,7 +16,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 void findTrackAndOpenSheet(
@@ -186,7 +186,7 @@ void showTrackDetailsSheet(
                   if (tracks.length == 1)
                     _ActionButton(
                       label: 'SIMILAR TRACKS',
-                      icon: RemixIcon.shuffle,
+                      icon: RemixIcons.shuffle_fill,
                       color: AntiiQTheme.of(context).colorScheme.secondary,
                       radius: innerRadius,
                       onTap: () async {
@@ -205,7 +205,7 @@ void showTrackDetailsSheet(
                   if (thisGlobalSelection)
                     _ActionButton(
                       label: 'CLEAR SELECTION',
-                      icon: RemixIcon.close_circle,
+                      icon: RemixIcons.close_circle_fill,
                       color: AntiiQTheme.of(context).colorScheme.error,
                       radius: innerRadius,
                       onTap: () {
@@ -218,7 +218,7 @@ void showTrackDetailsSheet(
                   // Add to playlist
                   _ActionButton(
                     label: 'ADD TO PLAYLIST',
-                    icon: RemixIcon.play_list_add,
+                    icon: RemixIcons.play_list_add_fill,
                     color: AntiiQTheme.of(context).colorScheme.primary,
                     radius: innerRadius,
                     onTap: () {
@@ -231,7 +231,7 @@ void showTrackDetailsSheet(
                   _ActionButton(
                     label:
                         'PLAY ${tracks.length > 1 ? '${tracks.length} TRACKS' : 'TRACK'}',
-                    icon: RemixIcon.play_circle,
+                    icon: RemixIcons.play_circle_fill,
                     color: AntiiQTheme.of(context).colorScheme.primary,
                     radius: innerRadius,
                     onTap: () {
@@ -245,7 +245,7 @@ void showTrackDetailsSheet(
                   if (tracks.length > 1)
                     _ActionButton(
                       label: 'SHUFFLE TRACKS',
-                      icon: RemixIcon.shuffle,
+                      icon: RemixIcons.shuffle_fill,
                       color: AntiiQTheme.of(context).colorScheme.secondary,
                       radius: innerRadius,
                       onTap: () {
@@ -391,7 +391,7 @@ class _TrackMetadataLinks extends StatelessWidget {
               .any((album) => album.albumId == track.trackData!.albumId))
             _MetadataLink(
               label: track.trackData!.albumName!,
-              icon: RemixIcon.album,
+              icon: RemixIcons.album_fill,
               radius: radius,
               onTap: () {
                 HapticFeedback.lightImpact();
@@ -408,7 +408,7 @@ class _TrackMetadataLinks extends StatelessWidget {
               .any((artist) => artist.artistId == track.trackData!.artistId))
             _MetadataLink(
               label: track.trackData!.trackArtistNames!,
-              icon: RemixIcon.user,
+              icon: RemixIcons.user_fill,
               radius: radius,
               onTap: () {
                 HapticFeedback.lightImpact();
@@ -426,7 +426,7 @@ class _TrackMetadataLinks extends StatelessWidget {
                   .any((genre) => genre.genreName == track.trackData!.genre))
             _MetadataLink(
               label: track.trackData!.genre!,
-              icon: RemixIcon.music_2,
+              icon: RemixIcons.music_2_fill,
               radius: radius,
               onTap: () {
                 HapticFeedback.lightImpact();
@@ -558,7 +558,7 @@ class _FavouriteToggle extends StatelessWidget {
             child: Row(
               children: [
                 Icon(
-                  RemixIcon.heart_pulse,
+                  RemixIcons.heart_pulse_fill,
                   color: isFavourite
                       ? AntiiQTheme.of(context).colorScheme.error
                       : AntiiQTheme.of(context)
@@ -642,7 +642,7 @@ class _SelectionToggle extends StatelessWidget {
                 Row(
                   children: [
                     Icon(
-                      RemixIcon.checkbox_circle,
+                      RemixIcons.checkbox_circle_fill,
                       color: isSelected
                           ? AntiiQTheme.of(context).colorScheme.secondary
                           : AntiiQTheme.of(context)
@@ -716,7 +716,7 @@ class _SelectionSummary extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            RemixIcon.list_check_3,
+            RemixIcons.list_check_3,
             color: AntiiQTheme.of(context).colorScheme.secondary,
             size: 18,
           ),
@@ -762,7 +762,7 @@ class _DurationInfo extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            RemixIcon.time,
+            RemixIcons.time_fill,
             color: AntiiQTheme.of(context)
                 .colorScheme
                 .onBackground

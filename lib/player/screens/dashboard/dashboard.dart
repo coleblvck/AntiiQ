@@ -5,7 +5,7 @@ import 'package:antiiq/player/state/ui_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_grid_view/widgets/reorderable_builder.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({
@@ -139,7 +139,7 @@ class _DashboardState extends State<Dashboard> {
                       backgroundColor:
                           const WidgetStatePropertyAll(Colors.transparent)),
                   icon: Icon(
-                    RemixIcon.pencil,
+                    RemixIcons.pencil_fill,
                     color: AntiiQTheme.of(context).colorScheme.secondary,
                   ),
                 ),

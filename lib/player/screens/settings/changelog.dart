@@ -2,7 +2,7 @@ import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/settings/changelog_data.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class Changelog extends StatelessWidget {
   const Changelog({
@@ -24,13 +24,13 @@ class Changelog extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(RemixIcon.arrow_left),
+            icon: const Icon(RemixIcons.arrow_left_fill),
           ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
               child: Icon(
-                RemixIcon.information,
+                RemixIcons.information_fill,
                 color: AntiiQTheme.of(context).colorScheme.primary,
                 size: 30,
               ),

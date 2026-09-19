@@ -12,7 +12,7 @@ import 'package:antiiq/player/utilities/file_handling/sort.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class ChaosPageManagerController extends ChangeNotifier {
   final List<ChaosPageManagerPage> _stack = [];
@@ -498,7 +498,7 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
                       borderRadius: BorderRadius.circular(radius),
                     ),
                     child: Icon(
-                      RemixIcon.list_check_3,
+                      RemixIcons.list_check_3,
                       color: AntiiQTheme.of(context).colorScheme.secondary,
                       size: 16,
                     ),
@@ -536,7 +536,7 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
                     borderRadius: BorderRadius.circular(radius),
                   ),
                   child: Icon(
-                    RemixIcon.shuffle,
+                    RemixIcons.shuffle_fill,
                     color: AntiiQTheme.of(context).colorScheme.primary,
                     size: 16,
                   ),
@@ -574,7 +574,7 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
                     borderRadius: BorderRadius.circular(radius),
                   ),
                   child: Icon(
-                    RemixIcon.sort_asc,
+                    RemixIcons.sort_asc,
                     color: AntiiQTheme.of(context).colorScheme.primary,
                     size: 16,
                   ),

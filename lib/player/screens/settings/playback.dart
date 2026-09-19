@@ -3,7 +3,7 @@ import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/widgets/ui/antiiq_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class Playback extends StatefulWidget {
   const Playback({super.key});
@@ -62,7 +62,7 @@ class _PlaybackState extends State<Playback> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(RemixIcon.arrow_left),
+            icon: const Icon(RemixIcons.arrow_left_fill),
           ),
           actions: [
             Padding(

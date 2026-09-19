@@ -11,7 +11,7 @@ import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 
 class About extends StatelessWidget {
   const About({super.key});
@@ -112,7 +112,7 @@ class About extends StatelessWidget {
                   Row(
                     children: [
                       _SocialButton(
-                        icon: RemixIcon.mail,
+                        icon: RemixIcons.mail_fill,
                         onTap: () {
                           HapticFeedback.lightImpact();
                           openLink(emailUri);
@@ -120,7 +120,7 @@ class About extends StatelessWidget {
                       ),
                       const SizedBox(width: chaosBasePadding),
                       _SocialButton(
-                        icon: RemixIcon.github,
+                        icon: RemixIcons.github_fill,
                         onTap: () {
                           HapticFeedback.lightImpact();
                           openLink(githubUri);
@@ -128,7 +128,7 @@ class About extends StatelessWidget {
                       ),
                       const SizedBox(width: chaosBasePadding),
                       _SocialButton(
-                        icon: RemixIcon.twitter_x,
+                        icon: RemixIcons.twitter_x_fill,
                         onTap: () {
                           HapticFeedback.lightImpact();
                           openLink(twitterUri);
@@ -177,7 +177,7 @@ class About extends StatelessWidget {
                           borderRadius: BorderRadius.circular(innerRadius),
                         ),
                         child: Icon(
-                          RemixIcon.sound_module,
+                          RemixIcons.sound_module_fill,
                           color: AntiiQTheme.of(context).colorScheme.secondary,
                           size: 22,
                         ),
@@ -213,7 +213,7 @@ class About extends StatelessWidget {
                         ),
                       ),
                       Icon(
-                        RemixIcon.arrow_right_up,
+                        RemixIcons.arrow_right_up_fill,
                         color: AntiiQTheme.of(context).colorScheme.primary,
                         size: 20,
                       ),
@@ -464,7 +464,7 @@ class About extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        RemixIcon.file_list,
+                        RemixIcons.file_list_fill,
                         color: AntiiQTheme.of(context)
                             .colorScheme
                             .onBackground

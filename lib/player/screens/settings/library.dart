@@ -8,7 +8,7 @@ import 'package:antiiq/player/utilities/settings/user_settings.dart';
 import 'package:antiiq/player/widgets/ui/antiiq_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:text_scroll/text_scroll.dart';
 
@@ -84,7 +84,7 @@ class _LibraryState extends State<Library> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(RemixIcon.arrow_left),
+            icon: const Icon(RemixIcons.arrow_left_fill),
           ),
           actions: [
             Padding(
@@ -324,7 +324,7 @@ class _LibraryState extends State<Library> {
                                       clearDirectoryList();
                                     },
                                     icon: Icon(
-                                      RemixIcon.close_circle,
+                                      RemixIcons.close_circle_fill,
                                       color: AntiiQTheme.of(context)
                                           .colorScheme
                                           .onBackground,

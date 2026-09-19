@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:remix_icon_icons/remix_icon_icons.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:text_scroll/text_scroll.dart';
 
@@ -88,7 +88,7 @@ class _LibraryState extends State<Library> {
                 Expanded(
                   child: _ActionButton(
                     label: 'RE-SCAN',
-                    icon: RemixIcon.refresh,
+                    icon: RemixIcons.refresh_fill,
                     color: AntiiQTheme.of(context).colorScheme.primary,
                     onTap: () {
                       HapticFeedback.mediumImpact();
@@ -100,7 +100,7 @@ class _LibraryState extends State<Library> {
                 Expanded(
                   child: _ActionButton(
                     label: 'FULL RESCAN',
-                    icon: RemixIcon.refresh,
+                    icon: RemixIcons.refresh_fill,
                     color: AntiiQTheme.of(context).colorScheme.error,
                     onTap: () {
                       HapticFeedback.heavyImpact();
@@ -267,7 +267,7 @@ class _LibraryState extends State<Library> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            RemixIcon.folder_add,
+                            RemixIcons.folder_add_fill,
                             color: AntiiQTheme.of(context).colorScheme.primary,
                             size: 18,
                           ),
@@ -330,7 +330,7 @@ class _LibraryState extends State<Library> {
                               borderRadius: BorderRadius.circular(innerRadius),
                             ),
                             child: Icon(
-                              RemixIcon.close,
+                              RemixIcons.close_fill,
                               color: AntiiQTheme.of(context).colorScheme.error,
                               size: 16,
                             ),
@@ -365,7 +365,7 @@ class _LibraryState extends State<Library> {
                             child: Row(
                               children: [
                                 Icon(
-                                  RemixIcon.hard_drive,
+                                  RemixIcons.hard_drive_fill,
                                   color: AntiiQTheme.of(context)
                                       .colorScheme
                                       .secondary,
@@ -385,7 +385,7 @@ class _LibraryState extends State<Library> {
                                   ),
                                 ),
                                 Icon(
-                                  RemixIcon.arrow_right_s,
+                                  RemixIcons.arrow_right_s_fill,
                                   color: AntiiQTheme.of(context)
                                       .colorScheme
                                       .onBackground
@@ -446,7 +446,7 @@ class _LibraryState extends State<Library> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                RemixIcon.alert,
+                RemixIcons.alert_fill,
                 color: AntiiQTheme.of(context).colorScheme.error,
                 size: 48,
               ),
@@ -703,7 +703,7 @@ class _DirectoryCard extends StatelessWidget {
           Row(
             children: [
               Icon(
-                RemixIcon.folder_open,
+                RemixIcons.folder_open_fill,
                 color: AntiiQTheme.of(context).colorScheme.secondary,
                 size: 16,
               ),
