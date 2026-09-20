@@ -79,11 +79,12 @@ class _ChaosDashboardGridState extends State<ChaosDashboardGrid> {
     return (visible: visibleItems, hidden: hiddenItems);
   }
 
-  void _handleReorder(List<Widget> Function(List<Widget>) reorderFunction) {
+  void _handleReorder(
+    List<String> visibleOrder,
+    List<Widget> Function(List<Widget>) reorderFunction,
+  ) {
     final chaosUIState = context.read<ChaosUIState>();
-    final currentOrder = chaosUIState.dashboardOrder;
-
-    final currentWidgets = currentOrder.map((id) {
+    final currentWidgets = visibleOrder.map((id) {
       return GestureDetector(
         key: ValueKey(id),
         child: Container(),
@@ -193,31 +194,35 @@ class _ChaosDashboardGridState extends State<ChaosDashboardGrid> {
                         SliverPadding(
                           padding: const EdgeInsets.all(chaosBasePadding),
                           sliver: SliverToBoxAdapter(
-                            child: ReorderableBuilder(
-                              key: Key(_gridViewKey.toString()),
-                              onReorder: _handleReorder,
+                            child: ReorderableBuilder<Widget>(
+                              key: const ValueKey('dashboard-reorderable-grid'),
+                              enableDraggable: widget.isEditMode,
+                              longPressDelay: const Duration(milliseconds: 160),
+                              feedbackScaleFactor: 1,
+                              onReorder: (reorderFunction) => _handleReorder(
+                                items.visible
+                                    .map((item) => item.id)
+                                    .toList(growable: false),
+                                reorderFunction,
+                              ),
                               children: items.visible.map((item) {
                                 if (widget.isEditMode) {
-                                  return ReorderableDragStartListener(
+                                  return GestureDetector(
                                     key: ValueKey(item.id),
-                                    index: items.visible.indexOf(item),
-                                    child: GestureDetector(
-                                      onTap: () =>
-                                          _toggleItemVisibility(item.id),
-                                      behavior: HitTestBehavior.opaque,
-                                      child: _ChaosDashboardCard(
-                                        item: item,
-                                        isVisible: true,
-                                        isEditMode: widget.isEditMode,
-                                        chaosUIState: chaosUIState,
-                                        isPressed: _pressedItemId == item.id,
-                                        onPressedChanged: (pressed) {
-                                          setState(() {
-                                            _pressedItemId =
-                                                pressed ? item.id : null;
-                                          });
-                                        },
-                                      ),
+                                    onTap: () => _toggleItemVisibility(item.id),
+                                    behavior: HitTestBehavior.opaque,
+                                    child: _ChaosDashboardCard(
+                                      item: item,
+                                      isVisible: true,
+                                      isEditMode: widget.isEditMode,
+                                      chaosUIState: chaosUIState,
+                                      isPressed: _pressedItemId == item.id,
+                                      onPressedChanged: (pressed) {
+                                        setState(() {
+                                          _pressedItemId =
+                                              pressed ? item.id : null;
+                                        });
+                                      },
                                     ),
                                   );
                                 } else {
@@ -405,34 +410,30 @@ class _ChaosDashboardCard extends StatelessWidget {
     final itemIndex = item.id.hashCode % 2000;
     final radius = chaosUIState.getAdjustedRadius(4);
 
-    return ChaosRotatedStatefulWidget(
-      index: itemIndex,
-      style: ChaosRotationStyle.fibonacci,
-      maxAngle: getAnglePercentage(0.15, chaosUIState.chaosLevel),
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          curve: Curves.easeOut,
-          transform: Matrix4.identity()..scale(isPressed ? 0.97 : 1.0),
-          child: Opacity(
-            opacity: isVisible ? 1 : .36,
-            child: AntiiQSurface(
-              role: AntiiQSurfaceRole.control,
-              radius: radius,
-              border: Border.all(
-                color: isVisible
-                    ? AntiiQTheme.of(context)
-                        .colorScheme
-                        .primary
-                        .withValues(alpha: isPressed ? 0.7 : 0.3)
-                    : AntiiQTheme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.15),
-                width: 1,
-              ),
-              child: Stack(
+    final card = MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+        transform: Matrix4.identity()..scale(isPressed ? 0.97 : 1.0),
+        child: Opacity(
+          opacity: isVisible ? 1 : .36,
+          child: AntiiQSurface(
+            role: AntiiQSurfaceRole.control,
+            radius: radius,
+            border: Border.all(
+              color: isVisible
+                  ? AntiiQTheme.of(context)
+                      .colorScheme
+                      .primary
+                      .withValues(alpha: isPressed ? 0.7 : 0.3)
+                  : AntiiQTheme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.15),
+              width: 1,
+            ),
+            child: Stack(
               children: [
                 // Main content
                 Padding(
@@ -552,11 +553,19 @@ class _ChaosDashboardCard extends StatelessWidget {
                     ),
                   ),
               ],
-              ),
             ),
           ),
         ),
       ),
+    );
+
+    if (isEditMode) return card;
+
+    return ChaosRotatedStatefulWidget(
+      index: itemIndex,
+      style: ChaosRotationStyle.fibonacci,
+      maxAngle: getAnglePercentage(0.15, chaosUIState.chaosLevel),
+      child: card,
     );
   }
 }

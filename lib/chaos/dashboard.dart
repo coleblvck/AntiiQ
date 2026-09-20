@@ -39,6 +39,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 
@@ -67,6 +68,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
   Timer? libraryLoadTimer;
   DateTime? currentBackPressTime;
   bool _isLibraryLoading = false;
+  bool _hasCheckedUpdateNotice = false;
 
   @override
   void initState() {
@@ -241,18 +243,24 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
   }
 
   void _showUpdateDialogIfNeeded() async {
-    final versionUpdates = context.read<VersionUpdates>();
-    final currentVersion = antiiqUpdates[0].version;
+    if (_hasCheckedUpdateNotice) return;
+    _hasCheckedUpdateNotice = true;
 
-    if (versionUpdates.shouldShowUpdate(currentVersion)) {
+    final versionUpdates = context.read<VersionUpdates>();
+    final installedVersion = (await PackageInfo.fromPlatform()).version;
+    final update = antiiqUpdateForVersion(installedVersion);
+
+    if (update != null && versionUpdates.shouldShowUpdate(installedVersion)) {
       await Future.delayed(const Duration(milliseconds: 300));
 
       if (mounted) {
         await AntiiQUpdateDialog.show(
           context,
-          antiiqUpdates[0],
+          update,
           () {
-            versionUpdates.setLastSeenUpdateVersion(currentVersion);
+            unawaited(
+              versionUpdates.setLastSeenUpdateVersion(installedVersion),
+            );
           },
         );
       }

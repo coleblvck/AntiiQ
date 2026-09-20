@@ -77,6 +77,9 @@ class ChaosUIState extends ChangeNotifier {
   static const String _chaosLevelKey = 'chaos_level';
   static const String _canvasEnabledKey = 'canvas_enabled';
   static const String _dashboardOrderKey = 'chaos_dashboard_order';
+  static const String _dashboardLayoutVersionKey =
+      'chaos_dashboard_layout_version';
+  static const int _dashboardLayoutVersion = 2;
   static const String _coverArtThemeKey = 'cover_art_theme';
   static const String _surfacePresetKey = 'surface_preset';
   static const String _surfaceOpacityKey = 'surface_opacity';
@@ -107,13 +110,59 @@ class ChaosUIState extends ChangeNotifier {
   }
 
   List<String> _dashboardOrder = [];
-  List<String> get dashboardOrder => _dashboardOrder;
+  List<String> get dashboardOrder => List.unmodifiable(_dashboardOrder);
+
+  static const List<String> defaultDashboardOrder = [
+    'songs',
+    'albums',
+    'artists',
+    'albumArtists',
+    'folders',
+    'genres',
+    'playlists',
+    'smartmix',
+    'favourites',
+    'history',
+    'selection',
+  ];
+
+  static List<String> normalizeDashboardOrder(Iterable<String> order) {
+    final validIds = defaultDashboardOrder.toSet();
+    final seen = <String>{};
+    return [
+      for (final id in order)
+        if (validIds.contains(id) && seen.add(id)) id,
+    ];
+  }
+
+  static List<String> migrateDashboardOrder(
+    Iterable<String> order, {
+    required int fromVersion,
+  }) {
+    final migrated = normalizeDashboardOrder(order);
+    if (fromVersion < 2) {
+      _insertDashboardItemAfter(migrated, 'albumArtists', 'artists');
+      _insertDashboardItemAfter(migrated, 'folders', 'albumArtists');
+    }
+    return migrated;
+  }
+
+  static void _insertDashboardItemAfter(
+    List<String> order,
+    String id,
+    String anchor,
+  ) {
+    if (order.contains(id)) return;
+    final anchorIndex = order.indexOf(anchor);
+    order.insert(anchorIndex < 0 ? order.length : anchorIndex + 1, id);
+  }
 
   Future<void> setDashboardOrder(List<String> order) async {
-    if (listEquals(_dashboardOrder, order)) return;
-    _dashboardOrder = order;
-    await _box.put(_dashboardOrderKey, order);
+    final normalized = normalizeDashboardOrder(order);
+    if (listEquals(_dashboardOrder, normalized)) return;
+    _dashboardOrder = normalized;
     notifyListeners();
+    await _box.put(_dashboardOrderKey, normalized);
   }
 
   bool _coverArtTheme = false;
@@ -248,18 +297,24 @@ class ChaosUIState extends ChangeNotifier {
     _chaosLevel = _box.get(_chaosLevelKey, defaultValue: 0.0);
     _canvasEnabled = _box.get(_canvasEnabledKey, defaultValue: false);
 
-    _dashboardOrder = (_box.get(_dashboardOrderKey) as List?)?.cast<String>() ??
-        [
-          'songs',
-          'albums',
-          'artists',
-          'genres',
-          'playlists',
-          'smartmix',
-          'favourites',
-          'history',
-          'selection'
-        ];
+    final storedDashboardOrder =
+        (_box.get(_dashboardOrderKey) as List?)?.cast<String>();
+    final storedLayoutVersion =
+        _box.get(_dashboardLayoutVersionKey, defaultValue: 1) as int;
+    _dashboardOrder = storedDashboardOrder == null
+        ? List.of(defaultDashboardOrder)
+        : migrateDashboardOrder(
+            storedDashboardOrder,
+            fromVersion: storedLayoutVersion,
+          );
+    if (storedDashboardOrder == null ||
+        storedLayoutVersion < _dashboardLayoutVersion ||
+        !listEquals(_dashboardOrder, storedDashboardOrder)) {
+      await _box.putAll({
+        _dashboardOrderKey: _dashboardOrder,
+        _dashboardLayoutVersionKey: _dashboardLayoutVersion,
+      });
+    }
     _coverArtTheme = _box.get(_coverArtThemeKey, defaultValue: false);
     final presetName = _box.get(_surfacePresetKey,
         defaultValue: AntiiQSurfacePreset.smoke.name) as String;

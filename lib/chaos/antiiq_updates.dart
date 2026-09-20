@@ -12,3 +12,10 @@ List<AntiiQUpdate> antiiqUpdates = [
     ],
   )
 ];
+
+AntiiQUpdate? antiiqUpdateForVersion(String installedVersion) {
+  for (final update in antiiqUpdates) {
+    if (update.version == installedVersion) return update;
+  }
+  return null;
+}

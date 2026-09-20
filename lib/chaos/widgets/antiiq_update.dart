@@ -68,7 +68,7 @@ class AntiiQUpdateDialog extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             if (update.subtitle != null) ...[
               const SizedBox(height: 8),
               ChaosRotatedStatefulWidget(
@@ -243,9 +243,12 @@ class AntiiQUpdateDialog extends StatelessWidget {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black.withValues(alpha: 0.85),
-      builder: (context) => AntiiQUpdateDialog(
-        update: update,
-        onDismiss: onDismiss,
+      builder: (context) => PopScope(
+        canPop: false,
+        child: AntiiQUpdateDialog(
+          update: update,
+          onDismiss: onDismiss,
+        ),
       ),
     );
   }
