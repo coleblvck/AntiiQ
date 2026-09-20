@@ -5,6 +5,7 @@ import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/chaos/tracklist_item.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
 import 'package:antiiq/player/utilities/file_handling/metadata.dart';
+import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/widgets/image_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,27 +17,32 @@ class TrackList extends StatelessWidget {
     super.key,
     required this.scrollController,
     required this.tracks,
-    required this.accentColor,
+    this.accentColor,
     this.header, // Optional header widget (album art, artist info, etc.)
     this.rotationStyle = ChaosRotationStyle.random,
     this.maxRotationAngle = 0.50,
     this.padding = const EdgeInsets.only(
         top: chaosBasePadding, left: chaosBasePadding, right: chaosBasePadding),
+    this.playbackContext,
   });
 
   final ScrollController scrollController;
   final List<Track> tracks;
-  final Color accentColor;
+  final Color? accentColor;
   final Widget? header;
   final ChaosRotationStyle rotationStyle;
   final double maxRotationAngle;
   final EdgeInsets padding;
+  final List<Track>? playbackContext;
 
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
     final chaosLevel = chaosUIState.chaosLevel;
-    final allSongItems = tracks.map((e) => e.mediaItem!).toList();
+    final resolvedAccentColor =
+        accentColor ?? AntiiQTheme.of(context).colorScheme.primary;
+    final playbackTracks = playbackContext ?? tracks;
+    final allSongItems = playbackTracks.map((e) => e.mediaItem!).toList();
     final rotations = ChaosRotation.generateList(
       count: tracks.length,
       style: rotationStyle,
@@ -75,9 +81,11 @@ class TrackList extends StatelessWidget {
                     index: index,
                     albumToPlay: allSongItems,
                     rotation: rotations[index],
-                    accentColor: accentColor,
+                    accentColor: resolvedAccentColor,
                     onTap: () {
-                      playFromList(index, allSongItems);
+                      final playbackIndex = playbackTracks.indexOf(thisTrack);
+                      playFromList(
+                          playbackIndex < 0 ? 0 : playbackIndex, allSongItems);
                     },
                   );
                 },

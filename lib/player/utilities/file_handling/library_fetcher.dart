@@ -15,6 +15,7 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'audio_metadata_bridge.dart';
+import 'library_collections_index.dart';
 
 class AntiiQLibraryFetcher {
   run(MusicState music) async {
@@ -41,6 +42,11 @@ class AntiiQLibraryFetcher {
     music.albums.list = _buildAlbums(albumTracksMap);
     music.artists.list = _buildArtists(artistTracksMap);
     music.genres.list = _buildGenres(genreTracksMap);
+    final collectionIndex =
+        LibraryCollectionIndexBuilder(selectedRoots: specificPathsToQuery);
+    music.albumArtists.list =
+        collectionIndex.buildAlbumArtists(tracks, music.albums.list);
+    music.folders.roots = collectionIndex.buildFolders(tracks);
 
     loadingMessage = "Loading Library";
     libraryLoadTotal = 1;

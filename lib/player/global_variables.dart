@@ -24,12 +24,14 @@ var mainPageIndexes = {
   "songs": 3,
   "albums": 4,
   "artists": 5,
-  "genres": 6,
-  "playlists": 7,
-  "favourites": 8,
-  "selection": 9,
-  "history": 10,
-  "smartMix": 11,
+  "albumArtists": 6,
+  "folders": 7,
+  "genres": 8,
+  "playlists": 9,
+  "favourites": 10,
+  "selection": 11,
+  "history": 12,
+  "smartMix": 13,
 };
 
 Velocity defaultTextScrollvelocity =

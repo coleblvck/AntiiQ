@@ -2,7 +2,6 @@ import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/screens/dashboard/dashboard_item_data.dart';
 import 'package:remixicon/remixicon.dart';
 
-
 List<DashboardItemData> generateDashboardItemData() {
   return [
     DashboardItemData(
@@ -34,6 +33,20 @@ List<DashboardItemData> generateDashboardItemData() {
           mainPageIndexes["artists"] as int,
         );
       },
+    ),
+    DashboardItemData(
+      key: 'albumArtists',
+      title: "Album Artists",
+      icon: RemixIcons.user_star_fill,
+      function: () =>
+          mainPageController.jumpToPage(mainPageIndexes["albumArtists"] as int),
+    ),
+    DashboardItemData(
+      key: 'folders',
+      title: "Folders",
+      icon: RemixIcons.folder_music_fill,
+      function: () =>
+          mainPageController.jumpToPage(mainPageIndexes["folders"] as int),
     ),
     DashboardItemData(
       key: 'genres',

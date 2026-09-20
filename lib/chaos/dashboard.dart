@@ -15,6 +15,7 @@ import 'package:antiiq/chaos/widgets/chaos/canvas_defaults.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_equalizer.dart';
 import 'package:antiiq/chaos/widgets/chaos/albums_grid.dart';
 import 'package:antiiq/chaos/widgets/chaos/artists_list.dart';
+import 'package:antiiq/chaos/widgets/chaos/library_collections.dart';
 import 'package:antiiq/chaos/widgets/chaos/bottom_navigation.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_header.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_playlist_generator.dart';
@@ -541,6 +542,28 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
           },
         );
         break;
+      case 'albumArtists':
+        final ScrollController scrollController = ScrollController();
+        _pageManagerController.push(
+          ChaosAlbumArtistsList(scrollController: scrollController),
+          title: 'ALBUM ARTISTS',
+          scrollController: scrollController,
+          listToCount: antiiqState.music.albumArtists.list,
+          listToShuffle: const [],
+          onPop: scrollController.dispose,
+        );
+        break;
+      case 'folders':
+        final ScrollController scrollController = ScrollController();
+        _pageManagerController.push(
+          ChaosFoldersList(scrollController: scrollController),
+          title: 'FOLDERS',
+          scrollController: scrollController,
+          listToCount: antiiqState.music.folders.roots,
+          listToShuffle: const [],
+          onPop: scrollController.dispose,
+        );
+        break;
       case 'genres':
         final ScrollController scrollController = ScrollController();
         _pageManagerController.push(
@@ -729,6 +752,16 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
           id: 'artists',
           title: 'ARTISTS',
           icon: RemixIcons.user_voice_fill,
+        ),
+        ChaosDashboardItemData(
+          id: 'albumArtists',
+          title: 'ALBUM ARTISTS',
+          icon: RemixIcons.user_star_fill,
+        ),
+        ChaosDashboardItemData(
+          id: 'folders',
+          title: 'FOLDERS',
+          icon: RemixIcons.folder_music_fill,
         ),
         ChaosDashboardItemData(
           id: 'genres',

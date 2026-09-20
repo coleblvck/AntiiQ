@@ -96,6 +96,42 @@ class Artist {
   });
 }
 
+class AlbumArtist {
+  final String name;
+  final List<Album> albums;
+  final List<Track> tracks;
+  final Uri? art;
+
+  const AlbumArtist({
+    required this.name,
+    required this.albums,
+    required this.tracks,
+    this.art,
+  });
+}
+
+class LibraryFolder {
+  final String id;
+  final String name;
+  final String absolutePath;
+  final String sourcePath;
+  final String relativePath;
+  final List<LibraryFolder> children;
+  final List<Track> directTracks;
+  final List<Track> descendantTracks;
+
+  const LibraryFolder({
+    required this.id,
+    required this.name,
+    required this.absolutePath,
+    required this.sourcePath,
+    required this.relativePath,
+    required this.children,
+    required this.directTracks,
+    required this.descendantTracks,
+  });
+}
+
 class Genre {
   String? genreName;
   List<Track>? genreTracks;

@@ -54,6 +54,7 @@ class ChaosPageManagerController extends ChangeNotifier {
 
   void push(
     Widget page, {
+    String? id,
     String? title,
     ScrollController? scrollController,
     VoidCallback? onHeaderTap,
@@ -64,12 +65,14 @@ class ChaosPageManagerController extends ChangeNotifier {
     List<String>? availableSortTypes,
     Function? onSortChanged,
   }) {
-    if (_stack.isNotEmpty && _stack.last.title == title && title != null) {
+    final pageId = id ?? title;
+    if (_stack.isNotEmpty && _stack.last.id == pageId && pageId != null) {
       return;
     }
 
     _stack.add(ChaosPageManagerPage(
       widget: page,
+      id: pageId,
       title: title,
       key: GlobalKey(),
       scrollController: scrollController,
@@ -115,6 +118,7 @@ class ChaosPageManagerController extends ChangeNotifier {
 }
 
 class ChaosPageManagerPage {
+  final String? id;
   final Widget widget;
   final String? title;
   final GlobalKey key;
@@ -129,6 +133,7 @@ class ChaosPageManagerPage {
   final Function? onSortChanged;
 
   ChaosPageManagerPage({
+    this.id,
     required this.widget,
     this.title,
     required this.key,

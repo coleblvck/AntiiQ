@@ -42,6 +42,7 @@ Version 2.0 adds a native playback path for broader format support, gapless play
 - Embedded artwork support
 - Queue management, shuffle, repeat, and endless play
 - Favourites, listening history, playlists, and search
+- Album Artist collections and recursive folder browsing
 - Folder selection and library scan controls
 - Backup and restore for user preferences and playlists
 - Classic UI and Chaos UI
