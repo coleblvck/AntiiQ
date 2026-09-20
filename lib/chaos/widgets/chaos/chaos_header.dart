@@ -1,3 +1,4 @@
+import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
@@ -17,7 +18,7 @@ class HeaderButton {
 
 class ChaosHeader extends StatelessWidget {
   static const double height = 40.0;
-  static const double topPadding = 24.0;
+  static const double topPadding = chaosDashboardHeaderTopPadding;
   static const double leftPadding = 24.0;
   static const double rightPadding = 24.0;
   final List<HeaderButton> additionalButtons;

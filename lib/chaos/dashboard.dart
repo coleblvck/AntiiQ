@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:antiiq/chaos/antiiq_updates.dart';
 import 'package:antiiq/chaos/chaos_global_constants.dart';
+import 'package:antiiq/chaos/dashboard_layout.dart';
 import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:antiiq/chaos/widgets/antiiq_update.dart';
 import 'package:antiiq/chaos/widgets/chaos_dashboard_grid.dart';
@@ -63,7 +64,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
 
   ChaosMiniPlayerController? _playerController;
   BottomNavigationController? _navController;
-  double _bottomNavHeight = 100.0;
+  double _bottomNavigationHeight = 100.0;
 
   Timer? libraryLoadTimer;
   DateTime? currentBackPressTime;
@@ -817,6 +818,11 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
   @override
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
+    final layout = DashboardLayoutMetrics(
+      systemPadding: MediaQuery.paddingOf(context),
+      navigationHeight: _bottomNavigationHeight,
+      miniPlayerHeight: _miniPlayerHeight,
+    );
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -912,8 +918,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                           CanvasOverlay(
                             anchor: CanvasOverlayAnchor.custom,
                             useSafeArea: false,
-                            top: ChaosHeader.topPadding +
-                                MediaQuery.of(context).padding.top,
+                            top: layout.headerTop,
                             left: ChaosHeader.leftPadding,
                             right: ChaosHeader.rightPadding,
                             child: ChaosHeader(
@@ -939,17 +944,17 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                             )
                           ],
                         ),
-                        bottomSpacing: (chaosBasePadding * 2) +
-                            _miniPlayerHeight +
-                            _bottomNavHeight,
+                        headerTop: layout.headerTop,
+                        bottomSpacing: layout.dashboardContentBottom,
                       ),
 
                 //TODO: Note: App header used to be here
 
-                _buildMiniPlayerContainer(),
+                _buildMiniPlayerContainer(layout),
 
                 // Bottom navigation
                 CollapsibleBottomNavigation(
+                  bottomInset: layout.navigationBottom,
                   autoCollapseDuration: const Duration(seconds: 3),
                   navigationItems: const [
                     NavigationItem(
@@ -979,8 +984,7 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
                   onItemSelected: _handleNavigationItemSelected,
                   onStateChanged: (state, height) {
                     setState(() {
-                      _bottomNavHeight =
-                          height + MediaQuery.of(context).padding.bottom;
+                      _bottomNavigationHeight = height;
                     });
                   },
                 ),
@@ -993,15 +997,12 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
     );
   }
 
-  Widget _buildMiniPlayerContainer() {
+  Widget _buildMiniPlayerContainer(DashboardLayoutMetrics layout) {
     return Positioned(
-      bottom: (_bottomNavHeight + chaosBasePadding),
+      top: layout.headerTop,
+      bottom: layout.miniPlayerBottom,
       left: chaosBasePadding,
       right: chaosBasePadding,
-      height: MediaQuery.of(context).size.height -
-          (_bottomNavHeight + chaosBasePadding) -
-          MediaQuery.of(context).padding.vertical -
-          chaosBasePadding,
       child: Stack(
         children: [
           Column(

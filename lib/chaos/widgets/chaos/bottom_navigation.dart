@@ -89,6 +89,7 @@ class CollapsibleBottomNavigation extends StatefulWidget {
   final Duration? autoCollapseDuration;
   final double maxHeight;
   final double handleHeight;
+  final double? bottomInset;
   final Function(NavigationState state, double height)? onStateChanged;
   final Function(BottomNavigationController controller)? onControllerReady;
   final ChaosAnimationManager? chaosAnimationManager;
@@ -106,6 +107,7 @@ class CollapsibleBottomNavigation extends StatefulWidget {
     this.autoCollapseDuration,
     this.maxHeight = 100.0,
     this.handleHeight = 20.0,
+    this.bottomInset,
     this.onStateChanged,
     this.onControllerReady,
     this.chaosAnimationManager,
@@ -290,7 +292,7 @@ class _CollapsibleBottomNavigationState
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: MediaQuery.of(context).padding.bottom,
+      bottom: widget.bottomInset ?? MediaQuery.paddingOf(context).bottom,
       left: 0,
       right: 0,
       child: AnimatedBuilder(

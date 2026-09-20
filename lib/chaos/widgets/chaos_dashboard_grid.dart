@@ -28,6 +28,7 @@ class ChaosDashboardGrid extends StatefulWidget {
   final Function(String id) onItemTap;
   final ChaosHeader header;
   final double bottomSpacing;
+  final double headerTop;
   final bool isEditMode;
   final VoidCallback onEditModeChanged;
   final void Function()? onDashboardTap;
@@ -38,6 +39,7 @@ class ChaosDashboardGrid extends StatefulWidget {
     required this.onItemTap,
     required this.header,
     required this.bottomSpacing,
+    required this.headerTop,
     required this.isEditMode,
     required this.onEditModeChanged,
     this.onDashboardTap,
@@ -119,9 +121,8 @@ class _ChaosDashboardGridState extends State<ChaosDashboardGrid> {
   Widget build(BuildContext context) {
     final chaosUIState = context.watch<ChaosUIState>();
     final currentRadius = chaosUIState.chaosRadius;
-    final headerTop =
-        ChaosHeader.topPadding + MediaQuery.of(context).padding.top;
-    final totalHeaderHeight = headerTop + ChaosHeader.height + chaosBasePadding;
+    final totalHeaderHeight =
+        widget.headerTop + ChaosHeader.height + chaosBasePadding;
 
     return GestureDetector(
       onTap: widget.onDashboardTap,
@@ -284,7 +285,7 @@ class _ChaosDashboardGridState extends State<ChaosDashboardGrid> {
             },
           ),
           Positioned(
-            top: headerTop,
+            top: widget.headerTop,
             left: ChaosHeader.leftPadding,
             right: ChaosHeader.rightPadding,
             child: widget.header,
