@@ -8,6 +8,7 @@ import 'package:antiiq/chaos/utilities/folder_picker.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
+import 'package:antiiq/player/utilities/app_restart.dart';
 import 'package:antiiq/player/utilities/settings/user_settings.dart';
 import 'package:antiiq/player/widgets/ui/antiiq_slider.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,6 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class Library extends StatefulWidget {
@@ -27,6 +27,7 @@ class Library extends StatefulWidget {
 
 class _LibraryState extends State<Library> {
   List<String> directoryList = [];
+  bool _isRestartingForScan = false;
 
   clearDirectoryList() {
     setState(() {
@@ -60,16 +61,40 @@ class _LibraryState extends State<Library> {
     setState(() {});
   }
 
-  fullRescan() async {
-    antiiqState.dataIsInitialized = false;
-    await antiiqState.store.put("dataInit", false);
-    await antiiqState.store.delete(MainBoxKeys.libraryMetadataCache);
-    await antiiqState.store.delete(MainBoxKeys.libraryCacheSignature);
-    Restart.restartApp();
+  Future<void> fullRescan() async {
+    await _restartForScan(full: true);
   }
 
-  rescan() async {
-    Restart.restartApp();
+  Future<void> rescan() async {
+    await _restartForScan(full: false);
+  }
+
+  Future<void> _restartForScan({required bool full}) async {
+    if (_isRestartingForScan) return;
+    setState(() => _isRestartingForScan = true);
+
+    try {
+      if (full) {
+        antiiqState.dataIsInitialized = false;
+        await antiiqState.store.put("dataInit", false);
+        await antiiqState.store.delete(MainBoxKeys.libraryMetadataCache);
+        await antiiqState.store.delete(MainBoxKeys.libraryCacheSignature);
+        await antiiqState.store.delete(MainBoxKeys.libraryRescanRequested);
+      } else {
+        await antiiqState.store.put(
+          MainBoxKeys.libraryRescanRequested,
+          true,
+        );
+      }
+      await antiiqState.store.flush();
+      await restartAntiiQ();
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _isRestartingForScan = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not restart AntiiQ: $error')),
+      );
+    }
   }
 
   @override
@@ -87,10 +112,11 @@ class _LibraryState extends State<Library> {
               children: [
                 Expanded(
                   child: _ActionButton(
-                    label: 'RE-SCAN',
+                    label: _isRestartingForScan ? 'RESTARTING...' : 'RE-SCAN',
                     icon: RemixIcons.refresh_fill,
                     color: AntiiQTheme.of(context).colorScheme.primary,
                     onTap: () {
+                      if (_isRestartingForScan) return;
                       HapticFeedback.mediumImpact();
                       rescan();
                     },
@@ -99,10 +125,12 @@ class _LibraryState extends State<Library> {
                 const SizedBox(width: chaosBasePadding),
                 Expanded(
                   child: _ActionButton(
-                    label: 'FULL RESCAN',
+                    label:
+                        _isRestartingForScan ? 'RESTARTING...' : 'FULL RESCAN',
                     icon: RemixIcons.refresh_fill,
                     color: AntiiQTheme.of(context).colorScheme.error,
                     onTap: () {
+                      if (_isRestartingForScan) return;
                       HapticFeedback.heavyImpact();
                       _showFullRescanWarning(context);
                     },

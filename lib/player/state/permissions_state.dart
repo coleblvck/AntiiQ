@@ -1,10 +1,10 @@
+import 'package:antiiq/player/utilities/app_restart.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:restart_app/restart_app.dart';
 
 class PermissionsState {
   bool has = false;
 
-  checkAndRequest({bool retry = false}) async {
+  Future<void> checkAndRequest({bool retry = false}) async {
     await _requestMediaPermission();
 
     has =
@@ -13,7 +13,7 @@ class PermissionsState {
     await _requestIfNeeded(Permission.notification);
 
     if (retry) {
-      Restart.restartApp();
+      await restartAntiiQ();
     }
   }
 

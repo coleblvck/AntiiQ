@@ -42,6 +42,7 @@ class MainBoxKeys {
   static const String endlessPlayEnabled = "endlessPlayEnabled";
   static const String libraryMetadataCache = "libraryMetadataCacheV2";
   static const String libraryCacheSignature = "libraryCacheSignatureV2";
+  static const String libraryRescanRequested = "libraryRescanRequestedV2";
 }
 
 updateDirectories() async {

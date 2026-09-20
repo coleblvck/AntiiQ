@@ -267,7 +267,12 @@ class AntiiQLibraryFetcher {
   }
 
   Future<List<AudioMetadata>> _getAllSongs() async {
-    final cachedLibrary = await _loadCachedLibrary();
+    final rescanRequested = await antiiqState.store.get(
+          MainBoxKeys.libraryRescanRequested,
+          defaultValue: false,
+        ) ==
+        true;
+    final cachedLibrary = rescanRequested ? null : await _loadCachedLibrary();
     if (cachedLibrary != null) {
       return cachedLibrary;
     }
@@ -358,6 +363,9 @@ class AntiiQLibraryFetcher {
     final totalLibrary = metadataByPath.values.toList();
     debugPrint('Total songs found: ${totalLibrary.length}');
     await _saveCachedLibrary(totalLibrary);
+    if (rescanRequested) {
+      await antiiqState.store.delete(MainBoxKeys.libraryRescanRequested);
+    }
     return totalLibrary;
   }
 
