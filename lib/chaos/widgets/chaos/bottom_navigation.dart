@@ -1,5 +1,6 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_animation_manager.dart';
+import 'package:antiiq/chaos/widgets/surfaces/antiiq_surface.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -300,22 +301,18 @@ class _CollapsibleBottomNavigationState
               _resetAutoCollapseTimer();
             },
             onTap: _resetAutoCollapseTimer,
-            child: Container(
+            child: AntiiQSurface(
+              role: AntiiQSurfaceRole.panel,
+              enableBlur: true,
+              radius: 0,
               height: _currentHeight,
-              decoration: BoxDecoration(
-                color: AntiiQTheme.of(context)
-                    .colorScheme
-                    .background
-                    .withValues(alpha: 0.9),
-                border: Border(
-                  top: BorderSide(
-                    color: AntiiQTheme.of(context)
-                        .colorScheme
-                        .onBackground
-                        .withValues(
-                            alpha: 0.1 + (_expandController.value * 0.1)),
-                    width: 1 + _expandController.value,
-                  ),
+              border: Border(
+                top: BorderSide(
+                  color: AntiiQTheme.of(context)
+                      .colorScheme
+                      .onBackground
+                      .withValues(alpha: 0.1 + (_expandController.value * 0.1)),
+                  width: 1 + _expandController.value,
                 ),
               ),
               child: Stack(

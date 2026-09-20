@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
+import 'package:antiiq/chaos/widgets/surfaces/antiiq_surface.dart';
 import 'package:antiiq/chaos/widgets/track_details_sheet.dart';
 import 'package:antiiq/chaos/page_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
@@ -124,24 +125,20 @@ class _TrackListItemState extends State<TrackListItem>
   }
 
   Widget _buildPageView(double outerRadius, double innerRadius) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: widget.accentColor.withValues(alpha: 0.3),
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(outerRadius),
+    return AntiiQSurface(
+      role: AntiiQSurfaceRole.control,
+      radius: outerRadius,
+      border: Border.all(
+        color: widget.accentColor.withValues(alpha: 0.3),
+        width: 1,
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(outerRadius),
-        child: PageView(
-          controller: _pageController,
-          physics: const BouncingScrollPhysics(),
-          children: [
-            _buildMainCard(innerRadius),
-            _buildActionsCard(innerRadius),
-          ],
-        ),
+      child: PageView(
+        controller: _pageController,
+        physics: const BouncingScrollPhysics(),
+        children: [
+          _buildMainCard(innerRadius),
+          _buildActionsCard(innerRadius),
+        ],
       ),
     );
   }
@@ -161,7 +158,7 @@ class _TrackListItemState extends State<TrackListItem>
             decoration: BoxDecoration(
               color: isSelected
                   ? widget.accentColor.withValues(alpha: 0.1)
-                  : AntiiQTheme.of(context).colorScheme.background,
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(radius),
             ),
             child: Row(

@@ -2,6 +2,7 @@ import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_header.dart';
+import 'package:antiiq/chaos/widgets/surfaces/antiiq_surface.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:flutter/material.dart';
@@ -414,17 +415,11 @@ class _ChaosDashboardCard extends StatelessWidget {
           duration: const Duration(milliseconds: 100),
           curve: Curves.easeOut,
           transform: Matrix4.identity()..scale(isPressed ? 0.97 : 1.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: isVisible
-                  ? AntiiQTheme.of(context)
-                      .colorScheme
-                      .surface
-                      .withValues(alpha: isPressed ? 0.9 : 0.85)
-                  : AntiiQTheme.of(context)
-                      .colorScheme
-                      .surface
-                      .withValues(alpha: 0.2),
+          child: Opacity(
+            opacity: isVisible ? 1 : .36,
+            child: AntiiQSurface(
+              role: AntiiQSurfaceRole.control,
+              radius: radius,
               border: Border.all(
                 color: isVisible
                     ? AntiiQTheme.of(context)
@@ -437,9 +432,7 @@ class _ChaosDashboardCard extends StatelessWidget {
                         .withValues(alpha: 0.15),
                 width: 1,
               ),
-              borderRadius: BorderRadius.circular(radius),
-            ),
-            child: Stack(
+              child: Stack(
               children: [
                 // Main content
                 Padding(
@@ -559,6 +552,7 @@ class _ChaosDashboardCard extends StatelessWidget {
                     ),
                   ),
               ],
+              ),
             ),
           ),
         ),

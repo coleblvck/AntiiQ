@@ -1,9 +1,9 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
-import 'package:antiiq/chaos/utilities/alpha.dart';
 import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/track_details_sheet.dart';
+import 'package:antiiq/chaos/widgets/surfaces/antiiq_surface.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
 import 'package:antiiq/player/utilities/activity_handlers.dart';
@@ -225,50 +225,35 @@ class _ChaosPageManagerState extends State<ChaosPageManager>
     if (widget.controller.isEmpty) return const SizedBox.shrink();
     final chaosUIState = context.watch<ChaosUIState>();
     final radius = chaosUIState.chaosRadius;
-    final chaosLevel = chaosUIState.chaosLevel;
 
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
         return Transform.scale(
           scale: 0.97 + (_scaleAnimation.value * 0.03),
-          child: Container(
-            decoration: BoxDecoration(
-              color: AntiiQTheme.of(context)
-                  .colorScheme
-                  .background
-                  .withValues(alpha: getAlphaPercentage(0.9, chaosLevel)),
-              border: Border.all(
-                color: AntiiQTheme.of(context)
-                    .colorScheme
-                    .primary
-                    .withValues(alpha: 0.3),
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(radius),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(radius),
-              child: Column(
-                children: [
-                  _buildHeader(radius),
-                  Expanded(
-                    child: IndexedStack(
-                      index: widget.controller.depth - 1,
-                      sizing: StackFit.expand,
-                      children: widget.controller._stack.map((page) {
-                        return KeyedSubtree(
-                          key: page.key,
-                          child: ChaosPageManagerNavigator(
-                            controller: widget.controller,
-                            child: page.widget,
-                          ),
-                        );
-                      }).toList(),
-                    ),
+          child: AntiiQSurface(
+            role: AntiiQSurfaceRole.panel,
+            enableBlur: true,
+            radius: radius,
+            child: Column(
+              children: [
+                _buildHeader(radius),
+                Expanded(
+                  child: IndexedStack(
+                    index: widget.controller.depth - 1,
+                    sizing: StackFit.expand,
+                    children: widget.controller._stack.map((page) {
+                      return KeyedSubtree(
+                        key: page.key,
+                        child: ChaosPageManagerNavigator(
+                          controller: widget.controller,
+                          child: page.widget,
+                        ),
+                      );
+                    }).toList(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );

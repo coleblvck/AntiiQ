@@ -1,6 +1,7 @@
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:antiiq/chaos/utilities/angle.dart';
+import 'package:antiiq/chaos/widgets/surfaces/antiiq_surface.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/home_widget/home_widget_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
@@ -71,6 +72,8 @@ class _UserInterfaceState extends State<UserInterface>
       slivers: [
         _SectionHeader(title: 'INTERFACE', glitchController: _glitchController),
         _ChaosLevelSetting(),
+        _SectionHeader(title: 'MATERIAL', glitchController: _glitchController),
+        const _MaterialSettings(),
         _SectionHeader(
             title: 'DASHBOARD MODE', glitchController: _glitchController),
         _DashboardModeSetting(),
@@ -142,6 +145,254 @@ class _SectionHeader extends StatelessWidget {
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _MaterialSettings extends StatelessWidget {
+  const _MaterialSettings();
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<ChaosUIState>();
+    return SliverToBoxAdapter(
+      child: _SettingContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AntiiQSurface(
+              role: AntiiQSurfaceRole.elevated,
+              enableBlur: true,
+              radius: state.getAdjustedRadius(2),
+              padding: const EdgeInsets.all(chaosBasePadding * 1.5),
+              child: Row(
+                children: [
+                  Icon(RemixIcons.contrast_drop_2_fill,
+                      color: AntiiQTheme.of(context).colorScheme.primary),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          state.surfaceStyleLabel,
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context).colorScheme.primary,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          state.reduceTransparency
+                              ? 'HIGH LEGIBILITY · BLUR DISABLED'
+                              : 'LIVE SURFACE PREVIEW',
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context)
+                                .colorScheme
+                                .onBackground
+                                .withValues(alpha: .58),
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            LayoutBuilder(builder: (context, constraints) {
+              const gap = 8.0;
+              final width = (constraints.maxWidth - gap) / 2;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children: [
+                  for (final preset in AntiiQSurfacePreset.values)
+                    SizedBox(
+                      width: width,
+                      child: _BinaryOption(
+                        label: preset.label,
+                        isSelected: state.surfacePreset == preset &&
+                            !state.isSurfacePresetCustomized,
+                        onTap: () {
+                          HapticFeedback.selectionClick();
+                          state.setSurfacePreset(preset);
+                        },
+                      ),
+                    ),
+                ],
+              );
+            }),
+            const SizedBox(height: 16),
+            _MaterialSlider(
+              label: 'SURFACE OPACITY',
+              valueLabel: '${(state.surfaceOpacity * 100).round()}%',
+              value: state.surfaceOpacity,
+              min: .22,
+              max: 1,
+              enabled: !state.reduceTransparency,
+              onChanged: state.setSurfaceOpacity,
+            ),
+            _MaterialSlider(
+              label: 'FROST',
+              valueLabel: state.surfaceBlur == 0
+                  ? 'OFF'
+                  : state.surfaceBlur.round().toString(),
+              value: state.surfaceBlur,
+              min: 0,
+              max: 28,
+              enabled: !state.reduceTransparency,
+              onChanged: state.setSurfaceBlur,
+            ),
+            _MaterialSlider(
+              label: 'THEME TINT',
+              valueLabel: '${(state.surfaceTint * 100).round()}%',
+              value: state.surfaceTint,
+              min: 0,
+              max: .35,
+              onChanged: state.setSurfaceTint,
+            ),
+            _MaterialSlider(
+              label: 'EDGE LIGHT',
+              valueLabel: '${(state.surfaceBorder * 100).round()}%',
+              value: state.surfaceBorder,
+              min: .08,
+              max: .8,
+              onChanged: state.setSurfaceBorder,
+            ),
+            _MaterialSlider(
+              label: 'BACKDROP ART',
+              valueLabel: '${(state.backdropIntensity * 100).round()}%',
+              value: state.backdropIntensity,
+              min: 0,
+              max: .32,
+              onChanged: state.setBackdropIntensity,
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('REDUCE TRANSPARENCY',
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context)
+                                .colorScheme
+                                .onBackground,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
+                          )),
+                      const SizedBox(height: 3),
+                      Text('Opaque surfaces and no live blur',
+                          style: TextStyle(
+                            color: AntiiQTheme.of(context)
+                                .colorScheme
+                                .onBackground
+                                .withValues(alpha: .55),
+                            fontSize: 10,
+                          )),
+                    ],
+                  ),
+                ),
+                _ChaosSwitch(
+                  value: state.reduceTransparency,
+                  onChanged: state.setReduceTransparency,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MaterialSlider extends StatelessWidget {
+  const _MaterialSlider({
+    required this.label,
+    required this.valueLabel,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.onChanged,
+    this.enabled = true,
+  });
+
+  final String label;
+  final String valueLabel;
+  final double value;
+  final double min;
+  final double max;
+  final ValueChanged<double> onChanged;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<ChaosUIState>();
+    final colors = AntiiQTheme.of(context).colorScheme;
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 160),
+      opacity: enabled ? 1 : .38,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 14),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(label,
+                      style: TextStyle(
+                        color: colors.onBackground.withValues(alpha: .64),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.3,
+                      )),
+                ),
+                Text(valueLabel,
+                    style: TextStyle(
+                      color: colors.primary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1,
+                    )),
+              ],
+            ),
+            const SizedBox(height: 7),
+            IgnorePointer(
+              ignoring: !enabled,
+              child: SizedBox(
+                height: 20,
+                child: AntiiQSlider(
+                  activeTrackColor: colors.primary,
+                  inactiveTrackColor: colors.surface,
+                  thumbColor: colors.onBackground,
+                  thumbWidth: 20,
+                  thumbHeight: 20,
+                  thumbBorderRadius: state.getAdjustedRadius(4),
+                  trackHeight: 20,
+                  trackBorderRadius: state.getAdjustedRadius(4),
+                  orientation: Axis.horizontal,
+                  selectByTap: true,
+                  value: value,
+                  min: min,
+                  max: max,
+                  onChanged: (next) {
+                    HapticFeedback.selectionClick();
+                    onChanged(next);
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -960,26 +1211,14 @@ class _SettingContainer extends StatelessWidget {
     final chaosLevel = chaosUIState.chaosLevel;
     return ChaosRotatedStatefulWidget(
       maxAngle: getAnglePercentage(0.1, chaosLevel),
-      child: Container(
+      child: AntiiQSurface(
+        role: AntiiQSurfaceRole.quiet,
+        radius: currentRadius - 2,
         margin: const EdgeInsets.only(
             left: chaosBasePadding,
             right: chaosBasePadding,
             bottom: chaosBasePadding),
         padding: const EdgeInsets.all(chaosBasePadding * 2),
-        decoration: BoxDecoration(
-          color: AntiiQTheme.of(context)
-              .colorScheme
-              .surface
-              .withValues(alpha: 0.2),
-          border: Border.all(
-            color: AntiiQTheme.of(context)
-                .colorScheme
-                .surface
-                .withValues(alpha: 0.5),
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(currentRadius - 2),
-        ),
         child: child,
       ),
     );

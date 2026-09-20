@@ -859,13 +859,31 @@ class _TypographyChaosDashboardState extends State<TypographyChaosDashboard>
 
                 return Container(
                   decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AntiiQTheme.of(context)
+                            .colorScheme
+                            .background
+                            .withValues(alpha: .62),
+                        AntiiQTheme.of(context)
+                            .colorScheme
+                            .background
+                            .withValues(alpha: .18),
+                        AntiiQTheme.of(context)
+                            .colorScheme
+                            .background
+                            .withValues(alpha: .72),
+                      ],
+                    ),
                     image: DecorationImage(
                       image: currentTrack.artUri != null
                           ? FileImage(File.fromUri(currentTrack.artUri!))
                           : const AssetImage('assets/placeholder.png')
                               as ImageProvider,
                       fit: BoxFit.cover,
-                      opacity: 0.1,
+                      opacity: chaosUIState.backdropIntensity,
                     ),
                   ),
                 );

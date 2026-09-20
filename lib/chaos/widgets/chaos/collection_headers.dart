@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:antiiq/chaos/chaos_global_constants.dart';
 import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:antiiq/chaos/widgets/track_details_sheet.dart';
+import 'package:antiiq/chaos/widgets/surfaces/antiiq_surface.dart';
 import 'package:antiiq/chaos/page_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
@@ -32,17 +33,9 @@ class AlbumHeader extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(chaosBasePadding),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AntiiQTheme.of(context)
-                .colorScheme
-                .primary
-                .withValues(alpha: 0.3),
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(outerRadius),
-        ),
+      child: AntiiQSurface(
+        role: AntiiQSurfaceRole.elevated,
+        radius: outerRadius,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -82,7 +75,7 @@ class AlbumHeader extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(chaosBasePadding * 2),
               decoration: BoxDecoration(
-                color: AntiiQTheme.of(context).colorScheme.background,
+                color: Colors.transparent,
                 border: Border(
                   top: BorderSide(
                     color: AntiiQTheme.of(context)
@@ -232,17 +225,9 @@ class ArtistHeader extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(chaosBasePadding),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AntiiQTheme.of(context)
-                .colorScheme
-                .primary
-                .withValues(alpha: 0.3),
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(outerRadius),
-        ),
+      child: AntiiQSurface(
+        role: AntiiQSurfaceRole.elevated,
+        radius: outerRadius,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -272,7 +257,7 @@ class ArtistHeader extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(chaosBasePadding * 2),
               decoration: BoxDecoration(
-                color: AntiiQTheme.of(context).colorScheme.background,
+                color: Colors.transparent,
                 border: Border(
                   top: BorderSide(
                     color: AntiiQTheme.of(context)
@@ -389,19 +374,10 @@ class GenreHeader extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(chaosBasePadding),
-      child: Container(
+      child: AntiiQSurface(
+        role: AntiiQSurfaceRole.elevated,
+        radius: outerRadius,
         padding: const EdgeInsets.all(chaosBasePadding * 2),
-        decoration: BoxDecoration(
-          color: AntiiQTheme.of(context).colorScheme.background,
-          border: Border.all(
-            color: AntiiQTheme.of(context)
-                .colorScheme
-                .primary
-                .withValues(alpha: 0.3),
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(outerRadius),
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

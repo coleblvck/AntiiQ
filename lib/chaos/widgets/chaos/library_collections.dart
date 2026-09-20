@@ -4,6 +4,7 @@ import 'package:antiiq/chaos/page_manager.dart';
 import 'package:antiiq/chaos/utilities/open_collection.dart';
 import 'package:antiiq/chaos/widgets/chaos/collection_headers.dart';
 import 'package:antiiq/chaos/widgets/track_details_sheet.dart';
+import 'package:antiiq/chaos/widgets/surfaces/antiiq_surface.dart';
 import 'package:antiiq/chaos/widgets/chaos/tracklist.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
@@ -97,16 +98,10 @@ class _CollectionTile extends StatelessWidget {
   final Uri? art;
   final IconData? icon;
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => AntiiQSurface(
+        role: AntiiQSurfaceRole.control,
         margin: const EdgeInsets.only(bottom: chaosBasePadding),
-        decoration: BoxDecoration(
-          border: Border.all(
-              color: AntiiQTheme.of(context)
-                  .colorScheme
-                  .primary
-                  .withValues(alpha: .35)),
-          borderRadius: BorderRadius.circular(16),
-        ),
+        radius: 16,
         child: ListTile(
           onTap: onTap,
           contentPadding: const EdgeInsets.all(10),
@@ -326,14 +321,10 @@ class _HeaderCard extends StatelessWidget {
     final outerRadius = context.watch<ChaosUIState>().chaosRadius;
     final innerRadius = outerRadius - 2;
     final colors = AntiiQTheme.of(context).colorScheme;
-    return Container(
+    return AntiiQSurface(
+      role: AntiiQSurfaceRole.elevated,
       margin: const EdgeInsets.all(chaosBasePadding),
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-        color: colors.background,
-        border: Border.all(color: colors.primary.withValues(alpha: .3)),
-        borderRadius: BorderRadius.circular(outerRadius),
-      ),
+      radius: outerRadius,
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
           padding: const EdgeInsets.all(chaosBasePadding * 2),

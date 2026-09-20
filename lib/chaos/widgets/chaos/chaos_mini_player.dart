@@ -2,6 +2,7 @@ import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:antiiq/chaos/utilities/angle.dart';
 import 'package:chaos_ui/chaos_rotation.dart';
 import 'package:antiiq/chaos/widgets/chaos/chaos_animation_manager.dart';
+import 'package:antiiq/chaos/widgets/surfaces/antiiq_surface.dart';
 import 'package:antiiq/player/global_variables.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
@@ -395,41 +396,21 @@ class _ChaosMiniPlayerState extends State<ChaosMiniPlayer>
                           onPanUpdate: (details) =>
                               _handlePanUpdate(details, currentTrack),
                           onPanEnd: _handlePanEnd,
-                          child: Container(
+                          child: AntiiQSurface(
                             key: _containerKey,
+                            role: AntiiQSurfaceRole.elevated,
+                            enableBlur: true,
+                            radius: currentRadius,
                             width: double.infinity,
                             padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
+                            border: Border.all(
                               color: AntiiQTheme.of(context)
                                   .colorScheme
-                                  .surface
+                                  .primary
                                   .withValues(
-                                      alpha: (0.85 + (0.1 * expandProgress))
+                                      alpha: (0.3 + (0.2 * expandProgress))
                                           .clamp(0.0, 1.0)),
-                              border: Border.all(
-                                color: AntiiQTheme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withValues(
-                                        alpha: (0.3 + (0.2 * expandProgress))
-                                            .clamp(0.0, 1.0)),
-                                width: 1 + expandProgress,
-                              ),
-                              borderRadius:
-                                  BorderRadius.circular(currentRadius),
-                              boxShadow: expandProgress > 0.3
-                                  ? [
-                                      BoxShadow(
-                                        color: AntiiQTheme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withValues(
-                                                alpha: 0.15 * expandProgress),
-                                        blurRadius: 12 * expandProgress,
-                                        offset: const Offset(0, 4),
-                                      )
-                                    ]
-                                  : null,
+                              width: 1 + expandProgress,
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
