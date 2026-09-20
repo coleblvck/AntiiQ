@@ -10,29 +10,8 @@ import 'package:flutter/material.dart';
 AntiiqAudioHandler get globalAntiiqAudioHandler =>
     antiiqState.audioSetup.audioHandler;
 final AntiiqPlaylistGenerator playlistGenerator = AntiiqPlaylistGenerator();
-PageController mainPageController = PageController();
 
 late Directory antiiqDirectory;
-
-//Cache
-
-//Page Indexes Object
-var mainPageIndexes = {
-  "dashboard": 0,
-  "equalizer": 1,
-  "search": 2,
-  "songs": 3,
-  "albums": 4,
-  "artists": 5,
-  "albumArtists": 6,
-  "folders": 7,
-  "genres": 8,
-  "playlists": 9,
-  "favourites": 10,
-  "selection": 11,
-  "history": 12,
-  "smartMix": 13,
-};
 
 Velocity defaultTextScrollvelocity =
     const Velocity(pixelsPerSecond: Offset(50, 0));
@@ -125,11 +104,6 @@ enum ArtFit {
 late ArtFit currentCoverArtFit;
 StreamController<ArtFit> coverArtFitStream = StreamController.broadcast();
 
-const double pagePadding = 5.0;
-
 late bool additionalMiniPlayerControls;
 StreamController<bool> additionalMiniPlayerControlsStream =
     StreamController.broadcast();
-
-/// TEMPORARY GLOBAL VARIABLE TO CHECK IF CHAOS UI IS ENABLED FOR STATUSBAR COLOR SETTING
-bool chaosUIEnabled = false;

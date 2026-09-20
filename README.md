@@ -29,7 +29,7 @@
 
 AntiiQ is a local-first Android music player built for people who keep their music on the device. It scans storage directly, reads metadata with a native reader, and plays from your local library without network accounts or streaming services.
 
-Version 2.0 adds a native playback path for broader format support, gapless playback, crossfade, speed and pitch control, and a 15-band parametric equalizer. The app still keeps the familiar classic interface, while Chaos UI offers a more expressive dashboard, library, queue, and settings experience.
+Version 2.0 adds a native playback path for broader format support, gapless playback, crossfade, speed and pitch control, and a 15-band parametric equalizer. Its expressive interface brings the dashboard, library, queue, player, effects, and settings into one coherent AntiiQ experience.
 
 ## Features
 
@@ -45,7 +45,7 @@ Version 2.0 adds a native playback path for broader format support, gapless play
 - Album Artist collections and recursive folder browsing
 - Folder selection and library scan controls
 - Backup and restore for user preferences and playlists
-- Classic UI and Chaos UI
+- Customizable expressive interface and dashboard
 - Home screen widget and media notification controls
 - Intent playback from shared or opened audio files
 

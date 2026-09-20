@@ -1,4 +1,3 @@
-import 'package:antiiq/player/global_variables.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -6,7 +5,6 @@ class ChaosUIState extends ChangeNotifier {
   static const String _boxName = 'chaos_ui_settings';
   static const String _radiusKey = 'chaos_radius';
   static const String _canvasStateKey = 'chaos_canvas_state';
-  static const String _chaosUIStatusKey = 'chaos_ui_status';
   static const String _chaosLevelKey = 'chaos_level';
   static const String _canvasEnabledKey = 'canvas_enabled';
   static const String _dashboardOrderKey = 'chaos_dashboard_order';
@@ -14,9 +12,6 @@ class ChaosUIState extends ChangeNotifier {
 
   late Box _box;
   Box get box => _box;
-
-  bool _chaosUIStatus = true;
-  bool get chaosUIStatus => _chaosUIStatus;
 
   double _chaosLevel = 0.0;
   double get chaosLevel => _chaosLevel;
@@ -66,9 +61,6 @@ class ChaosUIState extends ChangeNotifier {
   // Initialize and load from Hive
   Future<void> init() async {
     _box = await Hive.openBox(_boxName);
-    _chaosUIStatus = _box.get(_chaosUIStatusKey, defaultValue: true);
-    // TODO: REMOVE THIS. Temporarily set fallback for statusbar color setting
-    chaosUIEnabled = _chaosUIStatus;
     _chaosRadius = _box.get(_radiusKey, defaultValue: 2.0);
     _canvasState = _box.get(_canvasStateKey);
     _chaosLevel = _box.get(_chaosLevelKey, defaultValue: 0.0);
@@ -87,15 +79,6 @@ class ChaosUIState extends ChangeNotifier {
           'selection'
         ];
     _coverArtTheme = _box.get(_coverArtThemeKey, defaultValue: false);
-    notifyListeners();
-  }
-
-  Future<void> setChaosUIStatus(bool status) async {
-    // TODO: REMOVE THIS LINE
-    chaosUIEnabled = status;
-    if (_chaosUIStatus == status) return;
-    _chaosUIStatus = status;
-    await _box.put(_chaosUIStatusKey, status);
     notifyListeners();
   }
 

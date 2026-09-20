@@ -69,8 +69,7 @@ class _UserInterfaceState extends State<UserInterface>
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        _SectionHeader(title: 'UI MODE', glitchController: _glitchController),
-        _UIModeSetting(setPageState: setState),
+        _SectionHeader(title: 'INTERFACE', glitchController: _glitchController),
         _ChaosLevelSetting(),
         _SectionHeader(
             title: 'DASHBOARD MODE', glitchController: _glitchController),
@@ -143,181 +142,6 @@ class _SectionHeader extends StatelessWidget {
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class _UIModeSetting extends StatelessWidget {
-  final void Function(void Function()) setPageState;
-
-  const _UIModeSetting({required this.setPageState});
-
-  Future<void> _showChaosUIDialog(
-      BuildContext context, ChaosUIState chaosUIState, bool enable) {
-    final currentRadius = context.read<ChaosUIState>().chaosRadius;
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          backgroundColor: AntiiQTheme.of(context).colorScheme.background,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(currentRadius),
-            side: BorderSide(
-              color: AntiiQTheme.of(context).colorScheme.primary,
-              width: 2,
-            ),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(chaosBasePadding * 2),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'SWITCH TO CLASSIC UI?',
-                  style: TextStyle(
-                    color: AntiiQTheme.of(context).colorScheme.primary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 3,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  enable
-                      ? 'This will add subtle rotations and visual effects to UI elements throughout the app. You can switch back anytime from the settings menu.'
-                      : 'This will disable Chaos UI, removing all Chaos rotations and Chaos visual effects from UI elements, switching to the AntiiQ Classic UI.',
-                  style: TextStyle(
-                    color: AntiiQTheme.of(context)
-                        .colorScheme
-                        .onBackground
-                        .withValues(alpha: 0.8),
-                    fontSize: 12,
-                    height: 1.5,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          Navigator.of(context).pop();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(chaosBasePadding * 1.5),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: AntiiQTheme.of(context)
-                                  .colorScheme
-                                  .surface
-                                  .withValues(alpha: 0.5),
-                              width: 1,
-                            ),
-                            borderRadius:
-                                BorderRadius.circular(currentRadius - 6),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'CANCEL',
-                              style: TextStyle(
-                                color: AntiiQTheme.of(context)
-                                    .colorScheme
-                                    .onBackground
-                                    .withValues(alpha: 0.6),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          HapticFeedback.mediumImpact();
-                          chaosUIState.setChaosUIStatus(enable);
-                          Navigator.of(context).pop();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(chaosBasePadding * 1.5),
-                          decoration: BoxDecoration(
-                            color: AntiiQTheme.of(context).colorScheme.primary,
-                            border: Border.all(
-                              color: AntiiQTheme.of(context)
-                                  .colorScheme
-                                  .onPrimary
-                                  .withValues(alpha: 0.3),
-                              width: 1,
-                            ),
-                            borderRadius:
-                                BorderRadius.circular(currentRadius - 6),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'SWITCH',
-                              style: TextStyle(
-                                color: AntiiQTheme.of(context)
-                                    .colorScheme
-                                    .onPrimary,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final chaosUIState = context.watch<ChaosUIState>();
-    return SliverToBoxAdapter(
-      child: _SettingContainer(
-        child: Row(
-          children: [
-            Expanded(
-              child: _BinaryOption(
-                label: "CLASSIC",
-                isSelected: !chaosUIState.chaosUIStatus,
-                onTap: () {
-                  if (chaosUIState.chaosUIStatus) {
-                    _showChaosUIDialog(context, chaosUIState, false);
-                  }
-                },
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _BinaryOption(
-                label: "CHAOS",
-                isSelected: chaosUIState.chaosUIStatus,
-                onTap: () {
-                  if (!chaosUIState.chaosUIStatus) {
-                    _showChaosUIDialog(context, chaosUIState, true);
-                  }
-                },
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -499,7 +323,7 @@ class _UiRoundnessSetting extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'CHAOS UI ROUNDNESS',
+                  'INTERFACE ROUNDNESS',
                   style: TextStyle(
                     color: AntiiQTheme.of(context)
                         .colorScheme
@@ -581,7 +405,7 @@ class _ChaosLevelSetting extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'CHAOS LEVEL',
+                  'EXPRESSION LEVEL',
                   style: TextStyle(
                     color: AntiiQTheme.of(context)
                         .colorScheme

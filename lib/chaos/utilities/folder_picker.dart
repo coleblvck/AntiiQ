@@ -16,7 +16,7 @@ Future<Directory?> pickChaosFolder(String path, BuildContext context) async {
     rootDirectory: Directory(path),
     fsType: FilesystemType.folder,
     pickText: "SELECT",
-    title: "CHAOS FOLDER SELECTOR",
+    title: "FOLDER SELECTOR",
     constraints: BoxConstraints(
       maxWidth: MediaQuery.of(context).size.width * 0.9,
       maxHeight: MediaQuery.of(context).size.height * 0.8,

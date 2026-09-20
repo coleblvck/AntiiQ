@@ -2,9 +2,7 @@ import 'package:antiiq/chaos/chaos_ui_state.dart';
 import 'package:antiiq/chaos/dashboard.dart';
 import 'package:antiiq/home_widget/home_widget_manager.dart';
 import 'package:antiiq/player/global_variables.dart';
-import 'package:antiiq/player/screens/main_screen/main_box.dart';
 import 'package:antiiq/player/state/antiiq_state.dart';
-import 'package:antiiq/player/state/ui_state.dart';
 import 'package:antiiq/player/state/version_updates.dart';
 import 'package:antiiq/player/ui/elements/ui_colours.dart';
 import 'package:antiiq/player/ui/elements/ui_elements.dart';
@@ -25,7 +23,8 @@ void main() async {
       providers: [
         ChangeNotifierProvider.value(value: antiiQState),
         ChangeNotifierProvider.value(value: chaosUIState),
-        ChangeNotifierProvider.value(value: antiiQState.audioSetup.audioHandler),
+        ChangeNotifierProvider.value(
+            value: antiiQState.audioSetup.audioHandler),
         ChangeNotifierProvider(create: (_) => versionUpdates),
       ],
       child: const AntiiQ(),
@@ -86,52 +85,48 @@ class _AntiiQState extends State<AntiiQ> with WidgetsBindingObserver {
         builder: (context, snapshot) {
           return AntiiQTheme(
             colorScheme: snapshot.data ?? getColorScheme(),
-            child: UIStateInitializer(
-              child: MaterialApp(
-                title: 'AntiiQ',
-                debugShowCheckedModeBanner: false,
-                theme: ThemeData.dark().copyWith(
-                  scaffoldBackgroundColor: Colors.transparent,
-                  primaryColor: currentColorScheme.primary,
-                  scrollbarTheme: ScrollbarThemeData(
-                    thumbColor:
-                        WidgetStatePropertyAll(currentColorScheme.primary),
-                    crossAxisMargin: 4,
-                    mainAxisMargin: 4,
-                  ),
-                  textSelectionTheme: TextSelectionThemeData(
-                    cursorColor: currentColorScheme.primary,
-                    selectionColor:
-                        currentColorScheme.primary.withValues(alpha: 0.4),
-                    selectionHandleColor: currentColorScheme.primary,
-                  ),
+            child: MaterialApp(
+              title: 'AntiiQ',
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData.dark().copyWith(
+                scaffoldBackgroundColor: Colors.transparent,
+                primaryColor: currentColorScheme.primary,
+                scrollbarTheme: ScrollbarThemeData(
+                  thumbColor:
+                      WidgetStatePropertyAll(currentColorScheme.primary),
+                  crossAxisMargin: 4,
+                  mainAxisMargin: 4,
                 ),
-                home: Builder(builder: (context) {
-                  final colors = AntiiQTheme.of(context).colorScheme;
-                  final chaosUIState = context.watch<ChaosUIState>();
-                  return Theme(
-                    data: Theme.of(context).copyWith(
-                      scrollbarTheme: ScrollbarThemeData(
-                        thumbColor: WidgetStatePropertyAll(colors.primary),
-                        crossAxisMargin: 4,
-                        mainAxisMargin: 4,
-                        interactive: true,
-                        thickness: const WidgetStatePropertyAll(16),
-                        radius:
-                            Radius.circular(chaosUIState.getAdjustedRadius(8)),
-                      ),
-                      textSelectionTheme: TextSelectionThemeData(
-                        cursorColor: colors.primary,
-                        selectionColor: colors.primary.withValues(alpha: 0.4),
-                        selectionHandleColor: colors.primary,
-                      ),
-                    ),
-                    child: chaosUIState.chaosUIStatus
-                        ? const TypographyChaosDashboard()
-                        : const MainBox(),
-                  );
-                }),
+                textSelectionTheme: TextSelectionThemeData(
+                  cursorColor: currentColorScheme.primary,
+                  selectionColor:
+                      currentColorScheme.primary.withValues(alpha: 0.4),
+                  selectionHandleColor: currentColorScheme.primary,
+                ),
               ),
+              home: Builder(builder: (context) {
+                final colors = AntiiQTheme.of(context).colorScheme;
+                final chaosUIState = context.watch<ChaosUIState>();
+                return Theme(
+                  data: Theme.of(context).copyWith(
+                    scrollbarTheme: ScrollbarThemeData(
+                      thumbColor: WidgetStatePropertyAll(colors.primary),
+                      crossAxisMargin: 4,
+                      mainAxisMargin: 4,
+                      interactive: true,
+                      thickness: const WidgetStatePropertyAll(16),
+                      radius:
+                          Radius.circular(chaosUIState.getAdjustedRadius(8)),
+                    ),
+                    textSelectionTheme: TextSelectionThemeData(
+                      cursorColor: colors.primary,
+                      selectionColor: colors.primary.withValues(alpha: 0.4),
+                      selectionHandleColor: colors.primary,
+                    ),
+                  ),
+                  child: const TypographyChaosDashboard(),
+                );
+              }),
             ),
           );
         });

@@ -182,7 +182,7 @@ class ChaosHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'CHAOS GESTURES',
+                'GESTURES',
                 style: TextStyle(
                   color: AntiiQTheme.of(context).colorScheme.primary,
                   fontSize: 16,

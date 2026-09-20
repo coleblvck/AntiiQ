@@ -279,14 +279,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.7.0"
-  flutter_round_slider:
-    dependency: "direct main"
-    description:
-      name: flutter_round_slider
-      sha256: c44c23976142f9af4222a3251e3c73d4245c0edf225e863cfb800e142dd8a5a4
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter

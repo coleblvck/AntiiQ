@@ -39,7 +39,6 @@ class MainBoxKeys {
   static const String coverArtFit = "coverArtFit";
   static const String additionalMiniPlayerControls =
       "additionalMiniPlayerControls";
-  static const String dashboardViewOrder = "dashboardViewOrder";
   static const String endlessPlayEnabled = "endlessPlayEnabled";
   static const String libraryMetadataCache = "libraryMetadataCacheV2";
   static const String libraryCacheSignature = "libraryCacheSignatureV2";
@@ -92,8 +91,7 @@ updateStatusBarMode() {
 updateStatusBarColors() {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
-      statusBarColor:
-          chaosUIEnabled ? Colors.transparent : currentColorScheme.background,
+      statusBarColor: Colors.transparent,
       statusBarIconBrightness: currentColorScheme.brightness == Brightness.dark
           ? Brightness.light
           : Brightness.dark,
