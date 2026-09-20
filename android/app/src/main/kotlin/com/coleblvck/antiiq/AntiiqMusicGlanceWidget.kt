@@ -68,6 +68,11 @@ private val ProgressBgColorFallback = Color(0xFF444444)
 private val ProgressFillColorFallback = Color(0xFF007BFF)
 private val OverlayColorFallback = Color(0x99000000)
 
+// RemoteViews are transferred through Binder and Android enforces a bitmap
+// memory budget for each widget update. Album art can be many megapixels even
+// though the largest widget only renders it at a few hundred pixels.
+private const val MaxWidgetArtworkDimension = 512
+
 val ActionTypeKey: Key<String> = Key("action_type")
 
 class AntiiqMusicGlanceWidget : GlanceAppWidget() {
@@ -92,8 +97,49 @@ class AntiiqMusicGlanceWidget : GlanceAppWidget() {
         return withContext(Dispatchers.IO) {
             try {
                 val uri = uriString.toUri()
+                val bounds = BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                    BitmapFactory.decodeStream(inputStream)
+                    BitmapFactory.decodeStream(inputStream, null, bounds)
+                }
+
+                if (bounds.outWidth <= 0 || bounds.outHeight <= 0) {
+                    return@withContext null
+                }
+
+                var sampleSize = 1
+                while (
+                    bounds.outWidth / (sampleSize * 2) >= MaxWidgetArtworkDimension ||
+                    bounds.outHeight / (sampleSize * 2) >= MaxWidgetArtworkDimension
+                ) {
+                    sampleSize *= 2
+                }
+
+                val decoded = context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                    BitmapFactory.decodeStream(
+                        inputStream,
+                        null,
+                        BitmapFactory.Options().apply {
+                            inSampleSize = sampleSize
+                            inPreferredConfig = Bitmap.Config.ARGB_8888
+                        }
+                    )
+                } ?: return@withContext null
+
+                val longestEdge = maxOf(decoded.width, decoded.height)
+                if (longestEdge <= MaxWidgetArtworkDimension) {
+                    decoded
+                } else {
+                    val scale = MaxWidgetArtworkDimension.toFloat() / longestEdge
+                    val scaled = Bitmap.createScaledBitmap(
+                        decoded,
+                        (decoded.width * scale).toInt().coerceAtLeast(1),
+                        (decoded.height * scale).toInt().coerceAtLeast(1),
+                        true
+                    )
+                    if (scaled !== decoded) decoded.recycle()
+                    scaled
                 }
             } catch (e: Exception) {
                 Log.e("AntiiqWidget", "Error loading artwork from URI: $uriString", e)
